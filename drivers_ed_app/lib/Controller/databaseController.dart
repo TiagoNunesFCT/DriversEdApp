@@ -250,26 +250,26 @@ class DatabaseController {
   //Return number of Waypoints
   Future<int?> queryRowCountStudents() async {
     Database? db = await instance.database;
-    return firstIntValue(await db?.rawQuery('SELECT COUNT(*) FROM $studTable'));
+    return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $studTable'));
   }
 
   //Return number of Settings Configurations
   Future<int?> queryRowCountSettings() async {
     Database? db = await instance.database;
-    return firstIntValue(await db?.rawQuery('SELECT COUNT(*) FROM $setTable'));
+    return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $setTable'));
   }
 
 
   //Return number of Tags
   Future<int?> queryRowCountLessons() async {
     Database? db = await instance.database;
-    return firstIntValue(await db?.rawQuery('SELECT COUNT(*) FROM $lessTable'));
+    return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $lessTable'));
   }
 
   //Return number of Exams
   Future<int?> queryRowCountExams() async {
     Database? db = await instance.database;
-    return firstIntValue(await db?.rawQuery('SELECT COUNT(*) FROM $examTable'));
+    return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $examTable'));
   }
 
   //Return number of Manoeuvres
@@ -283,13 +283,7 @@ class DatabaseController {
 
   }
 
-
-  /// helper to get the first int value in a query
-  /// Useful for COUNT(*) queries
-  /// Null version adapted from official sqflite code
-  static int? firstIntValue(List<Map<String, Object?>>? list) =>
-      utils.firstIntValue(list!);
-
+  
   //Update existing Student Object
   Future<int?> updateStudent(Map<String, dynamic> row) async {
     Database? db = await instance.database;
