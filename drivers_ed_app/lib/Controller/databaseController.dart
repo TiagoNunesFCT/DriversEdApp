@@ -275,7 +275,7 @@ class DatabaseController {
   //Return number of Manoeuvres
   Future<int?> queryRowCountThemes() async {
     Database? db = await instance.database;
-    return firstIntValue(await db?.rawQuery('SELECT COUNT(*) FROM $manTable'));
+    return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $manTable'));
   }
 
   //Seed (Populate) the database
@@ -283,7 +283,7 @@ class DatabaseController {
 
   }
 
-  
+
   //Update existing Student Object
   Future<int?> updateStudent(Map<String, dynamic> row) async {
     Database? db = await instance.database;
