@@ -6,7 +6,7 @@ import 'package:drivers_ed_app/Model/student.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../View/mainView.dart';
+import '../View/studentView.dart';
 import 'databaseController.dart';
 
 
@@ -343,7 +343,7 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainPage()),
+                  MaterialPageRoute(builder: (context) => const StudentPage()),
                 );
               },
               child: const Text(
@@ -375,7 +375,7 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainPage()),
+                  MaterialPageRoute(builder: (context) => const StudentPage()),
                 );
               },
               child: const Text(

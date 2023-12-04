@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import 'View/mainView.dart';
+import 'View/studentView.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,10 +38,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         useMaterial3: true,
       ),
-      home: const MainPage(),
+      home: const StudentPage(),
     );
   }
 }
