@@ -2,12 +2,13 @@
 //This class represents a Student object
 class Student {
   //The Current Lesson Attributes
-  int studentId, studentRegistrationNumber;
+  int? studentId;
+  int studentRegistrationNumber;
   double studentRegistrationDate;
   String studentName, studentCategory;
 
 
-  Student({required this.studentId, required this.studentName, required this.studentRegistrationNumber, required this.studentRegistrationDate, required this.studentCategory});
+  Student({this.studentId, required this.studentName, required this.studentRegistrationNumber, required this.studentRegistrationDate, required this.studentCategory});
 
   //to be used when inserting a row in the table
   Map<String, dynamic> toMapWithoutId() {
