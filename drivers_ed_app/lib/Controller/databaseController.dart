@@ -31,6 +31,10 @@ class DatabaseController {
 
   static const manTable = 'manoeuvre_table';
 
+  //Categories Table
+
+  static const catTable = 'category_table';
+
   //Names of Columns, grouped by table
   //Student Columns
   static const columnStudentId = 'student_id';
@@ -75,6 +79,11 @@ class DatabaseController {
   static const columnManoeuvreId = 'manoeuvre_id';
   static const columnManoeuvreName = 'manoeuvre_name';
   static const columnManoeuvreCategory = 'manoeuvre_category';
+
+  //Category Columns
+  static const columnCategoryId = 'category_id';
+  static const columnCategoryName = 'category_name';
+  static const columnCategoryDescription = 'category_description';
 
 
 
@@ -177,11 +186,18 @@ class DatabaseController {
             $columnManoeuvreCategory TEXT
           )
           ''');
+    await db.execute('''
+          CREATE TABLE IF NOT EXISTS $catTable (
+            $columnCategoryId INTEGER PRIMARY KEY,
+            $columnCategoryName TEXT,
+            $columnCategoryDescription TEXT
+          )
+          ''');
   }
 
 
   //Inserting a new Student into the Database
-  Future<int?> insert(Map<String, dynamic> row) async {
+  Future<int?> insertStudent(Map<String, dynamic> row) async {
     Database? db = await instance.database;
     return await db?.insert(studTable, row);
   }
@@ -210,6 +226,11 @@ class DatabaseController {
     return await db?.insert(manTable, row);
   }
 
+  //Inserting a new Category into the Database
+  Future<int?> insertCategory(Map<String, dynamic> row) async {
+    Database? db = await instance.database;
+    return await db?.insert(catTable, row);
+  }
 
   //Query (return) all Students
   Future<List<Map<String, dynamic>>?> queryAllRowsStudents() async {
@@ -246,6 +267,13 @@ class DatabaseController {
     return result?.toList();
   }
 
+  //Query (return) all Categories
+  Future<List<Map<String, dynamic>>?> queryAllRowsCategories() async {
+    Database? db = await instance.database;
+    var result = await db?.query(catTable);
+    return result?.toList();
+  }
+
   //Return number of Waypoints
   Future<int?> queryRowCountStudents() async {
     Database? db = await instance.database;
@@ -272,9 +300,15 @@ class DatabaseController {
   }
 
   //Return number of Manoeuvres
-  Future<int?> queryRowCountThemes() async {
+  Future<int?> queryRowCountManoeuvres() async {
     Database? db = await instance.database;
     return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $manTable'));
+  }
+
+  //Return number of Categories
+  Future<int?> queryRowCountCategories() async {
+    Database? db = await instance.database;
+    return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $catTable'));
   }
 
   //Seed (Populate) the database
@@ -318,6 +352,13 @@ class DatabaseController {
     return await db?.update(manTable, row, where: '$columnManoeuvreId = ?', whereArgs: [id]);
   }
 
+  //Update existing Category Object
+  Future<int?> updateCategory(Map<String, dynamic> row) async {
+    Database? db = await instance.database;
+    int id = row[columnCategoryId];
+    return await db?.update(catTable, row, where: '$columnCategoryId = ?', whereArgs: [id]);
+  }
+
   //Delete a Waypoint
   Future<int?> deleteStudent(int id) async {
     Database? db = await instance.database;
@@ -330,21 +371,27 @@ class DatabaseController {
     return await db?.delete(setTable, where: '$columnSettingsId = ?', whereArgs: [id]);
   }
 
-  //Delete a Tag
+  //Delete a Lesson
   Future<int?> deleteLesson(int id) async {
     Database? db = await instance.database;
     return await db?.delete(lessTable, where: '$columnLessonId = ?', whereArgs: [id]);
   }
 
-  //Delete a Theme
+  //Delete an Exam
   Future<int?> deleteExam(int id) async {
     Database? db = await instance.database;
     return await db?.delete(examTable, where: '$columnExamId = ?', whereArgs: [id]);
   }
 
-  //Delete a Theme
+  //Delete a Manoeuvre
   Future<int?> deleteManoeuvre(int id) async {
     Database? db = await instance.database;
     return await db?.delete(manTable, where: '$columnManoeuvreId = ?', whereArgs: [id]);
+  }
+
+  //Delete a Category
+  Future<int?> deleteCategory(int id) async {
+    Database? db = await instance.database;
+    return await db?.delete(catTable, where: '$columnCategoryId = ?', whereArgs: [id]);
   }
 }

@@ -124,7 +124,7 @@ class _StudentPageState extends State<StudentPage> {
                     )),                    SizedBox(width: 50, height: 50)
               ],
             ),
-            Container(width:(MediaQuery.of(context).size.width -458), padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0), child:(Container(child:Column(children:[Container(height:50, child:Container(), decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer,
+            Container(width:(MediaQuery.of(context).size.width -458), padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0), child:(Container(child:Column(children:[Container(height:50, child:Container(child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children:[Container(width: 80,child:Text("Aluno Nº",textAlign: TextAlign.center)), Text("|", style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height:-0.1 ),), Container(width:300,child:Text("Nome Completo",textAlign: TextAlign.center)), Text("|", style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height:-0.1 ),),Container(width:150, child:Text("Data de Inscrição",textAlign: TextAlign.center)), Text("|", style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height:-0.1 ),), Container(width:70, child:Text("Categoria",textAlign: TextAlign.center))])), decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer,
                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)))),Container(height:(MediaQuery.of(context).size.height -86), child:StudentsList())]),decoration: BoxDecoration(
             border: Border.all(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(20)),
             )),),

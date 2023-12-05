@@ -366,7 +366,7 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
 
                     );
 
-                    DatabaseController.instance.insert(stud.toMapWithoutId());
+                    DatabaseController.instance.insertStudent(stud.toMapWithoutId());
                   } on Exception {if (kDebugMode) {
                     print("Uhhh, no...");
                   }}
