@@ -1,9 +1,12 @@
+import 'package:drivers_ed_app/Controller/databaseController.dart';
 import 'package:flutter/material.dart';
+
+import '../Model/student.dart';
+
+String searchQuery = "";
 
 class StudentPage extends StatefulWidget {
   const StudentPage({super.key});
-
-
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -19,21 +22,10 @@ class StudentPage extends StatefulWidget {
 }
 
 class _StudentPageState extends State<StudentPage> {
-  int _counter = 0;
-  String searchQuery = "";
 
 
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -59,90 +51,256 @@ class _StudentPageState extends State<StudentPage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Column(
+            Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children:[Container( padding:EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0) ,child:IconButton.filled(
-                    icon: const Icon(Icons.settings_rounded),
-                    color: Theme.of(context).colorScheme.background,
-                    tooltip: 'Definições',
-                    onPressed: () {
-                      setState(() {});
-                    },
-
-                    padding: EdgeInsets.all(12.0),
-                  )),                Container(width: 400, height: 50,
-                      child: TextField(
-
-
-                        controller: studentName,
-
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
-
-                          hintStyle: TextStyle(fontStyle: FontStyle.italic, overflow: TextOverflow.fade,),
-                          prefixIcon: Container(margin: EdgeInsets.fromLTRB(0.0, 0.0, 1.0, 0.0), child:IconButton.filled(
-
-                            icon: const Icon(Icons.search_rounded),
-                            color: Theme.of(context).colorScheme.background,
-                            tooltip: 'Pesquisar',
-                            onPressed: () {
-                              setState(() { searchQuery = studentName.text; print(searchQuery);});
-                            },
-                          )),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear_rounded),
-                            color: Theme.of(context).colorScheme.primary,
-                            tooltip: 'Limpar Pesquisa',
-                            onPressed: () {
-                              setState(() {searchQuery = "";});
-                            },
-                          ),
-
-                          hintText: 'Pesquisar Aluno...',
-                          border: OutlineInputBorder( borderRadius: BorderRadius.circular(90.0),
-
-
-                        ),
-                      )))]),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Container(
+                        padding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                        child: IconButton.filled(
+                          icon: const Icon(Icons.settings_rounded),
+                          color: Theme.of(context).colorScheme.background,
+                          tooltip: 'Definições',
+                          onPressed: () {
+                            setState(() {});
+                          },
+                          padding: EdgeInsets.all(12.0),
+                        )),
+                    Container(
+                        width: 400,
+                        height: 50,
+                        child: TextField(
+                            controller: studentName,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+                              hintStyle: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                overflow: TextOverflow.fade,
+                              ),
+                              prefixIcon: Container(
+                                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 1.0, 0.0),
+                                  child: IconButton.filled(
+                                    icon: const Icon(Icons.search_rounded),
+                                    color: Theme.of(context).colorScheme.background,
+                                    tooltip: 'Pesquisar',
+                                    onPressed: () {
+                                      setState(() {
+                                        searchQuery = studentName.text;
+                                        print(searchQuery);
+                                      });
+                                    },
+                                  )),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.clear_rounded),
+                                color: Theme.of(context).colorScheme.primary,
+                                tooltip: 'Limpar Pesquisa',
+                                onPressed: () {
+                                  setState(() {
+                                    searchQuery = "";
+                                  });
+                                },
+                              ),
+                              hintText: 'Pesquisar Aluno...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(90.0),
+                              ),
+                            )))
+                  ]),
                 ),
-
+                Container(
+                    height: 300, width: 250,
+                    child: Column(
+                      children: [
+                        FilledButton.tonal(onPressed: () {}, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Icon(Icons.person_add), Container(width:170, child:Text("Novo Aluno", textAlign: TextAlign.center,))])),
+                        FilledButton.tonal(onPressed: () {}, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Icon(Icons.minor_crash_rounded), Container(width:170, child:Text("Nova Categoria", textAlign: TextAlign.center,))])),
+                        FilledButton.tonal(onPressed: () {}, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Icon(Icons.add_road_rounded), Container(width:170, child:Text("Nova Manobra", textAlign: TextAlign.center,))])),
+                        FilledButton.tonal(onPressed: () {}, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Icon(Icons.download_rounded), Container(width:170, child:Text("Importar Alunos", textAlign: TextAlign.center,))])),
+                        FilledButton.tonal(onPressed: () {}, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Icon(Icons.upload_rounded), Container(width:170, child:Text("Exportar Alunos", textAlign: TextAlign.center,))])),
+                        FilledButton.tonal(onPressed: () {}, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Icon(Icons.delete_forever_rounded), Container(width:170, child:Text("Apagar Tudo", textAlign: TextAlign.center,))])),
+                      ],
+                    )),                    SizedBox(width: 50, height: 50)
               ],
             ),
-            Column(
-              // Column is also a layout widget. It takes a list of children and
-              // arranges them vertically. By default, it sizes itself to fit its
-              // children horizontally, and tries to be as tall as its parent.
-              //
-              // Column has various properties to control how it sizes itself and
-              // how it positions its children. Here we use mainAxisAlignment to
-              // center the children vertically; the main axis here is the vertical
-              // axis because Columns are vertical (the cross axis would be
-              // horizontal).
-              //
-              // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-              // action in the IDE, or press "p" in the console), to see the
-              // wireframe for each widget.
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
-                Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ],
-            ),
+            Container(width:(MediaQuery.of(context).size.width -458), padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0), child:(Container(child:Column(children:[Container(height:50, child:Container(), decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer,
+                 borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)))),Container(height:(MediaQuery.of(context).size.height -86), child:StudentsList())]),decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(20)),
+            )),),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+//The dynamic Waypoints List widget
+class StudentsList extends StatefulWidget {
+
+
+
+
+  StudentsList(){
+
+  }
+
+
+
+
+  @override
+  State<StatefulWidget> createState() {
+    return StudentsListState();
+  }
+
+  State<StatefulWidget> updateState() {
+    return StudentsListState();
+  }
+}
+
+//State
+class StudentsListState extends State<StudentsList> {
+  //The list of Students to be shown on the Widget
+  List<Student> listStudents = [];
+
+
+
+  StudentsListState(){
+
+  }
+
+  //Async version of the getStudents method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getStudents() async {
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+    });
+  }
+
+  //Method that adds Students to the List, in case they are compliant with the search criteria
+  addToList(Map<String, dynamic> map) {
+    if (Student.fromMap(map).studentName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+      listStudents.add(Student.fromMap(map));
+    }
+  }
+
+  @override
+  void initState() {
+    getStudents();
+    super.initState();
+  }
+
+  //Building the Widget
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: listStudents.length,
+        itemBuilder: (context, position) {
+          Student getStudent = listStudents[position];
+          var studentNumber = getStudent.studentRegistrationNumber.toStringAsFixed(2);
+          var studentName = getStudent.studentName;
+          return TextButton(onLongPress: (){
+          setState(() {});},
+            onPressed: () {  },
+          child:Container(
+              color: const Color(0xFF242933),
+              padding: EdgeInsets.all(5),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color:Colors.blueGrey.shade700,
+                    ),
+                    borderRadius: BorderRadius.circular(3),
+                    gradient: LinearGradient(
+                      begin: new Alignment(0.0, -3),
+                      end: Alignment.bottomCenter,
+                      colors:
+                          const [
+                        Color(0xFF242933),
+                        Color(0xFF242933),
+                      ],
+                    ),
+                    color: Colors.blue),
+                height: 80,
+                padding: EdgeInsets.all(15),
+                child: Stack(
+                  children: <Widget>[
+                    Align(
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
+                            width: 240,
+                            child: Text(getStudent.studentName,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: "Montserrat",
+                                  fontSize: 18,
+                                  color: const Color(0xFFD8DEE9),
+                                  fontWeight: FontWeight.w300,
+                                )))),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: EdgeInsets.only(right: 45),
+                        child:
+                        /*IconButton( //old functionality
+                          icon: Icon(Icons.edit),
+                          color: Colors.blueGrey.shade700,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        AddEditWaypoint(true, getWaypoint)));
+                          })*/
+                        IconButton(
+                            icon: Icon(Icons.info_outline_rounded),
+                            color: Colors.blueGrey.shade700,
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => StudentPage()/*waypointDetails(getWaypoint, listWaypoints)*/));
+                            }),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child:
+                      /*IconButton( //old functionality
+                        icon: Icon(Icons.delete),
+                        color: Colors.blueGrey.shade700,
+                        onPressed: () {
+                          DatabaseHelper.instance.delete(getWaypoint.waypId);
+                          setState(() => {
+                                listWaypoints.removeWhere(
+                                    (item) => item.waypId == getWaypoint.waypId)
+                              });
+                        })*/
+                      IconButton(
+                          icon: Stack(children: [
+                            Icon(Icons.map_outlined),
+                            Icon(
+                              Icons.location_on_outlined,
+                              size: 19,
+                              color: const Color(0xFF242933),
+                            ),
+                            SizedBox(height: 19, width: 19, child: Icon(Icons.location_on_outlined, size: 16))
+                          ]),
+                          color: Colors.blueGrey.shade700,
+                          onPressed: () {}),
+                    ),
+                    Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text("Número: $studentNumber | Nome: $studentName",
+                            style: TextStyle(
+                              fontFamily: "Montserrat",
+                              fontSize: 18,
+                              color: const Color(0xFFD8DEE9),
+                              fontWeight: FontWeight.w300,
+                            ))),
+                  ],
+                ),
+              )),
+          );
+        });
   }
 }

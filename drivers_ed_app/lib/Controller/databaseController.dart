@@ -145,7 +145,7 @@ class DatabaseController {
             $columnSettingsStoragePath TEXT,
             $columnSettingsNotifications INTEGER,
             $columnSettingsScreenTimeout REAL,
-            $columnSettingsDirty INTEGER,
+            $columnSettingsDirty INTEGER
           )
           ''');
     await db.execute('''
