@@ -7,6 +7,8 @@ import '../Model/student.dart';
 
 String searchQuery = "";
 
+List<Student> listStudents = [];
+
 class StudentPage extends StatefulWidget {
   const StudentPage({super.key});
 
@@ -24,6 +26,52 @@ class StudentPage extends StatefulWidget {
 }
 
 class _StudentPageState extends State<StudentPage> {
+  //placing it in a variable so it can be manually updated whenever the page itself updates
+
+
+  void initState() {
+    super.initState();
+    setState(() {getStudents();});
+  }
+
+
+  void updateState() {
+    debugPrint("BAN BAN 1");
+
+    setState(() {getStudentsUpdate();});
+
+  }
+
+  //Async version of the getStudents method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getStudents() async {
+
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
+    listMap?.forEach((map) => addToList(map)); debugPrint("ZUMBO SAUCE 2");
+
+
+  }
+  //Async version of the getStudents method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getStudentsUpdate() async {
+    listStudents = [];
+
+    List<Map<String, dynamic>> listMap = (await DatabaseController.instance.queryAllRowsStudents())!;
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+      debugPrint("ZUMBO SAUCE 2.1");
+    });
+
+
+  }
+
+  //Method that adds Students to the List, in case they are compliant with the search criteria
+  addToList(Map<String, dynamic> map) {
+    if (Student.fromMap(map).studentName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+      listStudents.add(Student.fromMap(map));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController studentName = TextEditingController(text: searchQuery);
@@ -86,7 +134,7 @@ class _StudentPageState extends State<StudentPage> {
                                   onPressed: () {
                                     setState(() {
                                       searchQuery = studentName.text;
-                                      print(searchQuery);
+                                      debugPrint(searchQuery);
                                     });
                                   },
                                 )),
@@ -113,7 +161,8 @@ class _StudentPageState extends State<StudentPage> {
                       children: [
                         FilledButton.tonal(
                             onPressed: () {
-                              showAddStudentDialog();
+                              debugPrint("CLICKED ON ADD STUDENT BUTTON");
+                              showAddStudentDialog(updateStateCallback);
                             },
                             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                               Icon(Icons.person_add),
@@ -213,7 +262,95 @@ class _StudentPageState extends State<StudentPage> {
                         ),
                         Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
                       ]))),
-                  Container(height: (MediaQuery.of(context).size.height - 86), child: StudentsList())
+                  Container(height: (MediaQuery.of(context).size.height - 86), child: ListView.builder(
+
+                      itemCount: listStudents.length,
+                      itemBuilder: (context, position) {
+                        Student getStudent = listStudents[position];
+                        var studentNumber = getStudent.studentRegistrationNumber.toStringAsFixed(2);
+                        var studentName = getStudent.studentName;
+                        return TextButton(
+                          key: UniqueKey(),
+                          onLongPress: () {
+                            setState(() {});
+                          },
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => StudentPage() /*waypointDetails(getWaypoint, listWaypoints)*/));
+                          },
+                          child: Container(
+                              color: const Color(0xFF242933),
+                              padding: EdgeInsets.all(5),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.blueGrey.shade700,
+                                    ),
+                                    borderRadius: BorderRadius.circular(3),
+                                    gradient: LinearGradient(
+                                      begin: new Alignment(0.0, -3),
+                                      end: Alignment.bottomCenter,
+                                      colors: const [
+                                        Color(0xFF242933),
+                                        Color(0xFF242933),
+                                      ],
+                                    ),
+                                    color: Colors.blue),
+                                height: 80,
+                                padding: EdgeInsets.all(15),
+                                child: Stack(
+                                  children: <Widget>[
+                                    Align(
+                                        alignment: Alignment.topLeft,
+                                        child: SizedBox(
+                                            width: 240,
+                                            child: Text(getStudent.studentName,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontFamily: "Montserrat",
+                                                  fontSize: 18,
+                                                  color: const Color(0xFFD8DEE9),
+                                                  fontWeight: FontWeight.w300,
+                                                )))),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        margin: EdgeInsets.only(right: 45),
+                                        child: IconButton(
+                                            icon: Icon(Icons.info_outline_rounded),
+                                            color: Colors.blueGrey.shade700,
+                                            onPressed: () {}),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: IconButton(
+                                          icon: Stack(children: [
+                                            Icon(Icons.map_outlined),
+                                            Icon(
+                                              Icons.location_on_outlined,
+                                              size: 19,
+                                              color: const Color(0xFF242933),
+                                            ),
+                                            SizedBox(height: 19, width: 19, child: Icon(Icons.location_on_outlined, size: 16))
+                                          ]),
+                                          color: Colors.blueGrey.shade700,
+                                          onPressed: () {}),
+                                    ),
+                                    Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text("Número: $studentNumber | Nome: $studentName",
+                                            style: TextStyle(
+                                              fontFamily: "Montserrat",
+                                              fontSize: 18,
+                                              color: const Color(0xFFD8DEE9),
+                                              fontWeight: FontWeight.w300,
+                                            ))),
+                                  ],
+                                ),
+                              )),
+                        );
+                      }))
                 ]),
               )),
             ),
@@ -223,10 +360,17 @@ class _StudentPageState extends State<StudentPage> {
     );
   }
 
-  void showAddStudentDialog() {
+  //SetState Callback
+  void updateStateCallback(){
+    updateState();
+  }
+
+  void showAddStudentDialog(void Function() updateStateCallbackFunction) {
+    debugPrint("callback in showAddStudentDialog");
+    updateStateCallbackFunction();
     showDialog(
       context: context,
-      builder: (BuildContext context) => AddStudentDialog(),
+      builder: (BuildContext context) => AddStudentDialog(updateStateCallbackFunction),
     );
   }
 
@@ -240,160 +384,34 @@ class _StudentPageState extends State<StudentPage> {
 
 
 
-//The dynamic Waypoints List widget
-class StudentsList extends StatefulWidget {
-  StudentsList() {}
 
-  @override
-  State<StatefulWidget> createState() {
-    return StudentsListState();
-  }
 
-  State<StatefulWidget> updateState() {
-    return StudentsListState();
-  }
-}
 
-//State
-class StudentsListState extends State<StudentsList> {
-  //The list of Students to be shown on the Widget
-  List<Student> listStudents = [];
-
-  StudentsListState() {}
-
-  //Async version of the getStudents method
-  // ignore: missing_return
-  Future<List<Map<String, dynamic>>?> getStudents() async {
-    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
-    setState(() {
-      listMap?.forEach((map) => addToList(map));
-    });
-  }
-
-  //Method that adds Students to the List, in case they are compliant with the search criteria
-  addToList(Map<String, dynamic> map) {
-    if (Student.fromMap(map).studentName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
-      listStudents.add(Student.fromMap(map));
-    }
-  }
-
-  @override
-  void initState() {
-    getStudents();
-    super.initState();
-  }
-
-  //Building the Widget
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: listStudents.length,
-        itemBuilder: (context, position) {
-          Student getStudent = listStudents[position];
-          var studentNumber = getStudent.studentRegistrationNumber.toStringAsFixed(2);
-          var studentName = getStudent.studentName;
-          return TextButton(
-            onLongPress: () {
-              setState(() {});
-            },
-            onPressed: () {},
-            child: Container(
-                color: const Color(0xFF242933),
-                padding: EdgeInsets.all(5),
-                child: Container(
-                  decoration: BoxDecoration(
-                  border: Border.all(
-                  width: 1,
-                  color: Colors.blueGrey.shade700,
-                ),
-                borderRadius: BorderRadius.circular(3),
-                gradient: LinearGradient(
-                  begin: new Alignment(0.0, -3),
-                  end: Alignment.bottomCenter,
-                  colors: const [
-                    Color(0xFF242933),
-                    Color(0xFF242933),
-                  ],
-                ),
-                color: Colors.blue),
-                  height: 80,
-                  padding: EdgeInsets.all(15),
-                  child: Stack(
-                    children: <Widget>[
-                      Align(
-                          alignment: Alignment.topLeft,
-                          child: SizedBox(
-                              width: 240,
-                              child: Text(getStudent.studentName,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                    fontSize: 18,
-                                    color: const Color(0xFFD8DEE9),
-                                    fontWeight: FontWeight.w300,
-                                  )))),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          margin: EdgeInsets.only(right: 45),
-                          child: IconButton(
-                              icon: Icon(Icons.info_outline_rounded),
-                              color: Colors.blueGrey.shade700,
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => StudentPage() /*waypointDetails(getWaypoint, listWaypoints)*/));
-                              }),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                            icon: Stack(children: [
-                              Icon(Icons.map_outlined),
-                              Icon(
-                                Icons.location_on_outlined,
-                                size: 19,
-                                color: const Color(0xFF242933),
-                              ),
-                              SizedBox(height: 19, width: 19, child: Icon(Icons.location_on_outlined, size: 16))
-                            ]),
-                            color: Colors.blueGrey.shade700,
-                            onPressed: () {}),
-                      ),
-                      Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text("Número: $studentNumber | Nome: $studentName",
-                              style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 18,
-                                color: const Color(0xFFD8DEE9),
-                                fontWeight: FontWeight.w300,
-                              ))),
-                    ],
-                  ),
-                )),
-          );
-        });
-  }
-}
 
 class AddStudentDialog extends StatefulWidget {
   DateTime currentDate = DateTime.now();
   late String currentDateString = currentDate.toIso8601String().split('T').first;
-  late String currentCategory = "B";
+  late String currentCategory = "A";
 
-  AddStudentDialog({super.key});
+  void Function() updateStateCallback;
+
+  AddStudentDialog(this.updateStateCallback,  {super.key}){
+
+  }
 
   @override
-  _AddStudentDialogState createState() => _AddStudentDialogState();
+  AddStudentDialogState createState() => AddStudentDialogState();
 }
 
-class _AddStudentDialogState extends State<AddStudentDialog> {
-  _AddStudentDialogState();
+class AddStudentDialogState extends State<AddStudentDialog> {
+
+
+  AddStudentDialogState();
 
   TextEditingController studentNumber = TextEditingController(text: "");
   TextEditingController studentName = TextEditingController(text: "");
 
-  get categoryToBeAdded => null;
+
 
   void showDatePickerDialog() {
     showDialog(
@@ -507,9 +525,12 @@ class _AddStudentDialogState extends State<AddStudentDialog> {
             onPressed: () {
               Student studentToBeAdded = Student(studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
             DatabaseController.instance.insertStudent(studentToBeAdded.toMapWithoutId());
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
             Navigator.of(context).pop();
-            setState(() {
-            });},
+},
             child: Text(
               'Confirmar',
               style: TextStyle(fontWeight: FontWeight.w900),
@@ -523,7 +544,7 @@ class _AddStudentDialogState extends State<AddStudentDialog> {
   void changeCategory(String newCategory) {
     widget.currentCategory = newCategory;
     if (kDebugMode) {
-      print("CHANGED CATEGORY TO... " + newCategory);
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
     }
   }
 }
@@ -659,11 +680,12 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
   }
 
 
-  //Async version of the getStudents method
+  //Async version of the getCategories method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getCategories() async {
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsCategories();
     setState(() {
+
       listMap?.forEach((map) => addToList(map));
     });
   }
@@ -676,7 +698,7 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
   @override
   Widget build(BuildContext context) {
 
-    print("Number of categories: ${listCategories.length}");
+    debugPrint("Number of categories: ${listCategories.length}");
     return PopupMenuButton<String>(
         icon: Container(margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),width:41, height:40, decoration: BoxDecoration(
 
@@ -691,7 +713,7 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
         onSelected: (value) {
 
           currentValue= value;
-          print("BOINGUS $value selected...");
+          debugPrint("BOINGUS $value selected...");
           setState(() {});},
         // This transformation maps listCategories items (thus Categories) into buttons
 

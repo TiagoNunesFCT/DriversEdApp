@@ -4,4 +4,13 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:label="drivers_ed_app"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+
+        >        <!--android:enableOnBackInvokedCallback="true"-->
+        </application>
+
 </manifest>

@@ -343,7 +343,7 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const StudentPage()),
+                  MaterialPageRoute(builder: (context) => StudentPage()),
                 );
               },
               child: const Text(
@@ -375,7 +375,7 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const StudentPage()),
+                  MaterialPageRoute(builder: (context) => StudentPage()),
                 );
               },
               child: const Text(
