@@ -650,9 +650,11 @@ class StudentsListState extends State<StudentsList> {
   Future<List<Map<String, dynamic>>?> getStudents() async {
     listStudents = [];
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
+      setState(() {
+
 
       listMap?.forEach((map) => addToList(map));
-
+      });
   }
 
   //Method that adds Students to the List, in case they are compliant with the search criteria
