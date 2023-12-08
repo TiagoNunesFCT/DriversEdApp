@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../Controller/databaseController.dart';
 import '../Model/category.dart' as CategoryPackage;
 import '../Model/student.dart';
+import 'package:intl/intl.dart';
 
 String searchQuery = "";
 
@@ -30,7 +31,7 @@ class StudentPage extends StatefulWidget {
 class _StudentPageState extends State<StudentPage> {
   //placing it in a variable so it can be manually updated whenever the page itself updates
 
-  StudentsList studentsList = StudentsList();
+
 
   void initState() {
     super.initState();
@@ -69,7 +70,7 @@ class _StudentPageState extends State<StudentPage> {
         // the App.build method, and use it to set our appbar title.
         toolbarHeight: 0,
       ),
-      body: Center(
+      body: Container(color: Theme.of(context).colorScheme.background,child:Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Row(
@@ -82,9 +83,8 @@ class _StudentPageState extends State<StudentPage> {
                 Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Container(
                       padding: const EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
-                      child: IconButton.filled(
-                        icon: const Icon(Icons.settings_rounded),
-                        color: Theme.of(context).colorScheme.background,
+                      child: IconButton.filledTonal(
+                        icon: Icon(Icons.settings_rounded, color: Theme.of(context).colorScheme.scrim,),
                         tooltip: 'Definições',
                         onPressed: () {
                           setState(() {});
@@ -95,18 +95,21 @@ class _StudentPageState extends State<StudentPage> {
                       width: 400,
                       height: 50,
                       child: TextField(
+
                           controller: studentName,
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+
+                            filled: true,
+                            fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                             hintStyle: const TextStyle(
                               fontStyle: FontStyle.italic,
                               overflow: TextOverflow.fade,
                             ),
                             prefixIcon: Container(
                                 margin: const EdgeInsets.fromLTRB(0.0, 0.0, 1.0, 0.0),
-                                child: IconButton.filled(
-                                  icon: const Icon(Icons.search_rounded),
-                                  color: Theme.of(context).colorScheme.background,
+                                child: IconButton.filledTonal(
+                                  icon: Icon(Icons.search_rounded, color: Theme.of(context).colorScheme.scrim),
                                   tooltip: 'Pesquisar',
                                   onPressed: () {
                                     setState(() {
@@ -117,7 +120,6 @@ class _StudentPageState extends State<StudentPage> {
                                 )),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear_rounded),
-                              color: Theme.of(context).colorScheme.primary,
                               tooltip: 'Limpar Pesquisa',
                               onPressed: () {
                                 setState(() {
@@ -126,8 +128,11 @@ class _StudentPageState extends State<StudentPage> {
                               },
                             ),
                             hintText: 'Pesquisar Aluno...',
+
                             border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(90.0),
+
                             ),
                           )))
                 ]),
@@ -215,7 +220,6 @@ class _StudentPageState extends State<StudentPage> {
               width: (MediaQuery.of(context).size.width - 458),
               padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
               child: (Container(
-                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(20)),
                 child: Column(children: [
                   Container(
                       height: 50,
@@ -239,13 +243,13 @@ class _StudentPageState extends State<StudentPage> {
                         ),
                         Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
                       ]))),
-                  Container(height: (MediaQuery.of(context).size.height - 86), child: StudentsList(key: _StudentsListKey,))
+                  Container(decoration: BoxDecoration(borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),color: Theme.of(context).colorScheme.onInverseSurface,), height: (MediaQuery.of(context).size.height - 86), child: StudentsList(key: _StudentsListKey,))
                 ]),
               )),
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 
@@ -333,6 +337,8 @@ class AddStudentDialogState extends State<AddStudentDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
+              backgroundColor: Theme.of(context).colorScheme.background,
+      elevation: 0,
       title: const Text(
         "Novo Aluno",
       ),
@@ -352,11 +358,13 @@ class AddStudentDialogState extends State<AddStudentDialog> {
                 keyboardType: TextInputType.number,
                 selectionControls: desktopTextSelectionControls,
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
                   labelText: "Número de Inscrição",
                   floatingLabelAlignment: FloatingLabelAlignment.center,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
                 ),
               )),
           SizedBox(height: 5),
@@ -369,16 +377,18 @@ class AddStudentDialogState extends State<AddStudentDialog> {
                 keyboardType: TextInputType.name,
                 selectionControls: desktopTextSelectionControls,
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
                   labelText: "Nome Completo",
                   floatingLabelAlignment: FloatingLabelAlignment.center,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
                 ),
               )),
           Row(children: [
             Container(padding: EdgeInsets.all(5.0), child: Text("Data de Inscrição")),
-            Container( margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0), child:OutlinedButton(
+            Container( margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0), child:FilledButton( style:ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
               onPressed: () {
                 _selectDate(context);
               },
@@ -464,6 +474,8 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
               title: const Text(
                 "Nova Categoria",
               ),
@@ -483,11 +495,13 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                         keyboardType: TextInputType.name,
                         selectionControls: desktopTextSelectionControls,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
                           labelText: "Nome da Categoria",
                           floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
                         ),
                       )),
                   SizedBox(height: 5),
@@ -500,11 +514,13 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                         keyboardType: TextInputType.name,
                         selectionControls: desktopTextSelectionControls,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
                           labelText: "Descrição (ex: Ligeiros)",
                           floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(90.0)),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
                         ),
                       )),
 
@@ -525,6 +541,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                     ),
                   ),
                   FilledButton.tonal(
+
                     onPressed: () {                CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text, categoryDescription: categoryDescription.text);
                     DatabaseController.instance.insertCategory(categoryToBeAdded.toMapWithoutId());
                     Navigator.of(context).pop();
@@ -590,9 +607,9 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
     debugPrint("Number of categories: ${listCategories.length}");
     return PopupMenuButton<String>(
         icon: Container(margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),width:41, height:40, decoration: BoxDecoration(
-
+            color: Theme.of(context).colorScheme.onInverseSurface,
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
+              color: Theme.of(context).colorScheme.onInverseSurface,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(90),
@@ -697,76 +714,36 @@ class StudentsListState extends State<StudentsList> {
             },
             onPressed: () {},
             child: Container(
-                color: const Color(0xFF242933),
-                padding: EdgeInsets.all(5),
+
                 child: Container(
                   decoration: BoxDecoration(
                       border: Border.all(
                         width: 1,
-                        color: Colors.blueGrey.shade700,
+                        color: Theme.of(context).colorScheme.secondaryContainer,
                       ),
-                      borderRadius: BorderRadius.circular(3),
-                      gradient: LinearGradient(
-                        begin: new Alignment(0.0, -3),
-                        end: Alignment.bottomCenter,
-                        colors: const [
-                          Color(0xFF242933),
-                          Color(0xFF242933),
-                        ],
-                      ),
-                      color: Colors.blue),
-                  height: 80,
-                  padding: EdgeInsets.all(15),
-                  child: Stack(
+                      borderRadius: BorderRadius.circular(90),
+
+                      color: Theme.of(context).colorScheme.secondaryContainer),
+                  height: 40,
+                  padding: EdgeInsets.all(10),
+                  child: Row(
                     children: <Widget>[
-                      Align(
-                          alignment: Alignment.topLeft,
-                          child: SizedBox(
-                              width: 240,
-                              child: Text(getStudent.studentName,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                    fontSize: 18,
-                                    color: const Color(0xFFD8DEE9),
-                                    fontWeight: FontWeight.w300,
-                                  )))),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          margin: EdgeInsets.only(right: 45),
-                          child: IconButton(
-                              icon: Icon(Icons.info_outline_rounded),
-                              color: Colors.blueGrey.shade700,
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => StudentPage() /*waypointDetails(getWaypoint, listWaypoints)*/));
-                              }),
-                        ),
+                      Container(width: 114, child: Text(getStudent.studentRegistrationNumber.toString(), textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),)),
+                      Text(
+                        "|",
+                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color:Theme.of(context).colorScheme.inverseSurface),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                            icon: Stack(children: [
-                              Icon(Icons.map_outlined),
-                              Icon(
-                                Icons.location_on_outlined,
-                                size: 19,
-                                color: const Color(0xFF242933),
-                              ),
-                              SizedBox(height: 19, width: 19, child: Icon(Icons.location_on_outlined, size: 16))
-                            ]),
-                            color: Colors.blueGrey.shade700,
-                            onPressed: () {}),
+                      Container(width: 357, child: Text(getStudent.studentName, textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),)),
+                      Text(
+                        "|",
+                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1,color:Theme.of(context).colorScheme.inverseSurface),
                       ),
-                      Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text("Número: $studentNumber | Nome: $studentName",
-                              style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 18,
-                                color: const Color(0xFFD8DEE9),
-                                fontWeight: FontWeight.w300,
-                              ))),
+                      Container(width: 208, child: Text(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getStudent.studentRegistrationDate.toInt())), textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),)),
+                      Text(
+                        "|",
+                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1,color:Theme.of(context).colorScheme.inverseSurface),
+                      ),
+                      Container(width: 100, child: Text(getStudent.studentCategory, textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),))
                     ],
                   ),
                 )),
