@@ -1,3 +1,4 @@
+import 'package:drivers_ed_app/Model/lesson.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -31,24 +32,18 @@ class StudentPage extends StatefulWidget {
 class _StudentPageState extends State<StudentPage> {
   //placing it in a variable so it can be manually updated whenever the page itself updates
 
-
-
   void initState() {
     super.initState();
     setState(() {});
   }
 
-
   void updateState() {
     debugPrint("BAN BAN 1");
 
-    setState(() {_StudentsListKey.currentState!.updateState();});
-
+    setState(() {
+      _StudentsListKey.currentState!.updateState();
+    });
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +55,15 @@ class _StudentPageState extends State<StudentPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        elevation: 0,
+        onPressed: () {
+          showWeekDialog();
+        },
+        child: const Icon(Icons.calendar_month_rounded),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -70,191 +74,202 @@ class _StudentPageState extends State<StudentPage> {
         // the App.build method, and use it to set our appbar title.
         toolbarHeight: 0,
       ),
-      body: Container(color: Theme.of(context).colorScheme.background,child:Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Column(
+      body: Container(
+          color: Theme.of(context).colorScheme.background,
+          child: Center(
+            // Center is a layout widget. It takes a single child and positions it
+            // in the middle of the parent.
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(
-                      padding: const EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
-                      child: IconButton.filledTonal(
-                        icon: Icon(Icons.settings_rounded, color: Theme.of(context).colorScheme.scrim,),
-                        tooltip: 'Definições',
-                        onPressed: () {
-                          setState(() {});
-                        },
-                        padding: const EdgeInsets.all(12.0),
-                      )),
-                  Container(
-                      width: 400,
-                      height: 50,
-                      child: TextField(
-
-                          controller: studentName,
-                          decoration: InputDecoration(
-
-                            filled: true,
-                            fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                            hintStyle: const TextStyle(
-                              fontStyle: FontStyle.italic,
-                              overflow: TextOverflow.fade,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                          child: IconButton.filledTonal(
+                            icon: Icon(
+                              Icons.settings_rounded,
+                              color: Theme.of(context).colorScheme.scrim,
                             ),
-                            prefixIcon: Container(
-                                margin: const EdgeInsets.fromLTRB(0.0, 0.0, 1.0, 0.0),
-                                child: IconButton.filledTonal(
-                                  icon: Icon(Icons.search_rounded, color: Theme.of(context).colorScheme.scrim),
-                                  tooltip: 'Pesquisar',
+                            tooltip: 'Definições',
+                            onPressed: () {
+                              setState(() {});
+                            },
+                            padding: const EdgeInsets.all(12.0),
+                          )),
+                      Container(
+                          width: 400,
+                          height: 50,
+                          child: TextField(
+                              controller: studentName,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                                contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                hintStyle: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  overflow: TextOverflow.fade,
+                                ),
+                                prefixIcon: Container(
+                                    margin: const EdgeInsets.fromLTRB(0.0, 0.0, 1.0, 0.0),
+                                    child: IconButton.filledTonal(
+                                      icon: Icon(Icons.search_rounded, color: Theme.of(context).colorScheme.scrim),
+                                      tooltip: 'Pesquisar',
+                                      onPressed: () {
+                                        setState(() {
+                                          searchQuery = studentName.text;
+                                          debugPrint(searchQuery);
+                                        });
+                                      },
+                                    )),
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.clear_rounded),
+                                  tooltip: 'Limpar Pesquisa',
                                   onPressed: () {
                                     setState(() {
-                                      searchQuery = studentName.text;
-                                      debugPrint(searchQuery);
+                                      searchQuery = "";
                                     });
                                   },
-                                )),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.clear_rounded),
-                              tooltip: 'Limpar Pesquisa',
-                              onPressed: () {
-                                setState(() {
-                                  searchQuery = "";
-                                });
-                              },
-                            ),
-                            hintText: 'Pesquisar Aluno...',
-
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(90.0),
-
-                            ),
-                          )))
-                ]),
+                                ),
+                                hintText: 'Pesquisar Aluno...',
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(90.0),
+                                ),
+                              )))
+                    ]),
+                    Container(
+                        height: 300,
+                        width: 250,
+                        child: Column(
+                          children: [
+                            FilledButton.tonal(
+                                onPressed: () {
+                                  debugPrint("CLICKED ON ADD STUDENT BUTTON");
+                                  showAddStudentDialog(updateStateCallback);
+                                },
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Icon(Icons.person_add),
+                                  Container(
+                                      width: 170,
+                                      child: Text(
+                                        "Novo Aluno",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                ])),
+                            FilledButton.tonal(
+                                onPressed: () {
+                                  showAddCategoryDialog();
+                                },
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Icon(Icons.minor_crash_rounded),
+                                  Container(
+                                      width: 170,
+                                      child: Text(
+                                        "Nova Categoria",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                ])),
+                            FilledButton.tonal(
+                                onPressed: () {},
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Icon(Icons.add_road_rounded),
+                                  Container(
+                                      width: 170,
+                                      child: Text(
+                                        "Nova Manobra",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                ])),
+                            FilledButton.tonal(
+                                onPressed: () {},
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Icon(Icons.download_rounded),
+                                  Container(
+                                      width: 170,
+                                      child: Text(
+                                        "Importar Alunos",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                ])),
+                            FilledButton.tonal(
+                                onPressed: () {},
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Icon(Icons.upload_rounded),
+                                  Container(
+                                      width: 170,
+                                      child: Text(
+                                        "Exportar Alunos",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                ])),
+                            FilledButton.tonal(
+                                onPressed: () {},
+                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Icon(Icons.delete_forever_rounded),
+                                  Container(
+                                      width: 170,
+                                      child: Text(
+                                        "Apagar Tudo",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                ])),
+                          ],
+                        )),
+                    SizedBox(width: 50, height: 50)
+                  ],
+                ),
                 Container(
-                    height: 300,
-                    width: 250,
-                    child: Column(
-                      children: [
-                        FilledButton.tonal(
-                            onPressed: () {
-                              debugPrint("CLICKED ON ADD STUDENT BUTTON");
-                              showAddStudentDialog(updateStateCallback);
-                            },
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Icon(Icons.person_add),
-                              Container(
-                                  width: 170,
-                                  child: Text(
-                                    "Novo Aluno",
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ])),
-                        FilledButton.tonal(
-                            onPressed: () {showAddCategoryDialog();},
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Icon(Icons.minor_crash_rounded),
-                              Container(
-                                  width: 170,
-                                  child: Text(
-                                    "Nova Categoria",
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ])),
-                        FilledButton.tonal(
-                            onPressed: () {},
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Icon(Icons.add_road_rounded),
-                              Container(
-                                  width: 170,
-                                  child: Text(
-                                    "Nova Manobra",
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ])),
-                        FilledButton.tonal(
-                            onPressed: () {},
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Icon(Icons.download_rounded),
-                              Container(
-                                  width: 170,
-                                  child: Text(
-                                    "Importar Alunos",
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ])),
-                        FilledButton.tonal(
-                            onPressed: () {},
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Icon(Icons.upload_rounded),
-                              Container(
-                                  width: 170,
-                                  child: Text(
-                                    "Exportar Alunos",
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ])),
-                        FilledButton.tonal(
-                            onPressed: () {},
-                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Icon(Icons.delete_forever_rounded),
-                              Container(
-                                  width: 170,
-                                  child: Text(
-                                    "Apagar Tudo",
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ])),
-                      ],
-                    )),
-                SizedBox(width: 50, height: 50)
+                  width: (MediaQuery.of(context).size.width - 458),
+                  padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                  child: (Container(
+                    child: Column(children: [
+                      Container(
+                          height: 50,
+                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                          child: Container(
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                            Container(width: 80, child: Text("Aluno Nº", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 300, child: Text("Nome Completo", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 150, child: Text("Data de Inscrição", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
+                          ]))),
+                      Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+                            color: Theme.of(context).colorScheme.onInverseSurface,
+                          ),
+                          height: (MediaQuery.of(context).size.height - 86),
+                          child: StudentsList(
+                            key: _StudentsListKey,
+                          ))
+                    ]),
+                  )),
+                ),
               ],
             ),
-            Container(
-              width: (MediaQuery.of(context).size.width - 458),
-              padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
-              child: (Container(
-                child: Column(children: [
-                  Container(
-                      height: 50,
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                      child: Container(
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                        Container(width: 80, child: Text("Aluno Nº", textAlign: TextAlign.center)),
-                        Text(
-                          "|",
-                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                        ),
-                        Container(width: 300, child: Text("Nome Completo", textAlign: TextAlign.center)),
-                        Text(
-                          "|",
-                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                        ),
-                        Container(width: 150, child: Text("Data de Inscrição", textAlign: TextAlign.center)),
-                        Text(
-                          "|",
-                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                        ),
-                        Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
-                      ]))),
-                  Container(decoration: BoxDecoration(borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),color: Theme.of(context).colorScheme.onInverseSurface,), height: (MediaQuery.of(context).size.height - 86), child: StudentsList(key: _StudentsListKey,))
-                ]),
-              )),
-            ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 
   //SetState Callback
-  void updateStateCallback(){
+  void updateStateCallback() {
     updateState();
   }
 
@@ -273,13 +288,14 @@ class _StudentPageState extends State<StudentPage> {
       builder: (BuildContext context) => AddCategoryDialog(),
     );
   }
+
+  void showWeekDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => WeekDialog(DateTime.now()),
+    );
+  }
 }
-
-
-
-
-
-
 
 class AddStudentDialog extends StatefulWidget {
   DateTime currentDate = DateTime.now();
@@ -288,23 +304,17 @@ class AddStudentDialog extends StatefulWidget {
 
   void Function() updateStateCallback;
 
-  AddStudentDialog(this.updateStateCallback,  {super.key}){
-
-  }
+  AddStudentDialog(this.updateStateCallback, {super.key}) {}
 
   @override
   AddStudentDialogState createState() => AddStudentDialogState();
 }
 
 class AddStudentDialogState extends State<AddStudentDialog> {
-
-
   AddStudentDialogState();
 
   TextEditingController studentNumber = TextEditingController(text: "");
   TextEditingController studentName = TextEditingController(text: "");
-
-
 
   void showDatePickerDialog() {
     showDialog(
@@ -337,7 +347,7 @@ class AddStudentDialogState extends State<AddStudentDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0,
       title: const Text(
         "Novo Aluno",
@@ -363,8 +373,16 @@ class AddStudentDialogState extends State<AddStudentDialog> {
                   labelText: "Número de Inscrição",
                   floatingLabelAlignment: FloatingLabelAlignment.center,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
                 ),
               )),
           SizedBox(height: 5),
@@ -382,26 +400,38 @@ class AddStudentDialogState extends State<AddStudentDialog> {
                   labelText: "Nome Completo",
                   floatingLabelAlignment: FloatingLabelAlignment.center,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
                 ),
               )),
           Row(children: [
             Container(padding: EdgeInsets.all(5.0), child: Text("Data de Inscrição")),
-            Container( margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0), child:FilledButton( style:ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
-              onPressed: () {
-                _selectDate(context);
-              },
-              child: Text(
-                widget.currentDateString,
-                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-              ),
-            )),
+            Container(
+                margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                child: FilledButton(
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                  onPressed: () {
+                    _selectDate(context);
+                  },
+                  child: Text(
+                    widget.currentDateString,
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
+                )),
           ]),
           Row(children: [
             Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
             PopupMenuExample(
-              callback: (String s) => changeCategory(s), currentValue: widget.currentCategory,
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
             )
           ])
         ],
@@ -423,13 +453,13 @@ class AddStudentDialogState extends State<AddStudentDialog> {
           FilledButton.tonal(
             onPressed: () {
               Student studentToBeAdded = Student(studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
-            DatabaseController.instance.insertStudent(studentToBeAdded.toMapWithoutId());
+              DatabaseController.instance.insertStudent(studentToBeAdded.toMapWithoutId());
               setState(() {
                 debugPrint("CLICKED ON CONFIRM BUTTON");
                 widget.updateStateCallback();
               });
-            Navigator.of(context).pop();
-},
+              Navigator.of(context).pop();
+            },
             child: Text(
               'Confirmar',
               style: TextStyle(fontWeight: FontWeight.w900),
@@ -448,11 +478,7 @@ class AddStudentDialogState extends State<AddStudentDialog> {
   }
 }
 
-
 class AddCategoryDialog extends StatefulWidget {
-
-
-
   AddCategoryDialog({super.key});
 
   @override
@@ -465,101 +491,276 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   TextEditingController categoryName = TextEditingController(text: "");
   TextEditingController categoryDescription = TextEditingController(text: "");
 
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Nova Categoria",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Categoria",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Container(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryDescription,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Descrição (ex: Ligeiros)",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text, categoryDescription: categoryDescription.text);
+              DatabaseController.instance.insertCategory(categoryToBeAdded.toMapWithoutId());
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+}
 
+class WeekDialog extends StatefulWidget {
+  DateTime date;
 
+  WeekDialog(this.date, {super.key});
 
+  @override
+  _WeekDialogState createState() => _WeekDialogState();
+}
+
+class _WeekDialogState extends State<WeekDialog> {
+  _WeekDialogState();
 
   @override
   Widget build(BuildContext context) {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              title: const Text(
-                "Nova Categoria",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                    width: 600,
-                  ),
-                  SizedBox(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: categoryName,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                          labelText: "Nome da Categoria",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  SizedBox(height: 5),
-                  SizedBox(height: 5),
-                  Container(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: categoryDescription,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                          labelText: "Descrição (ex: Ligeiros)",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.onInverseSurface,), borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-
-                    onPressed: () {                CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text, categoryDescription: categoryDescription.text);
-                    DatabaseController.instance.insertCategory(categoryToBeAdded.toMapWithoutId());
-                    Navigator.of(context).pop();
-                    setState(() {
-                    });},
-                    child: Text(
-                      'Confirmar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Próximas Aulas",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width: 1000,
+            child: WeekDisplay(date: widget.date),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            width: 1000,
+            child: WeekDisplay(date: widget.date.add(Duration(days: 7))),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Fechar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
-
 }
 
+class WeekDisplay extends StatefulWidget {
+  DateTime date;
 
+  WeekDisplay({super.key, required this.date});
+
+  @override
+  _WeekDisplayState createState() => _WeekDisplayState(date);
+}
+
+class _WeekDisplayState extends State<WeekDisplay> {
+  DateTime lastSundayDate;
+
+  _WeekDisplayState(this.lastSundayDate) {
+    lastSundayDate = lastSunday(lastSundayDate);
+    getDates(lastSundayDate);
+  }
+
+  Map<Lesson, Student> lessons = {};
+  List<DateTime> dates = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: dates
+          .map((item) => Container(
+              padding: EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
+              decoration: BoxDecoration(
+                color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiaryContainer : Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondaryContainer,
+                  width: 1,
+                ),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                Container(
+                    width: 130,
+                    child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                      Text(
+                        weekdayString(item),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary),
+                      ),
+                      Text(
+                        "|",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary),
+                      ),
+                      Text(
+                        DateFormat(
+                          'yyyy-MM-dd',
+                        ).format(item),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontWeight: FontWeight.w600, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary),
+                      )
+                    ])),
+                Container(
+                    width: 130,
+                    height: 100,
+                    child: Column(
+                        children: lessons.keys
+                            .where((item3) => roundDateTime(item).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.lessonDate.toInt())).toString())
+                            .map((item2) => Container(
+                                    child: Row(
+                                  children: [Text(DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.lessonDate.toInt()))), const Text("|"), Text(lessons[item2]!.studentName)],
+                                )))
+                            .toList()))
+              ])))
+          .toList(),
+    );
+  }
+
+  void getDates(DateTime date) {
+    for (int i = 0; i < 7; i++) {
+      dates.add(date.add(Duration(days: i)));
+    }
+  }
+
+  //Async version of the getLessons method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getLessons() async {
+    lessons = {};
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsBetween(dates[0], dates[dates.length - 1]);
+    setState(() {
+      listMap?.forEach((map) => addToListLesson(map));
+    });
+  }
+
+  //Method that adds Students to the List, in case they are compliant with the search criteria
+  addToListLesson(Map<String, dynamic> map) {
+    //if (DateTime.fromMillisecondsSinceEpoch(Lesson.fromMap(map).lessonDate.toInt()).isAfter(other) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+    int number = Lesson.fromMap(map).lessonStudentId;
+
+    getStudentsWithNumber(number, Lesson.fromMap(map));
+    //}
+  }
+
+  //Async version of the getStudents method, that only returns students with a certain registration Number
+  Future<List<Map<String, dynamic>>?> getStudentsWithNumber(int number, Lesson lesson) async {
+    lessons = {};
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllStudentsWithId(number);
+    setState(() {
+      listMap?.forEach((map) => addToListStudent(map, lesson));
+    });
+  }
+
+  //Method that adds Students to the List, in case they are compliant with the search criteria
+  addToListStudent(Map<String, dynamic> map, Lesson lesson) {
+    lessons.addEntries([MapEntry(lesson, Student.fromMap(map))]);
+  }
+}
 
 //The dynamic Categories List widget
 
@@ -568,7 +769,6 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
 class PopupMenuExample extends StatefulWidget {
   final void Function(String) callback;
   final String currentValue;
-
 
   const PopupMenuExample({super.key, required void this.callback(String s), required this.currentValue});
 
@@ -580,18 +780,15 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
   List<CategoryPackage.Category> listCategories = [];
   String currentValue;
 
-  _PopupMenuExampleState(this.currentValue){
-
+  _PopupMenuExampleState(this.currentValue) {
     getCategories();
   }
-
 
   //Async version of the getCategories method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getCategories() async {
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsCategories();
     setState(() {
-
       listMap?.forEach((map) => addToList(map));
     });
   }
@@ -603,24 +800,28 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
 
   @override
   Widget build(BuildContext context) {
-
     debugPrint("Number of categories: ${listCategories.length}");
     return PopupMenuButton<String>(
-        icon: Container(margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),width:41, height:40, decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onInverseSurface,
-            border: Border.all(
+        icon: Container(
+            margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+            width: 41,
+            height: 40,
+            decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onInverseSurface,
-              width: 1,
+              border: Border.all(
+                color: Theme.of(context).colorScheme.onInverseSurface,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(90),
             ),
-            borderRadius: BorderRadius.circular(90),
-
-          ),alignment: Alignment.center, child:Text(currentValue)),
+            alignment: Alignment.center,
+            child: Text(currentValue)),
         initialValue: "A",
         onSelected: (value) {
-
-          currentValue= value;
+          currentValue = value;
           debugPrint("BOINGUS $value selected...");
-          setState(() {});},
+          setState(() {});
+        },
         // This transformation maps listCategories items (thus Categories) into buttons
 
         itemBuilder: (context) => listCategories
@@ -637,8 +838,8 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
 
 //The dynamic Waypoints List widget
 class StudentsList extends StatefulWidget {
-
   StudentsList({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return StudentsListState();
@@ -658,20 +859,16 @@ class StudentsListState extends State<StudentsList> {
   StudentsListState() {
     debugPrint("BAN BAN NEW 4");
     listStudents = [];
-
   }
-
 
   //Async version of the getStudents method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getStudents() async {
     listStudents = [];
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
-      setState(() {
-
-
+    setState(() {
       listMap?.forEach((map) => addToList(map));
-      });
+    });
   }
 
   //Method that adds Students to the List, in case they are compliant with the search criteria
@@ -689,15 +886,12 @@ class StudentsListState extends State<StudentsList> {
   }
 
   @override
-  void updateState(){
+  void updateState() {
     debugPrint("BAN BAN NEW 2");
     setState(() {
       getStudents();
     });
-
-
   }
-
 
   //Building the Widget
   @override
@@ -714,40 +908,113 @@ class StudentsListState extends State<StudentsList> {
             },
             onPressed: () {},
             child: Container(
-
                 child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                      ),
-                      borderRadius: BorderRadius.circular(90),
-
-                      color: Theme.of(context).colorScheme.secondaryContainer),
-                  height: 40,
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: <Widget>[
-                      Container(width: 114, child: Text(getStudent.studentRegistrationNumber.toString(), textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),)),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color:Theme.of(context).colorScheme.inverseSurface),
-                      ),
-                      Container(width: 357, child: Text(getStudent.studentName, textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),)),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1,color:Theme.of(context).colorScheme.inverseSurface),
-                      ),
-                      Container(width: 208, child: Text(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getStudent.studentRegistrationDate.toInt())), textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),)),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1,color:Theme.of(context).colorScheme.inverseSurface),
-                      ),
-                      Container(width: 100, child: Text(getStudent.studentCategory, textAlign: TextAlign.center, style: TextStyle(color:Theme.of(context).colorScheme.inverseSurface),))
-                    ],
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
-                )),
+                  borderRadius: BorderRadius.circular(90),
+                  color: Theme.of(context).colorScheme.secondaryContainer),
+              height: 40,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      width: 114,
+                      child: Text(
+                        getStudent.studentRegistrationNumber.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 357,
+                      child: Text(
+                        getStudent.studentName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 208,
+                      child: Text(
+                        DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getStudent.studentRegistrationDate.toInt())),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 100,
+                      child: Text(
+                        getStudent.studentCategory,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      ))
+                ],
+              ),
+            )),
           );
         });
   }
+}
+
+//DateTime Methods
+
+//this method returns the last(previous) sunday from the desired date
+DateTime lastSunday(DateTime dateTime) {
+  DateTime roundedDateTime = roundDateTime(dateTime);
+  if (roundedDateTime.weekday == DateTime.sunday) {
+    return roundedDateTime;
+  } else {
+    return lastSunday(roundedDateTime.subtract(const Duration(days: 1)));
+  }
+}
+
+//this method will return the date rounded to 00:00:00.000000Z. Useful when checking days
+DateTime roundDateTime(DateTime dateTime) {
+  return dateTime.subtract(Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond, microseconds: dateTime.microsecond));
+}
+
+//this method returns a simple character indicating a date's day of the week.
+String weekdayString(DateTime dateTime) {
+  DateTime roundedDateTime = roundDateTime(dateTime);
+  //to enable compatibility with other languages, the check must be done here, perhaps with an additional switch
+  String result = "D";
+  switch (roundedDateTime.weekday) {
+    case DateTime.sunday:
+      result = "D";
+      break;
+    case DateTime.monday:
+      result = "S";
+      break;
+    case DateTime.tuesday:
+      result = "T";
+      break;
+    case DateTime.wednesday:
+      result = "Q";
+      break;
+    case DateTime.thursday:
+      result = "Q";
+      break;
+    case DateTime.friday:
+      result = "S";
+      break;
+    case DateTime.saturday:
+      result = "S";
+      break;
+    default:
+      result = "D";
+      break;
+  }
+  return result;
 }

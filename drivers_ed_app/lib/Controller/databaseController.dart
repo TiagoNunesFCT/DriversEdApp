@@ -239,6 +239,15 @@ class DatabaseController {
     return result?.toList();
   }
 
+  //Query (return) all Students with a certain Registration Number (ID) (not to be confused with the internal id)
+  Future<List<Map<String, dynamic>>?> queryAllStudentsWithId(int id) async {
+    Database? db = await instance.database;
+    var result = await db?.query(studTable, where: '$columnStudentRegistrationNumber = ?', whereArgs: [id]);
+    return result?.toList();
+  }
+
+
+
   //Query (return) all Settings Configurations
   Future<List<Map<String, dynamic>>?> queryAllRowsSettings() async {
     Database? db = await instance.database;
@@ -250,6 +259,15 @@ class DatabaseController {
   Future<List<Map<String, dynamic>>?> queryAllRowsLessons() async {
     Database? db = await instance.database;
     var result = await db?.query(lessTable);
+    return result?.toList();
+  }
+
+  //Query (return) all Lessons within 2 dates
+  Future<List<Map<String, dynamic>>?> queryAllLessonsBetween(DateTime from, DateTime to) async {
+    int fromInt = from.millisecondsSinceEpoch;
+    int toInt = to.millisecondsSinceEpoch;
+    Database? db = await instance.database;
+    var result = await db?.rawQuery('SELECT * FROM $lessTable WHERE $columnLessonDate BETWEEN $fromInt AND $toInt');
     return result?.toList();
   }
 
