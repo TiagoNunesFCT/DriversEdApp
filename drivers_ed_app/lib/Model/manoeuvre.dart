@@ -2,11 +2,11 @@
 //This class represents a Manoeuvre object
 class Manoeuvre {
   //The Current Manoeuvre Attributes
-  int manoeuvreId;
+  int? manoeuvreId;
   String manoeuvreName;
   String manoeuvreCategory;
 
-  Manoeuvre({required this.manoeuvreId, required this.manoeuvreName, required this.manoeuvreCategory});
+  Manoeuvre({this.manoeuvreId, required this.manoeuvreName, required this.manoeuvreCategory});
 
   //to be used when inserting a row in the table
   Map<String, dynamic> toMapWithoutId() {

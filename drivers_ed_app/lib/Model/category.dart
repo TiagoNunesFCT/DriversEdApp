@@ -2,11 +2,11 @@
 //This class represents a Category object
 class Category {
   //The Current Category Attributes
-  int categoryId = 0;
+  int? categoryId;
   String categoryName;
   String categoryDescription;
 
-  Category({this.categoryId = 0, required this.categoryName, required this.categoryDescription});
+  Category({this.categoryId, required this.categoryName, required this.categoryDescription});
 
   //to be used when inserting a row in the table
   Map<String, dynamic> toMapWithoutId() {

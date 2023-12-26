@@ -1,4 +1,5 @@
 import 'package:drivers_ed_app/Model/lesson.dart';
+import 'package:drivers_ed_app/Model/manoeuvre.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -160,30 +161,52 @@ class _StudentPageState extends State<StudentPage> {
                                         textAlign: TextAlign.center,
                                       ))
                                 ])),
-                            FilledButton.tonal(
+                            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                              Container(
+                                  child: IconButton.filledTonal(
+                                    style: ButtonStyle(
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    onPressed: () {
+                                      showAddCategoryDialog();
+                                    },
+                                    icon: Icon(Icons.add_rounded),
+                                  )),
+                              FilledButton.tonal(
+                                  onPressed: () {},
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                    Icon(Icons.minor_crash_rounded),
+                                    Container(
+                                        width: 132,
+                                        child: Text(
+                                          "Categorias",
+                                          textAlign: TextAlign.center,
+                                        ))
+                                  ]))
+                            ]),
+                            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                              Container(
+                                  child: IconButton.filledTonal(
+                                style: ButtonStyle(
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
                                 onPressed: () {
-                                  showAddCategoryDialog();
+                                  showAddManoeuvreDialog();
                                 },
-                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                  Icon(Icons.minor_crash_rounded),
-                                  Container(
-                                      width: 170,
-                                      child: Text(
-                                        "Nova Categoria",
-                                        textAlign: TextAlign.center,
-                                      ))
-                                ])),
-                            FilledButton.tonal(
-                                onPressed: () {},
-                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                  Icon(Icons.add_road_rounded),
-                                  Container(
-                                      width: 170,
-                                      child: Text(
-                                        "Nova Manobra",
-                                        textAlign: TextAlign.center,
-                                      ))
-                                ])),
+                                icon: Icon(Icons.add_rounded),
+                              )),
+                              FilledButton.tonal(
+                                  onPressed: () {},
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                    Icon(Icons.edit_road_outlined),
+                                    Container(
+                                        width: 132,
+                                        child: Text(
+                                          "Manobras",
+                                          textAlign: TextAlign.center,
+                                        ))
+                                  ]))
+                            ]),
                             FilledButton.tonal(
                                 onPressed: () {},
                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -293,6 +316,13 @@ class _StudentPageState extends State<StudentPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) => WeekDialog(DateTime.now()),
+    );
+  }
+
+  void showAddManoeuvreDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AddManoeuvreDialog(),
     );
   }
 }
@@ -762,6 +792,114 @@ class _WeekDisplayState extends State<WeekDisplay> {
   }
 }
 
+class AddManoeuvreDialog extends StatefulWidget {
+  AddManoeuvreDialog({super.key});
+
+  late String currentCategory = "A";
+
+  @override
+  _AddManoeuvreDialogState createState() => _AddManoeuvreDialogState();
+}
+
+class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
+  _AddManoeuvreDialogState();
+
+  TextEditingController manoeuvreName = TextEditingController(text: "");
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text(
+                "Nova Categoria",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 5,
+                    width: 600,
+                  ),
+                  SizedBox(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: manoeuvreName,
+                        keyboardType: TextInputType.name,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Nome da Manobra",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),
+                  SizedBox(height: 5),
+                  SizedBox(height: 5),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+                    PopupMenuExample(
+                      callback: (String s) => changeCategory(s),
+                      currentValue: widget.currentCategory,
+                    )
+                  ]),
+                ],
+              ),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.currentCategory);
+                      DatabaseController.instance.insertManoeuvre(manoeuvreToBeAdded.toMapWithoutId());
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    },
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+
+}
+
 //The dynamic Categories List widget
 
 //State
@@ -836,7 +974,7 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
   }
 }
 
-//The dynamic Waypoints List widget
+//The dynamic Students List widget
 class StudentsList extends StatefulWidget {
   StudentsList({Key? key}) : super(key: key);
 
@@ -1018,3 +1156,6 @@ String weekdayString(DateTime dateTime) {
   }
   return result;
 }
+
+
+//TODO: WHEN DELETING A STUDENT, DELETE ALL THEIR LESSONS AND EXAMS. THIS WILL CLEAN THE DATABASE, PREVENTING IT FROM BECOMING BLOATED WITH OLD LESSONS.
