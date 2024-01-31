@@ -8,6 +8,8 @@ import '../Model/category.dart' as CategoryPackage;
 import '../Model/student.dart';
 import 'package:intl/intl.dart';
 
+import 'lessonsView.dart';
+
 String searchQuery = "";
 
 //List<Student> listStudents = [];
@@ -1038,13 +1040,19 @@ class StudentsListState extends State<StudentsList> {
         itemCount: listStudents.length,
         itemBuilder: (context, position) {
           Student getStudent = listStudents[position];
-          var studentNumber = getStudent.studentRegistrationNumber.toStringAsFixed(2);
+          var studentNumber = getStudent.studentRegistrationNumber.toString();
           var studentName = getStudent.studentName;
           return TextButton(
             onLongPress: () {
               setState(() {});
+
             },
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LessonsPage( studentId: getStudent.studentRegistrationNumber)),
+              );
+            },
             child: Container(
                 child: Container(
               decoration: BoxDecoration(

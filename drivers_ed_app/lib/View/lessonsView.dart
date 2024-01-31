@@ -4,12 +4,15 @@ import 'package:intl/intl.dart';
 
 import '../Controller/databaseController.dart';
 import '../Model/lesson.dart';
+import '../Model/student.dart';
 
 GlobalKey<LessonsListState> _LessonsListKey = GlobalKey();
 
 class LessonsPage extends StatefulWidget {
-
   int studentId = 0;
+
+  Student? studentObject;
+
   LessonsPage({super.key, required this.studentId});
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -28,8 +31,12 @@ class LessonsPage extends StatefulWidget {
 class _LessonsPageState extends State<LessonsPage> {
   //placing it in a variable so it can be manually updated whenever the page itself updates
 
+  Student? stateStudent;
+
   void initState() {
     super.initState();
+    stateStudent = widget.studentObject;
+    getStudentsWithNumber(widget.studentId);
     setState(() {});
   }
 
@@ -37,7 +44,16 @@ class _LessonsPageState extends State<LessonsPage> {
     debugPrint("BAN BAN 1");
 
     setState(() {
+      getStudentsWithNumber(widget.studentId);
       _LessonsListKey.currentState!.updateState();
+    });
+  }
+
+  //Async version of the getStudents method, that only returns students with a certain registration Number
+  Future<List<Map<String, dynamic>>?> getStudentsWithNumber(int number) async {
+    List<Map<String, dynamic>>? studentList = await DatabaseController.instance.queryAllStudentsWithId(number);
+    setState(() {
+      studentList?.forEach((map) => stateStudent = Student.fromMap(map));
     });
   }
 
@@ -53,9 +69,7 @@ class _LessonsPageState extends State<LessonsPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         elevation: 0,
-        onPressed: () {
-
-        },
+        onPressed: () {},
         child: const Icon(Icons.calendar_month_rounded),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
@@ -96,111 +110,137 @@ class _LessonsPageState extends State<LessonsPage> {
                             padding: const EdgeInsets.all(12.0),
                           )),
                       Container(
-                          width: 400,
-                          height: 50,)
+                        width: 400,
+                        height: 50,
+                      )
                     ]),
                     Container(
-                        height: 300,
-                        width: 250,
+                        height: 600,
+                        width: 400,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            FilledButton.tonal(
-                                onPressed: () {
-                                  debugPrint("CLICKED ON ADD STUDENT BUTTON");
+                            Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                                  color: Theme.of(context).colorScheme.onInverseSurface,
+                                ),
 
-                                },
-                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                  Icon(Icons.person_add),
-                                  Container(
-                                      width: 170,
-                                      child: Text(
-                                        "Novo Aluno",
-                                        textAlign: TextAlign.center,
-                                      ))
+                                width: 400,
+                                padding: EdgeInsets.all(10),
+                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  Text(
+                                    stateStudent!.studentName,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 30, height: 1.5, color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text("_____________________________", textAlign: TextAlign.center,style: TextStyle(height: -1, fontSize: 30, fontWeight: FontWeight.w200),),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Nº Inscrição: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text(stateStudent!.studentRegistrationNumber.toString(), style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Data Inscrição: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(stateStudent!.studentRegistrationDate.toInt())), style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Categoria: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text(stateStudent!.studentCategory, style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Distância Total: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text("0 km", style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Tempo Total: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text("0 H", style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Nº Aulas: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text("0", style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Nº Exames: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text("0", style: TextStyle( fontWeight: FontWeight.w300),)]),
+                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Text(
+                                    "Próximo Exame: ",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900,color: Theme.of(context).colorScheme.inverseSurface),
+                                  ),Text("0000-00-00", style: TextStyle( fontWeight: FontWeight.w300),)]),
                                 ])),
-                            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Container(
-                                  child: IconButton.filledTonal(
+                            Column(children:[Container(
+                                width: 250,
+                                child: FilledButton.tonal(
+                                    onPressed: () {},
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Icon(Icons.school_rounded),
+                                      Container(
+                                          width: 170,
+                                          child: Text(
+                                            "Marcar Aula",
+                                            textAlign: TextAlign.center,
+                                          ))
+                                    ]))),
+                            Container(
+                                width: 250,
+                                child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Container(
+                                      child: IconButton.filledTonal(
                                     style: ButtonStyle(
                                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     ),
-                                    onPressed: () {
-
-                                    },
+                                    onPressed: () {},
                                     icon: Icon(Icons.add_rounded),
                                   )),
-                              FilledButton.tonal(
-                                  onPressed: () {},
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    Icon(Icons.minor_crash_rounded),
-                                    Container(
-                                        width: 132,
-                                        child: Text(
-                                          "Categorias",
-                                          textAlign: TextAlign.center,
-                                        ))
-                                  ]))
-                            ]),
-                            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Container(
-                                  child: IconButton.filledTonal(
-                                    style: ButtonStyle(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    onPressed: () {
-
-                                    },
-                                    icon: Icon(Icons.add_rounded),
-                                  )),
-                              FilledButton.tonal(
-                                  onPressed: () {},
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    Icon(Icons.edit_road_outlined),
-                                    Container(
-                                        width: 132,
-                                        child: Text(
-                                          "Manobras",
-                                          textAlign: TextAlign.center,
-                                        ))
-                                  ]))
-                            ]),
-                            FilledButton.tonal(
-                                onPressed: () {},
-                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                  Icon(Icons.download_rounded),
-                                  Container(
-                                      width: 170,
-                                      child: Text(
-                                        "Importar Alunos",
-                                        textAlign: TextAlign.center,
-                                      ))
+                                  FilledButton.tonal(
+                                      onPressed: () {},
+                                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                        Icon(Icons.workspace_premium_rounded),
+                                        Container(
+                                            width: 132,
+                                            child: Text(
+                                              "Exames Feitos",
+                                              textAlign: TextAlign.center,
+                                            ))
+                                      ]))
                                 ])),
-                            FilledButton.tonal(
-                                onPressed: () {},
-                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                  Icon(Icons.upload_rounded),
-                                  Container(
-                                      width: 170,
-                                      child: Text(
-                                        "Exportar Alunos",
-                                        textAlign: TextAlign.center,
-                                      ))
-                                ])),
-                            FilledButton.tonal(
-                                onPressed: () {},
-                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                  Icon(Icons.delete_forever_rounded),
-                                  Container(
-                                      width: 170,
-                                      child: Text(
-                                        "Apagar Tudo",
-                                        textAlign: TextAlign.center,
-                                      ))
-                                ])),
-                          ],
+                            Container(
+                                width: 250,
+                                child: FilledButton.tonal(
+                                    onPressed: () {},
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Icon(Icons.edit_note_rounded),
+                                      Container(
+                                          width: 170,
+                                          child: Text(
+                                            "Editar Detalhes",
+                                            textAlign: TextAlign.center,
+                                          ))
+                                    ]))),
+                            Container(
+                                width: 250,
+                                child: FilledButton.tonal(
+                                    onPressed: () {},
+                                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Icon(Icons.delete_forever_rounded),
+                                      Container(
+                                          width: 170,
+                                          child: Text(
+                                            "Apagar Aluno",
+                                            textAlign: TextAlign.center,
+                                          ))
+                                    ])))]),
+                            SizedBox(width: 50, height: 50)],
                         )),
-                    SizedBox(width: 50, height: 50)
+
                   ],
                 ),
                 Container(
@@ -213,23 +253,33 @@ class _LessonsPageState extends State<LessonsPage> {
                           decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                           child: Container(
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                                Container(width: 80, child: Text("Aluno Nº", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 300, child: Text("Nome Completo", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 150, child: Text("Data de Inscrição", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
-                              ]))),
+                            Container(width: 50, child: Text("Aula Nº", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 70, child: Text("Data", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 70, child: Text("Distância", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 50, child: Text("Horas", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 150, child: Text("Manobras", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 60, child: Text("Ações", textAlign: TextAlign.center))
+                          ]))),
                       Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
@@ -237,7 +287,8 @@ class _LessonsPageState extends State<LessonsPage> {
                           ),
                           height: (MediaQuery.of(context).size.height - 86),
                           child: LessonsList(
-                            key: _LessonsListKey, studentId: widget.studentId,
+                            key: _LessonsListKey,
+                            studentId: widget.studentId,
                           ))
                     ]),
                   )),
@@ -252,8 +303,6 @@ class _LessonsPageState extends State<LessonsPage> {
   void updateStateCallback() {
     updateState();
   }
-
-
 }
 
 //The dynamic Lessons List widget
@@ -295,7 +344,7 @@ class LessonsListState extends State<LessonsList> {
 
   //Method that adds Students to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
-    if (Lesson.fromMap(map).lessonStudentId == widget.studentId){
+    if (Lesson.fromMap(map).lessonStudentId == widget.studentId) {
       listLessons.add(Lesson.fromMap(map));
     }
   }
@@ -323,11 +372,11 @@ class LessonsListState extends State<LessonsList> {
         itemBuilder: (context, position) {
           Lesson getLesson = listLessons[position];
           var lessonDate = getLesson.lessonDate;
-          var lessonHours= getLesson.lessonHours;
-          var lessonDistance= getLesson.lessonDistance;
-          var lessonDone= getLesson.lessonDone;
-          var lessonManoeuvres= getLesson.lessonManoeuvres;
-          var lessonCategory= getLesson.lessonCategory;
+          var lessonHours = getLesson.lessonHours;
+          var lessonDistance = getLesson.lessonDistance;
+          var lessonDone = getLesson.lessonDone;
+          var lessonManoeuvres = getLesson.lessonManoeuvres;
+          var lessonCategory = getLesson.lessonCategory;
           return TextButton(
             onLongPress: () {
               setState(() {});
@@ -335,63 +384,61 @@ class LessonsListState extends State<LessonsList> {
             onPressed: () {},
             child: Container(
                 child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                      ),
-                      borderRadius: BorderRadius.circular(90),
-                      color: Theme.of(context).colorScheme.secondaryContainer),
-                  height: 40,
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                          width: 114,
-                          child: Text(
-                            DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getLesson.lessonDate.toInt())),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                      ),
-                      Container(
-                          width: 357,
-                          child: Text(
-                            "${getLesson.lessonHours.toString()} Horas",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                      ),
-                      Container(
-                          width: 208,
-                          child: Text(
-                            "${getLesson.lessonDistance.toString()} Km",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                      ),
-                      Container(
-                          width: 100,
-                          child: Icon(boolIconFromIntegerValue(getLesson.lessonDone)))
-                    ],
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
-                )),
+                  borderRadius: BorderRadius.circular(90),
+                  color: Theme.of(context).colorScheme.secondaryContainer),
+              height: 40,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      width: 114,
+                      child: Text(
+                        DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getLesson.lessonDate.toInt())),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 357,
+                      child: Text(
+                        "${getLesson.lessonHours.toString()} Horas",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 208,
+                      child: Text(
+                        "${getLesson.lessonDistance.toString()} Km",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(width: 100, child: Icon(boolIconFromIntegerValue(getLesson.lessonDone)))
+                ],
+              ),
+            )),
           );
         });
   }
 }
 
 //if 0 -> X, if 1 -> V
-IconData boolIconFromIntegerValue(int value){
+IconData boolIconFromIntegerValue(int value) {
   IconData result = Icons.indeterminate_check_box_outlined;
   switch (value) {
     case 0:
