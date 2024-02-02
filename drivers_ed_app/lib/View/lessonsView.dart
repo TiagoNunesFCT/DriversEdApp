@@ -590,12 +590,18 @@ class EditStudentDialogState extends State<EditStudentDialog> {
                 controller: studentNumber,
                 keyboardType: TextInputType.number,
                 selectionControls: desktopTextSelectionControls,
+
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                  labelText: "Número de Inscrição",
+                  labelText: "Número de Inscrição (Não Editável)",
                   floatingLabelAlignment: FloatingLabelAlignment.center,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  disabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Theme.of(context).colorScheme.onInverseSurface,
