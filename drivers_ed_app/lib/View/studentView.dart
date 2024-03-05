@@ -175,7 +175,9 @@ class _StudentPageState extends State<StudentPage> {
                                 icon: Icon(Icons.add_rounded),
                               )),
                               FilledButton.tonal(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showCategoryListDialog();
+                                  },
                                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                     Icon(Icons.minor_crash_rounded),
                                     Container(
@@ -198,7 +200,9 @@ class _StudentPageState extends State<StudentPage> {
                                 icon: Icon(Icons.add_rounded),
                               )),
                               FilledButton.tonal(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showManoeuvreListDialog();
+                                  },
                                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                     Icon(Icons.edit_road_outlined),
                                     Container(
@@ -314,6 +318,13 @@ class _StudentPageState extends State<StudentPage> {
     );
   }
 
+  void showCategoryListDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CategoryListDialog(),
+    );
+  }
+
   void showWeekDialog() {
     showDialog(
       context: context,
@@ -325,6 +336,13 @@ class _StudentPageState extends State<StudentPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AddManoeuvreDialog(),
+    );
+  }
+
+  void showManoeuvreListDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ManoeuvreListDialog(),
     );
   }
 }
@@ -627,6 +645,66 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   }
 }
 
+class CategoryListDialog extends StatefulWidget {
+  CategoryListDialog({super.key});
+
+  @override
+  _CategoryListDialogState createState() => _CategoryListDialogState();
+}
+
+class _CategoryListDialogState extends State<CategoryListDialog> {
+  _CategoryListDialogState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Categorias",
+      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            height: 50,
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+            child: Container(
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Container(width: 80, child: Text("Nome", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+              ),
+              Container(width: 500, child: Text("Descrição", textAlign: TextAlign.center)),
+            ]))),
+        Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+            ),
+            height: (MediaQuery.of(context).size.height - 400),
+            child: CategoriesList())
+      ]),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+}
+
 class WeekDialog extends StatefulWidget {
   DateTime date;
 
@@ -665,7 +743,7 @@ class _WeekDialogState extends State<WeekDialog> {
         ],
       ),
       actions: <Widget>[
-        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: [
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
           FilledButton.tonal(
             onPressed: () {
               Navigator.of(context).pop();
@@ -805,6 +883,113 @@ class AddManoeuvreDialog extends StatefulWidget {
 
 class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
   _AddManoeuvreDialogState();
+
+  TextEditingController manoeuvreName = TextEditingController(text: "");
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Nova Categoria",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: manoeuvreName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Manobra",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ]),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.currentCategory);
+              DatabaseController.instance.insertManoeuvre(manoeuvreToBeAdded.toMapWithoutId());
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+}
+
+class ManoeuvreListDialog extends StatefulWidget {
+  ManoeuvreListDialog({super.key});
+
+  late String currentCategory = "A";
+
+  @override
+  _ManoeuvreListDialogState createState() => _ManoeuvreListDialogState();
+}
+
+class _ManoeuvreListDialogState extends State<ManoeuvreListDialog> {
+  _ManoeuvreListDialogState();
 
   TextEditingController manoeuvreName = TextEditingController(text: "");
 
@@ -1114,6 +1299,129 @@ class StudentsListState extends State<StudentsList> {
   }
 }
 
+//The dynamic Categories List widget
+class CategoriesList extends StatefulWidget {
+  CategoriesList({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return CategoriesListState();
+  }
+
+  State<StatefulWidget> updateState() {
+    debugPrint("BAN BAN NEW 3");
+    return CategoriesListState();
+  }
+}
+
+//State
+class CategoriesListState extends State<CategoriesList> {
+  //The list of Students to be shown on the Widget
+  late List<CategoryPackage.Category> listCategories;
+
+  CategoriesListState() {
+    debugPrint("BAN BAN NEW 4");
+    listCategories = [];
+  }
+
+  //Async version of the getCategories method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getCategories() async {
+    listCategories = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsCategories();
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+    });
+    setState(() {
+      mergeSortList(listCategories);
+    });
+  }
+
+  //Method that adds Categories to the List, in case they are compliant with the search criteria
+  addToList(Map<String, dynamic> map) {
+    // if (CategoryPackage.Category.fromMap(map).categoryName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || CategoryPackage.Category.fromMap(map).categoryDescription.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+    listCategories.add(CategoryPackage.Category.fromMap(map));
+    //}
+  }
+
+  @override
+  void initState() {
+    debugPrint("BAN BAN NEW 1");
+    getCategories();
+    super.initState();
+  }
+
+  @override
+  void updateState() {
+    debugPrint("BAN BAN NEW 2");
+    setState(() {
+      getCategories();
+    });
+  }
+
+  //Building the Widget
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width - 630,
+        child: ListView.builder(
+            itemCount: listCategories.length,
+            itemBuilder: (context, position) {
+              CategoryPackage.Category getCategory = listCategories[position];
+              var categoryName = getCategory.categoryName;
+              var categoryDescription = getCategory.categoryDescription;
+
+              return TextButton(
+                onLongPress: () {
+                  setState(() {});
+                },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
+                  ).then((_) {
+                    updateState();
+                  });
+                },
+                child: Container(
+                    child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                      ),
+                      borderRadius: BorderRadius.circular(90),
+                      color: Theme.of(context).colorScheme.secondaryContainer),
+                  height: 40,
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                          width: 114,
+                          child: Text(
+                            getCategory.categoryName,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                          )),
+                      Text(
+                        "|",
+                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                      ),
+                      Container(
+                          width: 357,
+                          child: Text(
+                            getCategory.categoryDescription,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                          )),
+                    ],
+                  ),
+                )),
+              );
+            }));
+  }
+}
+
 //DateTime Methods
 
 //this method returns the last(previous) sunday from the desired date
@@ -1166,3 +1474,66 @@ String weekdayString(DateTime dateTime) {
 }
 
 //TODO: WHEN DELETING A STUDENT, DELETE ALL THEIR LESSONS AND EXAMS. THIS WILL CLEAN THE DATABASE, PREVENTING IT FROM BECOMING BLOATED WITH OLD LESSONS.
+
+List<T> mergeSortList<T>(List<T> list) {
+  List<T> listCopy = List<T>.from(list);
+  CopyList(list, 0, list.length, listCopy); // one time copy of A[] to B[]
+  TopDownSplitMerge(list, 0, list.length, listCopy); // sort data from B[] into A[]
+  return listCopy;
+}
+
+// Split ListA into 2 runs, sort both runs into ListB merge both runs from ListB to ListA
+// iBegin is inclusive; iEnd is exclusive (listA[iEnd] is not in the set).
+void TopDownSplitMerge<T>(List<T> listB, int iBegin, int iEnd, List<T> listA) {
+  if (iEnd - iBegin <= 1) // if run size == 1
+    return; //   consider it sorted
+// split the run longer than 1 item into halves
+  int iMiddle = ((iEnd + iBegin) / 2).floor(); // iMiddle = mid point
+// recursively sort both runs from list ListA into ListB
+  TopDownSplitMerge(listA, iBegin, iMiddle, listB); // sort the left  run
+  TopDownSplitMerge(listA, iMiddle, iEnd, listB); // sort the right run
+// merge the resulting runs from list ListB into ListA
+  TopDownMerge(listB, iBegin, iMiddle, iEnd, listA);
+}
+
+// Left source half is listA[iBegin:iMiddle-1].
+// Right source half is listA[iMiddle:iEnd-1].
+// Result is listB[iBegin:iEnd-1].
+void TopDownMerge<T>(List<T> listB, int iBegin, int iMiddle, int iEnd, List<T> listA) {
+  int i = iBegin, j = iMiddle;
+
+  //Are the List's Elements Categories or Manoeuvres?
+  if (T == CategoryPackage.Category) {
+    //Categories
+    // While there are elements in the left or right runs...
+    for (int k = iBegin; k < iEnd; k++) {
+      // If left run head exists and is <= existing right run head.
+      if (i < iMiddle && (j >= iEnd || (listA[i]! as CategoryPackage.Category).categoryName.compareTo((listA[j]! as CategoryPackage.Category).categoryName) <= 0)) {
+        listB[k] = listA[i];
+        i = i + 1;
+      } else {
+        listB[k] = listA[j];
+        j = j + 1;
+      }
+    }
+  } else {
+    //Manoeuvres
+    // While there are elements in the left or right runs...
+    for (int k = iBegin; k < iEnd; k++) {
+      // If left run head exists and is <= existing right run head.
+      if (i < iMiddle && (j >= iEnd || (listA[i]! as Manoeuvre).manoeuvreCategory.compareTo((listA[j]! as Manoeuvre).manoeuvreCategory) <= 0)) {
+        listB[k] = listA[i];
+        i = i + 1;
+      } else {
+        listB[k] = listA[j];
+        j = j + 1;
+      }
+    }
+  }
+}
+
+void CopyList<T>(List<T> listA, int iBegin, int iEnd, List<T> listB) {
+  for (int k = iBegin; k < iEnd; k++) {
+    listB[k] = listA[k];
+  }
+}
