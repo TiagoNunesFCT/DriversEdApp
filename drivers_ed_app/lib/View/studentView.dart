@@ -204,7 +204,7 @@ class _StudentPageState extends State<StudentPage> {
                                     showManoeuvreListDialog();
                                   },
                                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    Icon(Icons.edit_road_outlined),
+                                    Icon(Icons.signpost_rounded),
                                     Container(
                                         width: 132,
                                         child: Text(
@@ -982,8 +982,6 @@ class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
 class ManoeuvreListDialog extends StatefulWidget {
   ManoeuvreListDialog({super.key});
 
-
-
   @override
   _ManoeuvreListDialogState createState() => _ManoeuvreListDialogState();
 }
@@ -991,58 +989,54 @@ class ManoeuvreListDialog extends StatefulWidget {
 class _ManoeuvreListDialogState extends State<ManoeuvreListDialog> {
   _ManoeuvreListDialogState();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              title: const Text(
-                "Manobras",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Manobras",
+      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            height: 50,
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+            child: Container(
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Container(width: 80, child: Text("Categoria", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                    height: 50,
-                    decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                    child: Container(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                          Container(width: 80, child: Text("Categoria", textAlign: TextAlign.center)),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 500, child: Text("Nome", textAlign: TextAlign.center)),
-                        ]))),
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
-                      color: Theme.of(context).colorScheme.onInverseSurface,
-                    ),
-                    height: (MediaQuery.of(context).size.height - 400),
-                    child: ManoeuvresList())
-              ]),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Fechar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+              Container(width: 500, child: Text("Nome", textAlign: TextAlign.center)),
+            ]))),
+        Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+            ),
+            height: (MediaQuery.of(context).size.height - 400),
+            child: ManoeuvresList())
+      ]),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
-
-
 }
 
 //The dynamic Categories List widget
@@ -1330,57 +1324,70 @@ class CategoriesListState extends State<CategoriesList> {
               var categoryName = getCategory.categoryName;
               var categoryDescription = getCategory.categoryDescription;
 
-              return TextButton(
-                onLongPress: () {
-                  setState(() {});
-                },
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
-                  ).then((_) {
-                    updateState();
-                  });
-                },
-                child: Container(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: Theme.of(context).colorScheme.secondaryContainer,
+              return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                TextButton(
+                  onLongPress: () {
+                    setState(() {});
+                  },
+                  onPressed: () {},
+                  child: Container(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.secondaryContainer,
+                        ),
+                        borderRadius: BorderRadius.circular(90),
+                        color: Theme.of(context).colorScheme.secondaryContainer),
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                            width: 114,
+                            child: Text(
+                              getCategory.categoryName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                        Container(
+                            width: 430,
+                            child: Text(
+                              getCategory.categoryDescription,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                      ],
+                    ),
+                  )),
+                ),
+                Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                    child: IconButton.filledTonal(
+                      style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      borderRadius: BorderRadius.circular(90),
-                      color: Theme.of(context).colorScheme.secondaryContainer),
-                  height: 40,
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                          width: 114,
-                          child: Text(
-                            getCategory.categoryName,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                      onPressed: () {},
+                      icon: Icon(Icons.mode_edit_outline_rounded),
+                    )),
+                Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 10, 0),
+                    child: IconButton.filledTonal(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      Container(
-                          width: 357,
-                          child: Text(
-                            getCategory.categoryDescription,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                          )),
-                    ],
-                  ),
-                )),
-              );
+                      onPressed: () {},
+                      icon: Icon(Icons.delete_forever_rounded),
+                    ))
+              ]);
             }));
   }
 }
-
 
 //The dynamic Manoeuvres List widget
 class ManoeuvresList extends StatefulWidget {
@@ -1454,57 +1461,77 @@ class ManoeuvresListState extends State<ManoeuvresList> {
               var manoeuvreCategory = getManoeuvre.manoeuvreCategory;
               var manoeuvreName = getManoeuvre.manoeuvreName;
 
-              return TextButton(
-                onLongPress: () {
-                  setState(() {});
-                },
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
-                  ).then((_) {
-                    updateState();
-                  });
-                },
-                child: Container(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Theme.of(context).colorScheme.secondaryContainer,
-                          ),
-                          borderRadius: BorderRadius.circular(90),
-                          color: Theme.of(context).colorScheme.secondaryContainer),
-                      height: 40,
-                      padding: EdgeInsets.all(10),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                              width: 114,
-                              child: Text(
-                                getManoeuvre.manoeuvreCategory,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                              )),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                          ),
-                          Container(
-                              width: 357,
-                              child: Text(
-                                getManoeuvre.manoeuvreName,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                              )),
-                        ],
+              return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                TextButton(
+                  onLongPress: () {
+                    setState(() {});
+                  },
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
+                    ).then((_) {
+                      updateState();
+                    });
+                  },
+                  child: Container(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.secondaryContainer,
+                        ),
+                        borderRadius: BorderRadius.circular(90),
+                        color: Theme.of(context).colorScheme.secondaryContainer),
+                    height: 40,
+                        padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                            width: 114,
+                            child: Text(
+                              getManoeuvre.manoeuvreCategory,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                        Container(
+                            width: 430,
+                            child: Text(
+                              getManoeuvre.manoeuvreName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                      ],
+                    ),
+                  )),
+                )
+                ,Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                    child: IconButton.filledTonal(
+                      style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
+                      onPressed: () {},
+                      icon: Icon(Icons.mode_edit_outline_rounded),
                     )),
-              );
+                Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 10, 0),
+                    child: IconButton.filledTonal(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {},
+                      icon: Icon(Icons.delete_forever_rounded),
+                    ))
+              ]);
             }));
   }
 }
-
 
 //DateTime Methods
 
