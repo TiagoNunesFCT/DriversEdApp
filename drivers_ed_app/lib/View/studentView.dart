@@ -982,7 +982,7 @@ class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
 class ManoeuvreListDialog extends StatefulWidget {
   ManoeuvreListDialog({super.key});
 
-  late String currentCategory = "A";
+
 
   @override
   _ManoeuvreListDialogState createState() => _ManoeuvreListDialogState();
@@ -991,99 +991,58 @@ class ManoeuvreListDialog extends StatefulWidget {
 class _ManoeuvreListDialogState extends State<ManoeuvreListDialog> {
   _ManoeuvreListDialogState();
 
-  TextEditingController manoeuvreName = TextEditingController(text: "");
+
 
   @override
   Widget build(BuildContext context) {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-      elevation: 0,
-      backgroundColor: Theme.of(context).colorScheme.background,
-      title: const Text(
-        "Nova Categoria",
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(
-            height: 5,
-            width: 600,
-          ),
-          SizedBox(
-              height: 50,
-              child: TextField(
-                maxLines: 1,
-                controller: manoeuvreName,
-                keyboardType: TextInputType.name,
-                selectionControls: desktopTextSelectionControls,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                  labelText: "Nome da Manobra",
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onInverseSurface,
-                      ),
-                      borderRadius: BorderRadius.circular(90.0)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onInverseSurface,
-                      ),
-                      borderRadius: BorderRadius.circular(90.0)),
-                ),
-              )),
-          SizedBox(height: 5),
-          SizedBox(height: 5),
-          Row(children: [
-            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
-            PopupMenuExample(
-              callback: (String s) => changeCategory(s),
-              currentValue: widget.currentCategory,
-            )
-          ]),
-        ],
-      ),
-      actions: <Widget>[
-        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          FilledButton.tonal(
-            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Cancelar',
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text(
+                "Manobras",
               ),
-            ),
-          ),
-          FilledButton.tonal(
-            onPressed: () {
-              Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.currentCategory);
-              DatabaseController.instance.insertManoeuvre(manoeuvreToBeAdded.toMapWithoutId());
-              Navigator.of(context).pop();
-              setState(() {});
-            },
-            child: Text(
-              'Confirmar',
-              style: TextStyle(fontWeight: FontWeight.w900),
-            ),
-          ),
-        ])
-      ],
-    )));
+              content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                    height: 50,
+                    decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                    child: Container(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                          Container(width: 80, child: Text("Categoria", textAlign: TextAlign.center)),
+                          Text(
+                            "|",
+                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                          ),
+                          Container(width: 500, child: Text("Nome", textAlign: TextAlign.center)),
+                        ]))),
+                Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+                      color: Theme.of(context).colorScheme.onInverseSurface,
+                    ),
+                    height: (MediaQuery.of(context).size.height - 400),
+                    child: ManoeuvresList())
+              ]),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Fechar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ])
+              ],
+            )));
   }
 
-  void changeCategory(String newCategory) {
-    widget.currentCategory = newCategory;
-    if (kDebugMode) {
-      debugPrint("CHANGED CATEGORY TO... " + newCategory);
-    }
-  }
+
 }
 
 //The dynamic Categories List widget
@@ -1421,6 +1380,131 @@ class CategoriesListState extends State<CategoriesList> {
             }));
   }
 }
+
+
+//The dynamic Manoeuvres List widget
+class ManoeuvresList extends StatefulWidget {
+  ManoeuvresList({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return ManoeuvresListState();
+  }
+
+  State<StatefulWidget> updateState() {
+    debugPrint("BAN BAN NEW 3");
+    return ManoeuvresListState();
+  }
+}
+
+//State
+class ManoeuvresListState extends State<ManoeuvresList> {
+  //The list of Students to be shown on the Widget
+  late List<Manoeuvre> listManoeuvres;
+
+  ManoeuvresListState() {
+    debugPrint("BAN BAN NEW 4");
+    listManoeuvres = [];
+  }
+
+  //Async version of the getManoeuvres method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getManoeuvres() async {
+    listManoeuvres = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsManoeuvres();
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+    });
+    setState(() {
+      mergeSortList(listManoeuvres);
+    });
+  }
+
+  //Method that adds Manoeuvres to the List, in case they are compliant with the search criteria
+  addToList(Map<String, dynamic> map) {
+    // if (Manoeuvres.fromMap(map).manoeuvreName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || CategoryPackage.Category.fromMap(map).categoryDescription.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+    listManoeuvres.add(Manoeuvre.fromMap(map));
+    //}
+  }
+
+  @override
+  void initState() {
+    debugPrint("BAN BAN NEW 1");
+    getManoeuvres();
+    super.initState();
+  }
+
+  @override
+  void updateState() {
+    debugPrint("BAN BAN NEW 2");
+    setState(() {
+      getManoeuvres();
+    });
+  }
+
+  //Building the Widget
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width - 630,
+        child: ListView.builder(
+            itemCount: listManoeuvres.length,
+            itemBuilder: (context, position) {
+              Manoeuvre getManoeuvre = listManoeuvres[position];
+              var manoeuvreCategory = getManoeuvre.manoeuvreCategory;
+              var manoeuvreName = getManoeuvre.manoeuvreName;
+
+              return TextButton(
+                onLongPress: () {
+                  setState(() {});
+                },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
+                  ).then((_) {
+                    updateState();
+                  });
+                },
+                child: Container(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Theme.of(context).colorScheme.secondaryContainer,
+                          ),
+                          borderRadius: BorderRadius.circular(90),
+                          color: Theme.of(context).colorScheme.secondaryContainer),
+                      height: 40,
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                              width: 114,
+                              child: Text(
+                                getManoeuvre.manoeuvreCategory,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                              )),
+                          Text(
+                            "|",
+                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                          ),
+                          Container(
+                              width: 357,
+                              child: Text(
+                                getManoeuvre.manoeuvreName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                              )),
+                        ],
+                      ),
+                    )),
+              );
+            }));
+  }
+}
+
 
 //DateTime Methods
 
