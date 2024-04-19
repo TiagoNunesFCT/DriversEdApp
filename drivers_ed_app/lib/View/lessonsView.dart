@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../Controller/databaseController.dart';
+import '../Model/exam.dart';
 import '../Model/lesson.dart';
 import '../Model/student.dart';
 import '../Model/category.dart' as CategoryPackage;
@@ -255,13 +256,15 @@ class _LessonsPageState extends State<LessonsPage> {
                                       icon: Icon(Icons.add_rounded),
                                     )),
                                     FilledButton.tonal(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          showExamListDialog();
+                                        },
                                         child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                           Icon(Icons.workspace_premium_rounded),
                                           Container(
                                               width: 132,
                                               child: Text(
-                                                "Exames Feitos",
+                                                "Exames",
                                                 textAlign: TextAlign.center,
                                               ))
                                         ]))
@@ -372,6 +375,15 @@ class _LessonsPageState extends State<LessonsPage> {
       builder: (BuildContext context) => EditStudentDialog(updateStateCallbackFunction, student),
     );
   }
+
+  void showExamListDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ExamListDialog(widget.studentId),
+    );
+  }
+
+
 }
 
 //The dynamic Lessons List widget
@@ -504,6 +516,8 @@ class LessonsListState extends State<LessonsList> {
           );
         });
   }
+
+
 }
 
 class EditStudentDialog extends StatefulWidget {
@@ -535,6 +549,7 @@ class EditStudentDialogState extends State<EditStudentDialog> {
     studentNumber = TextEditingController(text: stateStudent.studentRegistrationNumber.toString());
     studentName = TextEditingController(text: stateStudent.studentName.toString());
   }
+
 
 
 
@@ -707,9 +722,222 @@ class EditStudentDialogState extends State<EditStudentDialog> {
   }
 }
 
-//The dynamic Categories List widget
+class ExamListDialog extends StatefulWidget {
+  ExamListDialog(this.studentId, {super.key});
+
+  int studentId = 0;
+
+  @override
+  _ExamListDialogState createState() => _ExamListDialogState();
+}
+
+class _ExamListDialogState extends State<ExamListDialog> {
+  _ExamListDialogState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text(
+                "Exames",
+              ),
+              content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                    height: 50,
+                    decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                    child: Container(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                          Container(width: 280, child: Text("Data", textAlign: TextAlign.center)),
+                          Text(
+                            "|",
+                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                          ),
+                          Container(width: 100, child: Text("Categoria", textAlign: TextAlign.center)),Text(
+                            "|",
+                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                          ),
+                          Container(width: 100, child: Text("Realizado", textAlign: TextAlign.center)),                          Text(
+                            "|",
+                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                          ),
+                          Container(width: 100, child: Text("Aprovado", textAlign: TextAlign.center)),
+                        ]))),
+                Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+                      color: Theme.of(context).colorScheme.onInverseSurface,
+                    ),
+                    height: (MediaQuery.of(context).size.height - 400),
+                    child: ExamsList(widget.studentId))
+              ]),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Fechar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+}
+
+
+//The dynamic Exams List widget
+class ExamsList extends StatefulWidget {
+  ExamsList(this.studentId,{Key? key}) : super(key: key);
+
+  int studentId = 0;
+
+  @override
+  State<StatefulWidget> createState() {
+    return ExamsListState();
+  }
+
+  State<StatefulWidget> updateState() {
+    debugPrint("BAN BAN NEW 3");
+    return ExamsListState();
+  }
+}
 
 //State
+class ExamsListState extends State<ExamsList> {
+  //The list of Exams to be shown on the Widget
+  late List<Exam> listExams;
+
+  ExamsListState() {
+    debugPrint("BAN BAN NEW 4");
+    listExams = [];
+  }
+
+  //Async version of the getExams method
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getExams() async {
+    listExams = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllExamsFromStudent(widget.studentId);
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+    });
+    setState(() {
+      mergeSortList(listExams);
+    });
+  }
+
+  //Method that adds Exams to the List, in case they are compliant with the search criteria
+  addToList(Map<String, dynamic> map) {
+
+    listExams.add(Exam.fromMap(map));
+
+  }
+
+  @override
+  void initState() {
+    debugPrint("BAN BAN NEW 1");
+    getExams();
+    super.initState();
+  }
+
+  @override
+  void updateState() {
+    debugPrint("BAN BAN NEW 2");
+    setState(() {
+      getExams();
+    });
+  }
+
+  //Building the Widget
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width - 630,
+        child: ListView.builder(
+            itemCount: listExams.length,
+            itemBuilder: (context, position) {
+              Exam getExam = listExams[position];
+              var manoeuvreCategory = getExam.examCategory;
+              var manoeuvreName = getExam.examDate.toStringAsFixed(2);
+
+              return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                TextButton(
+                  onLongPress: () {
+                    setState(() {});
+                  },
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
+                    ).then((_) {
+                      updateState();
+                    });
+                  },
+                  child: Container(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Theme.of(context).colorScheme.secondaryContainer,
+                            ),
+                            borderRadius: BorderRadius.circular(90),
+                            color: Theme.of(context).colorScheme.secondaryContainer),
+                        height: 40,
+                        padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                width: 114,
+                                child: Text(
+                                  getExam.examCategory,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                                )),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                            ),
+                            Container(
+                                width: 430,
+                                child: Text(
+                                  getExam.examDate.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                                )),
+                          ],
+                        ),
+                      )),
+                )
+                ,Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                    child: IconButton.filledTonal(
+                      style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {},
+                      icon: Icon(Icons.mode_edit_outline_rounded),
+                    )),
+                Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 10, 0),
+                    child: IconButton.filledTonal(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {},
+                      icon: Icon(Icons.delete_forever_rounded),
+                    ))
+              ]);
+            }));
+  }
+}
 
 class PopupMenuExample extends StatefulWidget {
   final void Function(String) callback;
@@ -797,4 +1025,54 @@ IconData boolIconFromIntegerValue(int value) {
   }
 
   return result;
+}
+
+
+
+List<T> mergeSortList<T>(List<T> list) {
+  List<T> listCopy = List<T>.from(list);
+  CopyList(list, 0, list.length, listCopy); // one time copy of A[] to B[]
+  TopDownSplitMerge(list, 0, list.length, listCopy); // sort data from B[] into A[]
+  return listCopy;
+}
+
+// Split ListA into 2 runs, sort both runs into ListB merge both runs from ListB to ListA
+// iBegin is inclusive; iEnd is exclusive (listA[iEnd] is not in the set).
+void TopDownSplitMerge<T>(List<T> listB, int iBegin, int iEnd, List<T> listA) {
+  if (iEnd - iBegin <= 1) // if run size == 1
+    return; //   consider it sorted
+// split the run longer than 1 item into halves
+  int iMiddle = ((iEnd + iBegin) / 2).floor(); // iMiddle = mid point
+// recursively sort both runs from list ListA into ListB
+  TopDownSplitMerge(listA, iBegin, iMiddle, listB); // sort the left  run
+  TopDownSplitMerge(listA, iMiddle, iEnd, listB); // sort the right run
+// merge the resulting runs from list ListB into ListA
+  TopDownMerge(listB, iBegin, iMiddle, iEnd, listA);
+}
+
+// Left source half is listA[iBegin:iMiddle-1].
+// Right source half is listA[iMiddle:iEnd-1].
+// Result is listB[iBegin:iEnd-1].
+void TopDownMerge<T>(List<T> listB, int iBegin, int iMiddle, int iEnd, List<T> listA) {
+  int i = iBegin, j = iMiddle;
+
+
+    // While there are elements in the left or right runs...
+    for (int k = iBegin; k < iEnd; k++) {
+      // If left run head exists and is <= existing right run head.
+      if (i < iMiddle && (j >= iEnd || (listA[i]! as Exam).examDate.compareTo((listA[j]! as Exam).examDate) <= 0)) {
+        listB[k] = listA[i];
+        i = i + 1;
+      } else {
+        listB[k] = listA[j];
+        j = j + 1;
+      }
+    }
+
+}
+
+void CopyList<T>(List<T> listA, int iBegin, int iEnd, List<T> listB) {
+  for (int k = iBegin; k < iEnd; k++) {
+    listB[k] = listA[k];
+  }
 }

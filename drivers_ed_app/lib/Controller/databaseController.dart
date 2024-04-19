@@ -271,6 +271,15 @@ class DatabaseController {
     return result?.toList();
   }
 
+  //Query (return) all Lessons within 2 dates
+  Future<List<Map<String, dynamic>>?> queryAllExamsFromStudent(int examStudentId) async {
+
+
+    Database? db = await instance.database;
+    var result = await db?.rawQuery('SELECT * FROM $examTable WHERE $columnExamStudentId = $examStudentId');
+    return result?.toList();
+  }
+
   //Query (return) all Exams
   Future<List<Map<String, dynamic>>?> queryAllRowsExams() async {
     Database? db = await instance.database;

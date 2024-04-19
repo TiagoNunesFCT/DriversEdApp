@@ -1269,7 +1269,7 @@ class CategoriesList extends StatefulWidget {
 
 //State
 class CategoriesListState extends State<CategoriesList> {
-  //The list of Students to be shown on the Widget
+  //The list of Categories to be shown on the Widget
   late List<CategoryPackage.Category> listCategories;
 
   CategoriesListState() {
@@ -1406,7 +1406,7 @@ class ManoeuvresList extends StatefulWidget {
 
 //State
 class ManoeuvresListState extends State<ManoeuvresList> {
-  //The list of Students to be shown on the Widget
+  //The list of Manoeuvres to be shown on the Widget
   late List<Manoeuvre> listManoeuvres;
 
   ManoeuvresListState() {
