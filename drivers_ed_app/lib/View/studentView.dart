@@ -774,6 +774,82 @@ class EditCategoryDialogState extends State<EditCategoryDialog> {
   }
 }
 
+class CategoryDetailsDialog extends StatelessWidget {
+  CategoryPackage.Category category;
+
+  CategoryDetailsDialog(this.category, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Detalhes",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+            color: Theme.of(context).colorScheme.onInverseSurface,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Nome da Categoria: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      category.categoryName,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+              SizedBox(height: 5),
+              SizedBox(height: 5),
+              Container(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Descrição: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      category.categoryDescription,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+}
+
 class CategoryListDialog extends StatefulWidget {
   CategoryListDialog({super.key});
 
@@ -806,11 +882,11 @@ class _CategoryListDialogState extends State<CategoryListDialog> {
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
               Container(width: 400, child: Text("Descrição", textAlign: TextAlign.center)),
-                  Text(
-                    "|",
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                  ),
-                  Container(width: 70, child: Text("Ações", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+              ),
+              Container(width: 70, child: Text("Ações", textAlign: TextAlign.center)),
             ]))),
         Container(
             decoration: BoxDecoration(
@@ -1231,6 +1307,82 @@ class EditManoeuvreDialogState extends State<EditManoeuvreDialog> {
   }
 }
 
+class ManoeuvreDetailsDialog extends StatelessWidget {
+  Manoeuvre manoeuvre;
+
+  ManoeuvreDetailsDialog(this.manoeuvre, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Detalhes",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+            color: Theme.of(context).colorScheme.onInverseSurface,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Categoria: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      manoeuvre.manoeuvreCategory,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+              SizedBox(height: 5),
+              SizedBox(height: 5),
+              Container(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Nome da Manobra: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      manoeuvre.manoeuvreName,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+}
+
 class ManoeuvreListDialog extends StatefulWidget {
   ManoeuvreListDialog({super.key});
 
@@ -1586,7 +1738,9 @@ class CategoriesListState extends State<CategoriesList> {
                   onLongPress: () {
                     setState(() {});
                   },
-                  onPressed: () {},
+                  onPressed: () {
+                    showCategoryDetailsDialog(getCategory);
+                  },
                   child: Container(
                       child: Container(
                     decoration: BoxDecoration(
@@ -1662,6 +1816,13 @@ class CategoriesListState extends State<CategoriesList> {
   //SetState Callback
   void updateStateCallback() {
     updateState();
+  }
+
+  void showCategoryDetailsDialog(CategoryPackage.Category category) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CategoryDetailsDialog(category),
+    );
   }
 }
 
@@ -1743,12 +1904,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                     setState(() {});
                   },
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
-                    ).then((_) {
-                      updateState();
-                    });
+                    showManoeuvreDetailsDialog(getManoeuvre);
                   },
                   child: Container(
                       child: Container(
@@ -1826,6 +1982,14 @@ class ManoeuvresListState extends State<ManoeuvresList> {
   void updateStateCallback() {
     updateState();
   }
+
+  void showManoeuvreDetailsDialog(Manoeuvre manoeuvre) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ManoeuvreDetailsDialog(manoeuvre),
+    );
+  }
+
 }
 
 //DateTime Methods
