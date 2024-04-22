@@ -645,6 +645,134 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   }
 }
 
+class EditCategoryDialog extends StatefulWidget {
+  void Function() updateStateCallback;
+  CategoryPackage.Category category;
+
+  EditCategoryDialog(this.updateStateCallback, this.category, {super.key});
+
+  @override
+  EditCategoryDialogState createState() => EditCategoryDialogState(category);
+}
+
+class EditCategoryDialogState extends State<EditCategoryDialog> {
+  late CategoryPackage.Category stateCategory;
+
+  TextEditingController categoryName = TextEditingController(text: "");
+  TextEditingController categoryDescription = TextEditingController(text: "");
+
+  EditCategoryDialogState(this.stateCategory) {
+    categoryName = TextEditingController(text: stateCategory.categoryName);
+    categoryDescription = TextEditingController(text: stateCategory.categoryDescription);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Editar Categoria",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Categoria",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Container(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryDescription,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Descrição (ex: Ligeiros)",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryId: stateCategory.categoryId, categoryName: categoryName.text, categoryDescription: categoryDescription.text);
+              DatabaseController.instance.updateCategory(categoryToBeAdded.toMap());
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+}
+
 class CategoryListDialog extends StatefulWidget {
   CategoryListDialog({super.key});
 
@@ -1371,7 +1499,9 @@ class CategoriesListState extends State<CategoriesList> {
                       style: ButtonStyle(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showEditCategoryDialog(updateStateCallback, getCategory!);
+                      },
                       icon: Icon(Icons.mode_edit_outline_rounded),
                     )),
                 Container(
@@ -1381,11 +1511,28 @@ class CategoriesListState extends State<CategoriesList> {
                         backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        //delete category getCategory
+                        //update state
+                        DatabaseController.instance.deleteCategory(getCategory.categoryId!);
+                        updateStateCallback();
+                      },
                       icon: Icon(Icons.delete_forever_rounded),
                     ))
               ]);
             }));
+  }
+
+  void showEditCategoryDialog(void Function() updateStateCallbackFunction, CategoryPackage.Category category) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => EditCategoryDialog(updateStateCallbackFunction, category),
+    );
+  }
+
+  //SetState Callback
+  void updateStateCallback() {
+    updateState();
   }
 }
 
@@ -1484,7 +1631,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                         borderRadius: BorderRadius.circular(90),
                         color: Theme.of(context).colorScheme.secondaryContainer),
                     height: 40,
-                        padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
                     child: Row(
                       children: <Widget>[
                         Container(
@@ -1508,8 +1655,8 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                       ],
                     ),
                   )),
-                )
-                ,Container(
+                ),
+                Container(
                     padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
                     child: IconButton.filledTonal(
                       style: ButtonStyle(

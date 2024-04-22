@@ -382,8 +382,6 @@ class _LessonsPageState extends State<LessonsPage> {
       builder: (BuildContext context) => ExamListDialog(widget.studentId),
     );
   }
-
-
 }
 
 //The dynamic Lessons List widget
@@ -516,8 +514,6 @@ class LessonsListState extends State<LessonsList> {
           );
         });
   }
-
-
 }
 
 class EditStudentDialog extends StatefulWidget {
@@ -528,7 +524,7 @@ class EditStudentDialog extends StatefulWidget {
   void Function() updateStateCallback;
   Student student;
 
-  EditStudentDialog(this.updateStateCallback, this.student,{super.key}) {
+  EditStudentDialog(this.updateStateCallback, this.student, {super.key}) {
     currentDate = DateTime.fromMillisecondsSinceEpoch(student.studentRegistrationDate.toInt());
     currentCategory = student.studentCategory;
     debugPrint("STUDENT 3: " + student.studentName);
@@ -544,14 +540,10 @@ class EditStudentDialogState extends State<EditStudentDialog> {
   TextEditingController studentNumber = TextEditingController(text: "");
   TextEditingController studentName = TextEditingController(text: "");
 
-  EditStudentDialogState(this.stateStudent){
-
+  EditStudentDialogState(this.stateStudent) {
     studentNumber = TextEditingController(text: stateStudent.studentRegistrationNumber.toString());
     studentName = TextEditingController(text: stateStudent.studentName.toString());
   }
-
-
-
 
   void showDatePickerDialog() {
     showDialog(
@@ -605,7 +597,6 @@ class EditStudentDialogState extends State<EditStudentDialog> {
                 controller: studentNumber,
                 keyboardType: TextInputType.number,
                 selectionControls: desktopTextSelectionControls,
-
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Theme.of(context).colorScheme.onInverseSurface,
@@ -696,7 +687,7 @@ class EditStudentDialogState extends State<EditStudentDialog> {
           ),
           FilledButton.tonal(
             onPressed: () {
-              Student studentToBeAdded = Student(studentId: stateStudent.studentId,studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
+              Student studentToBeAdded = Student(studentId: stateStudent.studentId, studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
               DatabaseController.instance.updateStudent(studentToBeAdded.toMap());
               setState(() {
                 debugPrint("CLICKED ON CONFIRM BUTTON");
@@ -739,63 +730,64 @@ class _ExamListDialogState extends State<ExamListDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              title: const Text(
-                "Exames",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Exames",
+      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            height: 50,
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+            child: Container(
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Container(width: 280, child: Text("Data", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                    height: 50,
-                    decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                    child: Container(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                          Container(width: 280, child: Text("Data", textAlign: TextAlign.center)),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 100, child: Text("Categoria", textAlign: TextAlign.center)),Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 100, child: Text("Realizado", textAlign: TextAlign.center)),                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 100, child: Text("Aprovado", textAlign: TextAlign.center)),
-                        ]))),
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
-                      color: Theme.of(context).colorScheme.onInverseSurface,
-                    ),
-                    height: (MediaQuery.of(context).size.height - 400),
-                    child: ExamsList(widget.studentId))
-              ]),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Fechar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+              Container(width: 100, child: Text("Categoria", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+              ),
+              Container(width: 100, child: Text("Realizado", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+              ),
+              Container(width: 100, child: Text("Aprovado", textAlign: TextAlign.center)),
+            ]))),
+        Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+            ),
+            height: (MediaQuery.of(context).size.height - 400),
+            child: ExamsList(widget.studentId))
+      ]),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
-
 //The dynamic Exams List widget
 class ExamsList extends StatefulWidget {
-  ExamsList(this.studentId,{Key? key}) : super(key: key);
+  ExamsList(this.studentId, {Key? key}) : super(key: key);
 
   int studentId = 0;
 
@@ -835,9 +827,7 @@ class ExamsListState extends State<ExamsList> {
 
   //Method that adds Exams to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
-
     listExams.add(Exam.fromMap(map));
-
   }
 
   @override
@@ -882,40 +872,40 @@ class ExamsListState extends State<ExamsList> {
                   },
                   child: Container(
                       child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Theme.of(context).colorScheme.secondaryContainer,
-                            ),
-                            borderRadius: BorderRadius.circular(90),
-                            color: Theme.of(context).colorScheme.secondaryContainer),
-                        height: 40,
-                        padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                width: 114,
-                                child: Text(
-                                  getExam.examCategory,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                                )),
-                            Text(
-                              "|",
-                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                            ),
-                            Container(
-                                width: 430,
-                                child: Text(
-                                  getExam.examDate.toString(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                                )),
-                          ],
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.secondaryContainer,
                         ),
-                      )),
-                )
-                ,Container(
+                        borderRadius: BorderRadius.circular(90),
+                        color: Theme.of(context).colorScheme.secondaryContainer),
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                            width: 114,
+                            child: Text(
+                              getExam.examCategory,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                        Container(
+                            width: 430,
+                            child: Text(
+                              getExam.examDate.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                      ],
+                    ),
+                  )),
+                ),
+                Container(
                     padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
                     child: IconButton.filledTonal(
                       style: ButtonStyle(
@@ -1027,8 +1017,6 @@ IconData boolIconFromIntegerValue(int value) {
   return result;
 }
 
-
-
 List<T> mergeSortList<T>(List<T> list) {
   List<T> listCopy = List<T>.from(list);
   CopyList(list, 0, list.length, listCopy); // one time copy of A[] to B[]
@@ -1056,19 +1044,17 @@ void TopDownSplitMerge<T>(List<T> listB, int iBegin, int iEnd, List<T> listA) {
 void TopDownMerge<T>(List<T> listB, int iBegin, int iMiddle, int iEnd, List<T> listA) {
   int i = iBegin, j = iMiddle;
 
-
-    // While there are elements in the left or right runs...
-    for (int k = iBegin; k < iEnd; k++) {
-      // If left run head exists and is <= existing right run head.
-      if (i < iMiddle && (j >= iEnd || (listA[i]! as Exam).examDate.compareTo((listA[j]! as Exam).examDate) <= 0)) {
-        listB[k] = listA[i];
-        i = i + 1;
-      } else {
-        listB[k] = listA[j];
-        j = j + 1;
-      }
+  // While there are elements in the left or right runs...
+  for (int k = iBegin; k < iEnd; k++) {
+    // If left run head exists and is <= existing right run head.
+    if (i < iMiddle && (j >= iEnd || (listA[i]! as Exam).examDate.compareTo((listA[j]! as Exam).examDate) <= 0)) {
+      listB[k] = listA[i];
+      i = i + 1;
+    } else {
+      listB[k] = listA[j];
+      j = j + 1;
     }
-
+  }
 }
 
 void CopyList<T>(List<T> listA, int iBegin, int iEnd, List<T> listB) {

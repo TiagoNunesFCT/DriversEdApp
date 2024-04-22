@@ -25,7 +25,7 @@ class Category {
     final map = <String, dynamic>{};
     map["category_id"] = categoryId;
     map["category_name"] = categoryName;
-    map["category_category"] = categoryDescription;
+    map["category_description"] = categoryDescription;
     return map;
   }
 
