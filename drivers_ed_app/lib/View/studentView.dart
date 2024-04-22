@@ -1022,7 +1022,7 @@ class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
       elevation: 0,
       backgroundColor: Theme.of(context).colorScheme.background,
       title: const Text(
-        "Nova Categoria",
+        "Nova Manobra",
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1101,6 +1101,126 @@ class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
 
   void changeCategory(String newCategory) {
     widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+}
+
+class EditManoeuvreDialog extends StatefulWidget {
+  void Function() updateStateCallback;
+  Manoeuvre manoeuvre;
+  late String manoeuvreCategory;
+
+  EditManoeuvreDialog(this.updateStateCallback, this.manoeuvre, {super.key}){
+    manoeuvreCategory = manoeuvre.manoeuvreCategory;
+  }
+
+
+  @override
+  EditManoeuvreDialogState createState() => EditManoeuvreDialogState(manoeuvre);
+}
+
+class EditManoeuvreDialogState extends State<EditManoeuvreDialog> {
+  late Manoeuvre stateManoeuvre;
+
+
+  TextEditingController manoeuvreName = TextEditingController(text: "");
+
+  EditManoeuvreDialogState(this.stateManoeuvre) {
+    manoeuvreName = TextEditingController(text: stateManoeuvre.manoeuvreName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text(
+                "Editar Manobra",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 5,
+                    width: 600,
+                  ),
+                  SizedBox(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: manoeuvreName,
+                        keyboardType: TextInputType.name,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Nome da Manobra",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),
+                  SizedBox(height: 5),
+                  SizedBox(height: 5),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+                    PopupMenuExample(
+                      callback: (String s) => changeCategory(s),
+                      currentValue: widget.manoeuvreCategory,
+                    )
+                  ]),
+                ],
+              ),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreId: stateManoeuvre.manoeuvreId,manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.manoeuvreCategory);
+                      DatabaseController.instance.updateManoeuvre(manoeuvreToBeAdded.toMap());
+                      Navigator.of(context).pop();
+                      setState(() {
+                        debugPrint("CLICKED ON CONFIRM BUTTON");
+                        widget.updateStateCallback();
+                      });
+                    },
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.manoeuvreCategory = newCategory;
     if (kDebugMode) {
       debugPrint("CHANGED CATEGORY TO... " + newCategory);
     }
@@ -1596,6 +1716,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
     });
   }
 
+
   //Building the Widget
   @override
   Widget build(BuildContext context) {
@@ -1662,7 +1783,9 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                       style: ButtonStyle(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showEditManoeuvreDialog(updateStateCallback, getManoeuvre!);
+                      },
                       icon: Icon(Icons.mode_edit_outline_rounded),
                     )),
                 Container(
@@ -1672,12 +1795,30 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                         backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        //delete manoeuvre getManoeuvre
+                        //update state
+                        DatabaseController.instance.deleteManoeuvre(getManoeuvre.manoeuvreId!);
+                        updateStateCallback();
+                      },
                       icon: Icon(Icons.delete_forever_rounded),
                     ))
               ]);
             }));
   }
+
+  void showEditManoeuvreDialog(void Function() updateStateCallbackFunction, Manoeuvre manoeuvre) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => EditManoeuvreDialog(updateStateCallbackFunction, manoeuvre),
+    );
+  }
+
+  //SetState Callback
+  void updateStateCallback() {
+    updateState();
+  }
+
 }
 
 //DateTime Methods
