@@ -45,6 +45,8 @@ dependencies:
   package_info_plus:
   flutter_datetime_picker:
   intl:
+  text_scroll: ^0.2.0
+  marquee: ^2.2.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -2,12 +2,13 @@
 //This class represents a Lesson object
 class Lesson {
   //The Current Lesson Attributes
-  int lessonId, lessonStudentId;
+  int? lessonId;
+  int lessonStudentId;
   double lessonDate, lessonHours, lessonDistance;
   int lessonDone; //technically a boolean, but since sqlite does not support booleans, it'll be an integer that oscillates between 0 and 1, to be parsed locally when needed.
   String lessonManoeuvres, lessonCategory;
 
-  Lesson({required this.lessonId, required this.lessonStudentId, required this.lessonDate, required this.lessonHours, required this.lessonDistance, required this.lessonDone, required this.lessonManoeuvres, required this.lessonCategory});
+  Lesson({this.lessonId, required this.lessonStudentId, required this.lessonDate, required this.lessonHours, required this.lessonDistance, required this.lessonDone, required this.lessonManoeuvres, required this.lessonCategory});
 
   //to be used when inserting a row in the table
   Map<String, dynamic> toMapWithoutId() {

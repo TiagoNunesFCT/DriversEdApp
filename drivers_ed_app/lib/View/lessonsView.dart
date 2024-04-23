@@ -2,11 +2,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:marquee/marquee.dart';
 
 import '../Controller/databaseController.dart';
 import '../Model/exam.dart';
 import '../Model/lesson.dart';
 import '../Model/student.dart';
+import 'package:text_scroll/text_scroll.dart';
 import '../Model/category.dart' as CategoryPackage;
 
 GlobalKey<LessonsListState> _LessonsListKey = GlobalKey();
@@ -234,7 +236,10 @@ class _LessonsPageState extends State<LessonsPage> {
                               Container(
                                   width: 250,
                                   child: FilledButton.tonal(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        debugPrint("CLICKED ON NEW LESSON BUTTON");
+                                        showNewLessonDialog(updateStateCallback, stateStudent!);
+                                      },
                                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                         Icon(Icons.school_rounded),
                                         Container(
@@ -382,6 +387,229 @@ class _LessonsPageState extends State<LessonsPage> {
       builder: (BuildContext context) => ExamListDialog(widget.studentId),
     );
   }
+
+  void showNewLessonDialog(void Function() updateStateCallbackFunction, Student currentStudent) {
+    debugPrint("callback in showNewLessonDialog");
+    updateStateCallbackFunction();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => NewLessonDialog(updateStateCallbackFunction, currentStudent),
+    );
+  }
+}
+
+class NewLessonDialog extends StatefulWidget {
+  DateTime currentDate = DateTime.now().copyWith(second: 0, millisecond: 0, microsecond: 0);
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
+  late String currentHourString = currentDate.hour.toString().padLeft(2, '0') + ":" + currentDate.minute.toString().padLeft(2, '0');
+
+  /*currentDate.toIso8601String().split('T').last.split('.').first;*/
+  late String currentCategory = "A";
+  Student currentStudent;
+
+  void Function() updateStateCallback;
+
+  NewLessonDialog(this.updateStateCallback, this.currentStudent, {super.key}) {}
+
+  @override
+  NewLessonDialogState createState() => NewLessonDialogState();
+}
+
+class NewLessonDialogState extends State<NewLessonDialog> {
+  NewLessonDialogState();
+
+  /*TextEditingController studentNumber = TextEditingController(text: "");
+  TextEditingController studentName = TextEditingController(text: "");*/
+
+  void showDatePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(context: context, initialDate: widget.currentDate, firstDate: DateTime(1970), lastDate: DateTime(2100));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //setting each field invididually instead of just making it equal to "picked" allows us to preserve any changes made to the time, in case those changes were made before the date
+        widget.currentDate = widget.currentDate.copyWith(year: picked.year, month: picked.month, day: picked.day);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentDateString = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.currentDate));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //this will keep the current date, but will change the time on the dateTime object
+        widget.currentDate = widget.currentDate.copyWith(hour: picked.hour, minute: picked.minute, second: 0, millisecond: 0, microsecond: 0);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentHourString = picked.format(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      elevation: 0,
+      title: const Text(
+        "Marcar Aula",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          /*SizedBox(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: studentNumber,
+                        keyboardType: TextInputType.number,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Número de Inscrição",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),
+                  SizedBox(height: 5),
+                  SizedBox(height: 5),
+                  Container(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: studentName,
+                        keyboardType: TextInputType.name,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Nome Completo",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),*/
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Data")),
+            Container(
+                margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                child: FilledButton(
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                  onPressed: () {
+                    _selectDate(context);
+                  },
+                  child: Text(
+                    widget.currentDateString,
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
+                )),
+          ]),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Hora")),
+            Container(
+                margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                child: FilledButton(
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                  onPressed: () {
+                    _selectHour(context);
+                  },
+                  child: Text(
+                    widget.currentHourString,
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
+                )),
+          ]),
+          /*Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ])*/
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Lesson lessonToBeAdded = Lesson(lessonStudentId: widget.currentStudent.studentRegistrationNumber, lessonDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), lessonCategory: widget.currentStudent.studentCategory, lessonDistance: 0, lessonHours: 0, lessonDone: 0, lessonManoeuvres: "");
+              DatabaseController.instance.insertLesson(lessonToBeAdded.toMapWithoutId());
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
 }
 
 //The dynamic Lessons List widget
@@ -392,11 +620,13 @@ class LessonsList extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
+    debugPrint("STUDENT ID IS: " + studentId.toString());
     return LessonsListState();
   }
 
   State<StatefulWidget> updateState() {
     debugPrint("BAN BAN NEW 3");
+    debugPrint("STUDENT ID IS: " + studentId.toString());
     return LessonsListState();
   }
 }
@@ -423,6 +653,8 @@ class LessonsListState extends State<LessonsList> {
 
   //Method that adds Students to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
+    debugPrint("LESSON FOUIND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
+
     if (Lesson.fromMap(map).lessonStudentId == widget.studentId) {
       listLessons.add(Lesson.fromMap(map));
     }
@@ -431,6 +663,7 @@ class LessonsListState extends State<LessonsList> {
   @override
   void initState() {
     debugPrint("BAN BAN NEW 1");
+    debugPrint("STUDENT ID IS: " + widget.studentId.toString());
     getLessons();
     super.initState();
   }
@@ -438,6 +671,7 @@ class LessonsListState extends State<LessonsList> {
   @override
   void updateState() {
     debugPrint("BAN BAN NEW 2");
+    debugPrint("STUDENT ID IS: " + widget.studentId.toString());
     setState(() {
       getLessons();
     });
@@ -462,55 +696,115 @@ class LessonsListState extends State<LessonsList> {
             },
             onPressed: () {},
             child: Container(
-                child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                  ),
-                  borderRadius: BorderRadius.circular(90),
-                  color: Theme.of(context).colorScheme.secondaryContainer),
-              height: 40,
-              padding: EdgeInsets.all(10),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                      width: 114,
-                      child: Text(
-                        DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getLesson.lessonDate.toInt())),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                    ),
+                    borderRadius: BorderRadius.circular(90),
+                    color: Theme.of(context).colorScheme.secondaryContainer),
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      transformAlignment: Alignment.bottomRight,
+                      margin: EdgeInsets.all(0),
+                      padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                      child: Icon(
+                        boolIconFromIntegerValue(getLesson.lessonDone),
+                        color: Theme.of(context).colorScheme.inverseSurface,
+                      ),
+                    ),
+                    Container(
+                        width: 65,
+                        child: Text(
+                          (position + 1).toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                        )),
+                    Text(
+                      "|",
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Container(
+                        width: 130,
+                        child: Text(
+                          DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getLesson.lessonDate.toInt())),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                        )),
+                    Text(
+                      "|",
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Container(
+                        width: 130,
+                        child: Text(
+                          "${getLesson.lessonDistance.toString()} Km",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                        )),
+                    Text(
+                      "|",
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Container(
+                        width: 110,
+                        child: Text(
+                          "${getLesson.lessonHours.toString()} Horas",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                        )),
+                    Text(
+                      "|",
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Container(
+                        width: 210,
+                        child: Marquee(
+                          //fazer isto dinamicamente. Provavelmente fazer um for each para cada manobra na lista, juntar numa string, e depois adicionar \n
+                          text: "Manobra 1\nManobra 2\nManobra 3\nManobra 4",
+                          scrollAxis: Axis.vertical,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          numberOfRounds: null,
+                          velocity: 15,
+                          style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                        ) /*TextScroll(
+                        "Manobra mesmo muito muito muito muito muito muito muito longa",
+                        mode: TextScrollMode.endless,
+                        velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                        delayBefore: Duration(milliseconds: 500),
+
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                      )),
-                  Text(
-                    "|",
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                  ),
-                  Container(
-                      width: 357,
-                      child: Text(
-                        "${getLesson.lessonHours.toString()} Horas",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                      )),
-                  Text(
-                    "|",
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                  ),
-                  Container(
-                      width: 208,
-                      child: Text(
-                        "${getLesson.lessonDistance.toString()} Km",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                      )),
-                  Text(
-                    "|",
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
-                  ),
-                  Container(width: 100, child: Icon(boolIconFromIntegerValue(getLesson.lessonDone)))
-                ],
+                      )*/
+                        ),
+                  ],
+                ),
               ),
-            )),
+              Container(
+                  padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: IconButton.filledTonal(
+                    style: ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {},
+                    icon: Icon(Icons.mode_edit_outline_rounded, color: Theme.of(context).colorScheme.inverseSurface),
+                  )),
+              Container(
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: IconButton.filledTonal(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {},
+                    icon: Icon(Icons.delete_forever_rounded, color: Theme.of(context).colorScheme.inverseSurface)),
+              )
+            ])),
           );
         });
   }
@@ -543,22 +837,6 @@ class EditStudentDialogState extends State<EditStudentDialog> {
   EditStudentDialogState(this.stateStudent) {
     studentNumber = TextEditingController(text: stateStudent.studentRegistrationNumber.toString());
     studentName = TextEditingController(text: stateStudent.studentName.toString());
-  }
-
-  void showDatePickerDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => DatePickerDialog(
-        restorationId: 'date_picker_dialog',
-        initialEntryMode: DatePickerEntryMode.calendarOnly,
-        initialDate: DateTime.fromMillisecondsSinceEpoch(stateStudent.studentRegistrationDate.toInt()),
-        firstDate: DateTime(1970),
-        lastDate: DateTime(2100),
-        cancelText: "Cancelar",
-        confirmText: "Confirmar",
-        helpText: "Escolher Data",
-      ),
-    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
