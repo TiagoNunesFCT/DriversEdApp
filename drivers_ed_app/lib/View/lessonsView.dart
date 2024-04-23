@@ -477,7 +477,7 @@ class NewLessonDialogState extends State<NewLessonDialog> {
         children: <Widget>[
           const SizedBox(
             height: 5,
-            width: 600,
+            width: 300,
           ),
           /*SizedBox(
                       height: 50,
@@ -766,10 +766,16 @@ class LessonsListState extends State<LessonsList> {
                         width: 210,
                         child: Marquee(
                           //fazer isto dinamicamente. Provavelmente fazer um for each para cada manobra na lista, juntar numa string, e depois adicionar \n
-                          text: "Manobra 1\nManobra 2\nManobra 3\nManobra 4",
+                          text: "Manobra 1\nManobra 2\nManobra 3\nManobra 4\nManobra 5\nManobra 6\nManobra 7\nManobra 8",
                           scrollAxis: Axis.vertical,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           numberOfRounds: null,
+                          blankSpace: 0,
+                          fadingEdgeStartFraction: 0.5,
+                          startAfter: Duration(seconds: 1),
+                          pauseAfterRound: Duration(seconds: 3),
+                          startPadding: -20,
+                          showFadingOnlyWhenScrolling: false,
+                          fadingEdgeEndFraction: 0.5,
                           velocity: 15,
                           style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
                         ) /*TextScroll(
