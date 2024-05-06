@@ -13,8 +13,18 @@ import '../Model/category.dart' as CategoryPackage;
 
 GlobalKey<LessonsListState> _LessonsListKey = GlobalKey();
 
+int totalHours = 0;
+int totalDistance = 0;
+int numberOfLessons = 0;
+int numberOfExams = 0;
+String nextExam = "0000-00-00";
+
+//experimental: this will cause the page to update its global values after they have been fetched from the list the first time. Otherwise, since the list is created after the values have been introduced, it would only update the global values on the next update.
+bool firstUpdate = true;
+
 class LessonsPage extends StatefulWidget {
   int studentId = 0;
+
 
   Student? studentObject;
 
@@ -35,23 +45,31 @@ class LessonsPage extends StatefulWidget {
 
 class _LessonsPageState extends State<LessonsPage> {
   //placing it in a variable so it can be manually updated whenever the page itself updates
-
+  late List<Lesson> listLessons;
   Student? stateStudent;
 
+
   void initState() {
+    listLessons = [];
+    resetGlobalsLessons();
     super.initState();
     stateStudent = widget.studentObject;
     getStudentsWithNumber(widget.studentId);
+    getLessons();
     setState(() {});
   }
 
   void updateState() {
+    listLessons = [];
+    resetGlobalsLessons();
     debugPrint("BAN BAN 1");
-
+    debugPrint("current number of hours: $totalHours");
     setState(() {
       getStudentsWithNumber(widget.studentId);
+      getLessons();
       _LessonsListKey.currentState!.updateState();
     });
+    debugPrint("current number of hours: $totalHours");
   }
 
   //Async version of the getStudents method, that only returns students with a certain registration Number
@@ -183,7 +201,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                                     ),
                                     Text(
-                                      "0 km",
+                                      "$totalDistance km",
                                       style: TextStyle(fontWeight: FontWeight.w300),
                                     )
                                   ]),
@@ -194,7 +212,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                                     ),
                                     Text(
-                                      "0 H",
+                                      "$totalHours h",
                                       style: TextStyle(fontWeight: FontWeight.w300),
                                     )
                                   ]),
@@ -205,7 +223,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                                     ),
                                     Text(
-                                      "0",
+                                      numberOfLessons.toString(),
                                       style: TextStyle(fontWeight: FontWeight.w300),
                                     )
                                   ]),
@@ -216,7 +234,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                                     ),
                                     Text(
-                                      "0",
+                                      numberOfExams.toString(),
                                       style: TextStyle(fontWeight: FontWeight.w300),
                                     )
                                   ]),
@@ -227,7 +245,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                                     ),
                                     Text(
-                                      "0000-00-00",
+                                      nextExam,
                                       style: TextStyle(fontWeight: FontWeight.w300),
                                     )
                                   ]),
@@ -354,7 +372,7 @@ class _LessonsPageState extends State<LessonsPage> {
                             color: Theme.of(context).colorScheme.onInverseSurface,
                           ),
                           height: (MediaQuery.of(context).size.height - 86),
-                          child: LessonsList(
+                          child: LessonsList(updateStateCallback,
                             key: _LessonsListKey,
                             studentId: widget.studentId,
                           ))
@@ -396,6 +414,30 @@ class _LessonsPageState extends State<LessonsPage> {
       builder: (BuildContext context) => NewLessonDialog(updateStateCallbackFunction, currentStudent),
     );
   }
+
+
+  //Async version of the getLessons method. This is a copy of the one in the LessonsList widget. However, due to race conditions, a new copy was needed here
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getLessons() async {
+    resetGlobalsLessons();
+    listLessons = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsLessons();
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+    });
+  }
+  //Method that adds Students to the List, in case they are compliant with the search criteria
+  addToList(Map<String, dynamic> map) {
+    debugPrint("LESSON FOUIND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
+
+    if (Lesson.fromMap(map).lessonStudentId == widget.studentId) {
+      listLessons.add(Lesson.fromMap(map));
+      incrementGlobalsLessons(Lesson.fromMap(map));
+
+    }
+  }
+
+
 }
 
 class NewLessonDialog extends StatefulWidget {
@@ -612,9 +654,258 @@ class NewLessonDialogState extends State<NewLessonDialog> {
   }
 }
 
+class EditLessonDialog extends StatefulWidget {
+  late DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(currentLesson.lessonDate.toInt());
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
+  late String currentHourString = currentDate.hour.toString().padLeft(2, '0') + ":" + currentDate.minute.toString().padLeft(2, '0');
+
+  /*currentDate.toIso8601String().split('T').last.split('.').first;*/
+  late String currentCategory = "A";
+
+  Lesson currentLesson;
+
+  void Function() updateStateCallback;
+
+  EditLessonDialog(this.updateStateCallback, this.currentLesson, {super.key}) {}
+
+  @override
+  EditLessonDialogState createState() => EditLessonDialogState();
+}
+
+class EditLessonDialogState extends State<EditLessonDialog> {
+
+  late Lesson stateLesson;
+  //Done
+  //Horas
+  //Distância
+  //Manobras
+
+  late TextEditingController lessonHours;
+  late TextEditingController lessonDistance;
+  late int isDone;
+
+  @override
+  void initState(){
+    super.initState();
+    stateLesson = widget.currentLesson;
+    lessonHours = TextEditingController(text: stateLesson.lessonHours.toString());
+    lessonDistance = TextEditingController(text: stateLesson.lessonDistance.toString());
+    isDone = stateLesson.lessonDone;
+    }
+
+  void showDatePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(context: context, initialDate: widget.currentDate, firstDate: DateTime(1970), lastDate: DateTime(2100));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //setting each field invididually instead of just making it equal to "picked" allows us to preserve any changes made to the time, in case those changes were made before the date
+        widget.currentDate = widget.currentDate.copyWith(year: picked.year, month: picked.month, day: picked.day);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentDateString = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.currentDate));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //this will keep the current date, but will change the time on the dateTime object
+        widget.currentDate = widget.currentDate.copyWith(hour: picked.hour, minute: picked.minute, second: 0, millisecond: 0, microsecond: 0);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentHourString = picked.format(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              backgroundColor: Theme.of(context).colorScheme.background,
+              elevation: 0,
+              title: const Text(
+                "Editar Aula",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 5,
+                    width: 300,
+                  ),
+                  Row(children: [Container(padding: EdgeInsets.all(5.0), child: Text("Realizada")), IconButton(
+                      padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+
+                      onPressed: (){setState(() {
+                        isDone = (isDone-1).abs();
+                      });},
+                      icon: Icon(
+                        boolIconFromIntegerValue(isDone),
+                        color: Theme.of(context).colorScheme.inverseSurface,
+                      )
+                  ),],),
+                  SizedBox(height: 20),
+
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Container(
+                    width: 150,
+                      height: 50,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        controller: lessonHours,
+                        keyboardType: TextInputType.number,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Duração da Aula",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),Container(padding: EdgeInsets.all(5.0), child: Text("Horas")),]),
+                  SizedBox(height: 5),
+                  SizedBox(height: 5),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[Container(
+                      width: 150,
+                      height: 50,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        controller: lessonDistance,
+                        keyboardType: TextInputType.name,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Distância Percorrida",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )), Container(padding: EdgeInsets.all(5.0), child: Text("km")),]),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Data")),
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                        child: FilledButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                          onPressed: () {
+                            _selectDate(context);
+                          },
+                          child: Text(
+                            widget.currentDateString,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        )),
+                  ]),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Hora")),
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                        child: FilledButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                          onPressed: () {
+                            _selectHour(context);
+                          },
+                          child: Text(
+                            widget.currentHourString,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        )),
+                  ]),
+                  /*Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ])*/
+                ],
+              ),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Lesson lessonToBeAdded = Lesson(lessonId: stateLesson.lessonId,lessonStudentId: stateLesson.lessonStudentId, lessonDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), lessonCategory: stateLesson.lessonCategory, lessonDistance: double.parse(lessonDistance.text), lessonHours: double.parse(lessonHours.text), lessonDone: isDone, lessonManoeuvres: "");
+                      DatabaseController.instance.updateLesson(lessonToBeAdded.toMap());
+                      setState(() {
+                        debugPrint("CLICKED ON CONFIRM BUTTON");
+                        widget.updateStateCallback();
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+}
+
 //The dynamic Lessons List widget
 class LessonsList extends StatefulWidget {
-  LessonsList({Key? key, required this.studentId}) : super(key: key);
+  LessonsList(this.updateStateCallbackFunction, {Key? key, required this.studentId}) : super(key: key);
+
+  void Function() updateStateCallbackFunction;
 
   int studentId = 0;
 
@@ -641,9 +932,10 @@ class LessonsListState extends State<LessonsList> {
     listLessons = [];
   }
 
-  //Async version of the getStudents method
+  //Async version of the getLessons method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getLessons() async {
+    resetGlobalsLessons();
     listLessons = [];
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsLessons();
     setState(() {
@@ -651,30 +943,35 @@ class LessonsListState extends State<LessonsList> {
     });
   }
 
-  //Method that adds Students to the List, in case they are compliant with the search criteria
+  //Method that adds Lessons to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
     debugPrint("LESSON FOUIND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
 
     if (Lesson.fromMap(map).lessonStudentId == widget.studentId) {
       listLessons.add(Lesson.fromMap(map));
+
     }
   }
 
   @override
   void initState() {
+
     debugPrint("BAN BAN NEW 1");
     debugPrint("STUDENT ID IS: " + widget.studentId.toString());
     getLessons();
     super.initState();
+
   }
 
   @override
   void updateState() {
+
     debugPrint("BAN BAN NEW 2");
     debugPrint("STUDENT ID IS: " + widget.studentId.toString());
     setState(() {
       getLessons();
     });
+
   }
 
   //Building the Widget
@@ -713,13 +1010,18 @@ class LessonsListState extends State<LessonsList> {
                       transformAlignment: Alignment.bottomRight,
                       margin: EdgeInsets.all(0),
                       padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                      child: Icon(
+                      child: IconButton(
+                        padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+
+                        onPressed: (){},
+                        icon: Icon(
                         boolIconFromIntegerValue(getLesson.lessonDone),
                         color: Theme.of(context).colorScheme.inverseSurface,
+                )
                       ),
                     ),
                     Container(
-                        width: 65,
+                        width: 40,
                         child: Text(
                           (position + 1).toString(),
                           textAlign: TextAlign.center,
@@ -743,7 +1045,7 @@ class LessonsListState extends State<LessonsList> {
                     Container(
                         width: 130,
                         child: Text(
-                          "${getLesson.lessonDistance.toString()} Km",
+                          "${getLesson.lessonDistance.toString()} km",
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
                         )),
@@ -797,7 +1099,9 @@ class LessonsListState extends State<LessonsList> {
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showEditLessonDialog(widget.updateStateCallbackFunction, getLesson);
+                    },
                     icon: Icon(Icons.mode_edit_outline_rounded, color: Theme.of(context).colorScheme.inverseSurface),
                   )),
               Container(
@@ -814,6 +1118,26 @@ class LessonsListState extends State<LessonsList> {
           );
         });
   }
+
+  void showEditLessonDialog(void Function() updateStateCallbackFunction, Lesson currentLesson) {
+    debugPrint("callback in showEditLessonDialog");
+    updateStateCallbackFunction();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => EditLessonDialog(updateStateCallbackFunction, currentLesson),
+    );
+  }
+
+  void showDeleteLessonDialog(void Function() updateStateCallbackFunction, Student currentStudent) {
+    debugPrint("callback in showDeleteLessonDialog");
+    updateStateCallbackFunction();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => NewLessonDialog(updateStateCallbackFunction, currentStudent),
+    );
+  }
+
+
 }
 
 class EditStudentDialog extends StatefulWidget {
@@ -1301,6 +1625,29 @@ IconData boolIconFromIntegerValue(int value) {
   return result;
 }
 
+//reset this student's global lesson variables (distance travelled, total lesson hours, number of lessons. DOES NOT CHANGE THE NEXT EXAM VARIABLE OR NUMBER OF EXAMS)
+void resetGlobalsLessons(){
+  debugPrint("GLOBAL LESSONS RESET");
+  totalHours = 0;
+  totalDistance = 0;
+  numberOfLessons = 0;
+}
+
+//Add a new lesson to the global variables
+void incrementGlobalsLessons(Lesson lesson){
+  debugPrint("GLOBAL LESSONS INCREMENTED");
+  totalHours += lesson.lessonHours.ceil();
+  totalDistance += lesson.lessonDistance.ceil();
+  numberOfLessons++;
+}
+
+//reset this student's global exam variables ( number of exams, next exam date )
+void resetGlobalsExams(){
+  numberOfExams = 0;
+  nextExam = "0000-00-00";
+}
+
+
 List<T> mergeSortList<T>(List<T> list) {
   List<T> listCopy = List<T>.from(list);
   CopyList(list, 0, list.length, listCopy); // one time copy of A[] to B[]
@@ -1346,3 +1693,4 @@ void CopyList<T>(List<T> listA, int iBegin, int iEnd, List<T> listB) {
     listB[k] = listA[k];
   }
 }
+

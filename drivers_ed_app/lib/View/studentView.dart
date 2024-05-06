@@ -653,16 +653,20 @@ class EditCategoryDialog extends StatefulWidget {
   EditCategoryDialog(this.updateStateCallback, this.category, {super.key});
 
   @override
-  EditCategoryDialogState createState() => EditCategoryDialogState(category);
+  EditCategoryDialogState createState() => EditCategoryDialogState();
 }
 
 class EditCategoryDialogState extends State<EditCategoryDialog> {
   late CategoryPackage.Category stateCategory;
 
-  TextEditingController categoryName = TextEditingController(text: "");
-  TextEditingController categoryDescription = TextEditingController(text: "");
+  late TextEditingController categoryName;
+  late TextEditingController categoryDescription;
 
-  EditCategoryDialogState(this.stateCategory) {
+
+  @override
+  void initState(){
+    super.initState();
+    stateCategory = widget.category;
     categoryName = TextEditingController(text: stateCategory.categoryName);
     categoryDescription = TextEditingController(text: stateCategory.categoryDescription);
   }
