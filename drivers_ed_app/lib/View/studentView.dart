@@ -2046,6 +2046,8 @@ String weekdayString(DateTime dateTime) {
 }
 
 //TODO: WHEN DELETING A STUDENT, DELETE ALL THEIR LESSONS AND EXAMS. THIS WILL CLEAN THE DATABASE, PREVENTING IT FROM BECOMING BLOATED WITH OLD LESSONS.
+//TODO: Possibly make it so that when a manoeuvre is renamed, the app goes through all existing lessons and changes the name of the manoeuvre, if it has it, to the new name. Do the same for categories.
+//TODO: What happens when a category is deleted? Delete students? Or keep them, like I do for delete manoeuvres?//
 
 List<T> mergeSortList<T>(List<T> list) {
   List<T> listCopy = List<T>.from(list);
