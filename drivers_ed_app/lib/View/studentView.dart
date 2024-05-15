@@ -662,9 +662,8 @@ class EditCategoryDialogState extends State<EditCategoryDialog> {
   late TextEditingController categoryName;
   late TextEditingController categoryDescription;
 
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     stateCategory = widget.category;
     categoryName = TextEditingController(text: stateCategory.categoryName);
@@ -1993,7 +1992,6 @@ class ManoeuvresListState extends State<ManoeuvresList> {
       builder: (BuildContext context) => ManoeuvreDetailsDialog(manoeuvre),
     );
   }
-
 }
 
 //DateTime Methods

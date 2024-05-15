@@ -5,7 +5,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseController {
-
   //Database Name File
   static const _databaseName = "students.db";
 
@@ -54,26 +53,22 @@ class DatabaseController {
   static const columnSettingsDirty = 'settings_dirty';
 
   //Lesson Columns
-  static const columnLessonId= 'lesson_id';
+  static const columnLessonId = 'lesson_id';
   static const columnLessonStudentId = 'lesson_studentId';
   static const columnLessonDate = 'lesson_date';
-  static const columnLessonHours= 'lesson_hours';
+  static const columnLessonHours = 'lesson_hours';
   static const columnLessonDistance = 'lesson_distance';
   static const columnLessonDone = 'lesson_done';
   static const columnLessonManoeuvres = 'lesson_manoeuvres';
   static const columnLessonCategory = 'lesson_category';
 
-
-
-
   //Exam Columns
   static const columnExamId = 'exam_id';
   static const columnExamStudentId = 'exam_studentId';
-  static const columnExamDate= 'exam_date';
+  static const columnExamDate = 'exam_date';
   static const columnExamDone = 'exam_done';
   static const columnExamPassed = 'exam_passed';
   static const columnExamCategory = 'exam_category';
-
 
   //Manoeuvre Columns
   static const columnManoeuvreId = 'manoeuvre_id';
@@ -84,9 +79,6 @@ class DatabaseController {
   static const columnCategoryId = 'category_id';
   static const columnCategoryName = 'category_name';
   static const columnCategoryDescription = 'category_description';
-
-
-
 
   DatabaseController._privateConstructor();
 
@@ -129,9 +121,7 @@ class DatabaseController {
   //Whenever the Database is upgraded from an old version, this method has to be changed (see examples below)
   void _onUpgrade(Database db, int oldVersion, int newVersion) {
     //if it is an upgrade and not a downgrade
-    if (oldVersion < newVersion) {
-
-    }
+    if (oldVersion < newVersion) {}
   }
 
   //When the Database is created for the first time, this is what should happen:
@@ -195,7 +185,6 @@ class DatabaseController {
           ''');
   }
 
-
   //Inserting a new Student into the Database
   Future<int?> insertStudent(Map<String, dynamic> row) async {
     Database? db = await instance.database;
@@ -246,8 +235,6 @@ class DatabaseController {
     return result?.toList();
   }
 
-
-
   //Query (return) all Settings Configurations
   Future<List<Map<String, dynamic>>?> queryAllRowsSettings() async {
     Database? db = await instance.database;
@@ -273,8 +260,6 @@ class DatabaseController {
 
   //Query (return) all Lessons within 2 dates
   Future<List<Map<String, dynamic>>?> queryAllExamsFromStudent(int examStudentId) async {
-
-
     Database? db = await instance.database;
     var result = await db?.rawQuery('SELECT * FROM $examTable WHERE $columnExamStudentId = $examStudentId');
     return result?.toList();
@@ -313,7 +298,6 @@ class DatabaseController {
     return Sqflite.firstIntValue(await db!.rawQuery('SELECT COUNT(*) FROM $setTable'));
   }
 
-
   //Return number of Tags
   Future<int?> queryRowCountLessons() async {
     Database? db = await instance.database;
@@ -339,10 +323,7 @@ class DatabaseController {
   }
 
   //Seed (Populate) the database
-  void seed() async {
-
-  }
-
+  void seed() async {}
 
   //Update existing Student Object
   Future<int?> updateStudent(Map<String, dynamic> row) async {
