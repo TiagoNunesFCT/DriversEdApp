@@ -2071,7 +2071,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
 
   //Type had to be obfuscated since dart was not letting me insert this into the DeleteConfirmationDialog function call
     void deleteManoeuvre<T>(T getManoeuvre){
-    //delete category getCategory
+    //delete manoeuvre getManoeuvre
     //update state
     DatabaseController.instance.deleteManoeuvre((getManoeuvre as Manoeuvre).manoeuvreId!);
     updateStateCallback();
