@@ -1451,9 +1451,83 @@ class _ManoeuvreListDialogState extends State<ManoeuvreListDialog> {
   }
 }
 
-//The dynamic Categories List widget
 
-//State
+//The dialog that shows up asking if the user is really sure that they want to delete a category/manoeuvre
+class DeleteConfirmationDialog extends StatelessWidget {
+  void Function<T>(T) updateStateCallback;
+  //is it a category (0 - false) or a manoeuvre (1 - true)?
+  bool isManoeuvre = false;
+
+  //can either be a category or a manoeuvre. However, it is only here so it can be passed back to the callback function, since by default it doesn't know which exact category or manoeuvre we want to delete, as this process is done dynamically upon list building
+  dynamic objectToDelete;
+
+  DeleteConfirmationDialog(this.updateStateCallback, this.isManoeuvre, this.objectToDelete,{super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text(
+                "Confirmação",
+              ),
+              content: Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                          height: 50,
+                          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            Text(
+                              "Tem a certeza que pretende eliminar a ${(isManoeuvre)? "Manobra": "Categoria"} selecionada?",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                            ),
+                            Text(
+                              "Esta ação é irreversível.",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                            ),
+                          ])),
+
+                    ],
+                  )),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      updateStateCallback(objectToDelete);
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'SIM',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Não',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+}
 
 class PopupMenuExample extends StatefulWidget {
   final void Function(String) callback;
@@ -1798,15 +1872,29 @@ class CategoriesListState extends State<CategoriesList> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       onPressed: () {
-                        //delete category getCategory
-                        //update state
-                        DatabaseController.instance.deleteCategory(getCategory.categoryId!);
-                        updateStateCallback();
+                        showDeleteCategoryDialog(getCategory!);
+
                       },
                       icon: Icon(Icons.delete_forever_rounded),
                     ))
               ]);
             }));
+  }
+
+
+  //Type had to be obfuscated since dart was not letting me insert this into the DeleteConfirmationDialog function call
+  void deleteCategory<T>(T getCategory){
+    //delete category getCategory
+    //update state
+    DatabaseController.instance.deleteCategory((getCategory as CategoryPackage.Category).categoryId!);
+    updateStateCallback();
+  }
+
+  void showDeleteCategoryDialog(CategoryPackage.Category category) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DeleteConfirmationDialog(deleteCategory, false, category),
+    );
   }
 
   void showEditCategoryDialog(void Function() updateStateCallbackFunction, CategoryPackage.Category category) {
@@ -1965,8 +2053,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                       onPressed: () {
                         //delete manoeuvre getManoeuvre
                         //update state
-                        DatabaseController.instance.deleteManoeuvre(getManoeuvre.manoeuvreId!);
-                        updateStateCallback();
+                        showDeleteManoeuvreDialog(getManoeuvre);
                       },
                       icon: Icon(Icons.delete_forever_rounded),
                     ))
@@ -1981,10 +2068,27 @@ class ManoeuvresListState extends State<ManoeuvresList> {
     );
   }
 
+
+  //Type had to be obfuscated since dart was not letting me insert this into the DeleteConfirmationDialog function call
+    void deleteManoeuvre<T>(T getManoeuvre){
+    //delete category getCategory
+    //update state
+    DatabaseController.instance.deleteManoeuvre((getManoeuvre as Manoeuvre).manoeuvreId!);
+    updateStateCallback();
+  }
+
+  void showDeleteManoeuvreDialog(Manoeuvre manoeuvre) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DeleteConfirmationDialog(deleteManoeuvre, true, manoeuvre),
+    );
+  }
+
   //SetState Callback
   void updateStateCallback() {
     updateState();
   }
+
 
   void showManoeuvreDetailsDialog(Manoeuvre manoeuvre) {
     showDialog(
