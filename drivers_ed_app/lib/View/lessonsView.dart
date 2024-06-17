@@ -20,7 +20,7 @@ int totalHours = 0;
 int totalDistance = 0;
 int numberOfLessons = 0;
 int numberOfExams = 0;
-String nextExam = "0000-00-00";
+int nextExam = 0;
 
 //experimental: this will cause the page to update its global values after they have been fetched from the list the first time. Otherwise, since the list is created after the values have been introduced, it would only update the global values on the next update.
 bool firstUpdate = true;
@@ -48,26 +48,32 @@ class LessonsPage extends StatefulWidget {
 class _LessonsPageState extends State<LessonsPage> {
   //placing it in a variable so it can be manually updated whenever the page itself updates
   late List<Lesson> listLessons;
+  late List<Exam> listExams;
   Student? stateStudent;
 
   void initState() {
     listLessons = [];
+    listExams = [];
     resetGlobalsLessons();
+    resetGlobalsExams();
     super.initState();
     stateStudent = widget.studentObject;
     getStudentsWithNumber(widget.studentId);
     getLessons();
+    getExams();
     setState(() {});
   }
 
   void updateState() {
     listLessons = [];
+    listExams = [];
     resetGlobalsLessons();
     debugPrint("BAN BAN 1");
     debugPrint("current number of hours: $totalHours");
     setState(() {
       getStudentsWithNumber(widget.studentId);
       getLessons();
+      getExams();
       _LessonsListKey.currentState!.updateState();
     });
     debugPrint("current number of hours: $totalHours");
@@ -246,7 +252,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                                     ),
                                     Text(
-                                      nextExam,
+                                        (nextExam > 0)? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(nextExam)) : "Não Marcado.",
                                       style: TextStyle(fontWeight: FontWeight.w300),
                                     )
                                   ]),
@@ -283,7 +289,7 @@ class _LessonsPageState extends State<LessonsPage> {
                                     )),
                                     FilledButton.tonal(
                                         onPressed: () {
-                                          showExamListDialog();
+                                          showExamListDialog(updateStateCallback);
                                         },
                                         child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                           Icon(Icons.workspace_premium_rounded),
@@ -413,10 +419,10 @@ class _LessonsPageState extends State<LessonsPage> {
     );
   }
 
-  void showExamListDialog() {
+  void showExamListDialog(void Function() updateStateCallbackFunction) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => ExamListDialog(widget.studentId),
+      builder: (BuildContext context) => ExamListDialog(updateStateCallbackFunction,widget.studentId),
     );
   }
 
@@ -429,6 +435,25 @@ class _LessonsPageState extends State<LessonsPage> {
     );
   }
 
+  //Async version of the getExams method. This is a copy of the one in the ExamsList widget. However, due to race conditions, a new copy was needed here
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getExams() async {
+    resetGlobalsExams();
+    listExams = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllExamsFromStudent(widget.studentId);
+    setState(() {
+      listMap?.forEach((map) => addToListExams(map));
+
+    });
+
+  }
+
+  //Method that adds Exams to the List, in case they are compliant with the search criteria
+  addToListExams(Map<String, dynamic> map) {
+    listExams.add(Exam.fromMap(map));
+    incrementGlobalsExams(Exam.fromMap(map));
+  }
+
   //Async version of the getLessons method. This is a copy of the one in the LessonsList widget. However, due to race conditions, a new copy was needed here
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getLessons() async {
@@ -436,18 +461,18 @@ class _LessonsPageState extends State<LessonsPage> {
     listLessons = [];
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsFromStudent(widget.studentId);
     setState(() {
-      listMap?.forEach((map) => addToList(map));
+      listMap?.forEach((map) => addToListLesson(map));
+
 
     });
 
   }
 
-  //Method that adds Students to the List, in case they are compliant with the search criteria
-  addToList(Map<String, dynamic> map) {
-    debugPrint("LESSON FOUIND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
+  //Method that adds Lessons to the List, in case they are compliant with the search criteria
+  addToListLesson(Map<String, dynamic> map) {
+    debugPrint("LESSON FOUND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
     listLessons.add(Lesson.fromMap(map));
     incrementGlobalsLessons(Lesson.fromMap(map));
-    listLessons.sort((a, b) => a.lessonDate.compareTo(b.lessonDate));
     debugPrint("List sorted, current order is:");
     listLessons.forEach((element) {debugPrint("Element: ${element.lessonDate}");});
   }
@@ -1791,7 +1816,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
     listManoeuvres = [];
   }
 
-  //Async version of the getLessons method
+  //Async version of the getManoeuvres method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getManoeuvres() async {
     resetGlobalsLessons();
@@ -1940,7 +1965,7 @@ class ManoeuvresListStaticState extends State<ManoeuvresListStatic> {
     listManoeuvres = [];
   }
 
-  //Async version of the getLessons method
+  //Async version of the getManoeuvres method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getManoeuvres() async {
     resetGlobalsLessons();
@@ -2490,7 +2515,10 @@ class EditStudentDialogState extends State<EditStudentDialog> {
 }
 
 class ExamListDialog extends StatefulWidget {
-  ExamListDialog(this.studentId, {super.key});
+  void Function() updateStateCallback;
+
+
+  ExamListDialog(this.updateStateCallback,this.studentId, {super.key});
 
   int studentId = 0;
 
@@ -2541,7 +2569,7 @@ class _ExamListDialogState extends State<ExamListDialog> {
               color: Theme.of(context).colorScheme.onInverseSurface,
             ),
             height: (MediaQuery.of(context).size.height - 400),
-            child: ExamsList(widget.studentId))
+            child: ExamsList(widget.updateStateCallback,widget.studentId))
       ]),
       actions: <Widget>[
         Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -2564,8 +2592,8 @@ class _ExamListDialogState extends State<ExamListDialog> {
 
 //The dynamic Exams List widget
 class ExamsList extends StatefulWidget {
-  ExamsList(this.studentId, {Key? key}) : super(key: key);
-
+  ExamsList(this.updateStateCallback,this.studentId, {Key? key}) : super(key: key);
+  void Function() updateStateCallback;
   int studentId = 0;
 
   @override
@@ -2592,6 +2620,7 @@ class ExamsListState extends State<ExamsList> {
   //Async version of the getExams method
   // ignore: missing_return
   Future<List<Map<String, dynamic>>?> getExams() async {
+    resetGlobalsExams();
     listExams = [];
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllExamsFromStudent(widget.studentId);
     setState(() {
@@ -2748,6 +2777,7 @@ class ExamsListState extends State<ExamsList> {
     //update state
     DatabaseController.instance.deleteExam((getExam as Exam).examId!);
     updateStateCallback();
+    widget.updateStateCallback();
   }
 
   void showDeleteExamDialog(Exam exam) {
@@ -2982,10 +3012,33 @@ void incrementGlobalsLessons(Lesson lesson) {
   numberOfLessons++;
 }
 
+//Add a new exam to the global variables
+void incrementGlobalsExams(Exam exam) {
+  debugPrint("GLOBAL EXAMS INCREMENTED");
+
+  numberOfExams++;
+
+
+  //now... how do we know which is the next exam? Simple:
+  //if current exam date has not passed yet
+    //if the current next exam has already passed
+      //put exam as the next exam
+    //else
+      //if current next exam is greater than exam
+        //put exam as the next exam
+  if (exam.examDate >= DateTime.now().millisecondsSinceEpoch){
+    if((nextExam <= DateTime.now().millisecondsSinceEpoch) || (nextExam >= exam.examDate)){
+
+      nextExam = exam.examDate.ceil();
+    }
+  }
+
+}
+
 //reset this student's global exam variables ( number of exams, next exam date )
 void resetGlobalsExams() {
   numberOfExams = 0;
-  nextExam = "0000-00-00";
+  nextExam = 0;
 }
 
 List<T> mergeSortList<T>(List<T> list) {
