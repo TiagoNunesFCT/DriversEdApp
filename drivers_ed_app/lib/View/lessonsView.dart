@@ -437,14 +437,19 @@ class _LessonsPageState extends State<LessonsPage> {
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsFromStudent(widget.studentId);
     setState(() {
       listMap?.forEach((map) => addToList(map));
+
     });
+
   }
 
   //Method that adds Students to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
     debugPrint("LESSON FOUIND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
     listLessons.add(Lesson.fromMap(map));
-
+    incrementGlobalsLessons(Lesson.fromMap(map));
+    listLessons.sort((a, b) => a.lessonDate.compareTo(b.lessonDate));
+    debugPrint("List sorted, current order is:");
+    listLessons.forEach((element) {debugPrint("Element: ${element.lessonDate}");});
   }
 }
 
@@ -2069,7 +2074,7 @@ class LessonsListState extends State<LessonsList> {
   Future<List<Map<String, dynamic>>?> getLessons() async {
     resetGlobalsLessons();
     listLessons = [];
-    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsLessons();
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsFromStudent(widget.studentId);
     setState(() {
       listMap?.forEach((map) => addToList(map));
     });
@@ -2079,9 +2084,9 @@ class LessonsListState extends State<LessonsList> {
   addToList(Map<String, dynamic> map) {
     debugPrint("LESSON FOUIND IN DATABASE! Student ID is: ${Lesson.fromMap(map).lessonStudentId}");
 
-    if (Lesson.fromMap(map).lessonStudentId == widget.studentId) {
+
       listLessons.add(Lesson.fromMap(map));
-    }
+    listLessons.sort((a, b) => a.lessonDate.compareTo(b.lessonDate));
   }
 
   @override
@@ -2591,10 +2596,9 @@ class ExamsListState extends State<ExamsList> {
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllExamsFromStudent(widget.studentId);
     setState(() {
       listMap?.forEach((map) => addToList(map));
+      listExams.sort((a, b) => a.examDate.compareTo(b.examDate));
     });
-    setState(() {
-      mergeSortList(listExams);
-    });
+
   }
 
   //Method that adds Exams to the List, in case they are compliant with the search criteria
