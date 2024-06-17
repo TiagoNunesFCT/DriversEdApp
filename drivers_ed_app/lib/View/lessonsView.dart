@@ -276,7 +276,9 @@ class _LessonsPageState extends State<LessonsPage> {
                                       style: ButtonStyle(
                                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        showNewExamDialog(updateStateCallback, stateStudent!);
+                                      },
                                       icon: Icon(Icons.add_rounded),
                                     )),
                                     FilledButton.tonal(
@@ -345,17 +347,17 @@ class _LessonsPageState extends State<LessonsPage> {
                               "|",
                               style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
                             ),
-                            Container(width: 70, child: Text("Data", textAlign: TextAlign.center)),
+                            Container(padding:EdgeInsets.symmetric(vertical:0.0, horizontal: 0.0),width: 80, child: Text("Data e Hora", textAlign: TextAlign.center)),
                             Text(
                               "|",
                               style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
                             ),
-                            Container(width: 70, child: Text("Distância", textAlign: TextAlign.center)),
+                            Container(width: 65, child: Text("Distância", textAlign: TextAlign.center)),
                             Text(
                               "|",
                               style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
                             ),
-                            Container(width: 50, child: Text("Horas", textAlign: TextAlign.center)),
+                            Container(width: 55, child: Text("Duração", textAlign: TextAlign.center)),
                             Text(
                               "|",
                               style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
@@ -402,6 +404,15 @@ class _LessonsPageState extends State<LessonsPage> {
     );
   }
 
+  void showNewExamDialog(void Function() updateStateCallbackFunction, Student currentStudent) {
+    debugPrint("callback in showNewExamDialog");
+    updateStateCallbackFunction();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => NewExamDialog(updateStateCallbackFunction, currentStudent),
+    );
+  }
+
   void showExamListDialog() {
     showDialog(
       context: context,
@@ -423,7 +434,7 @@ class _LessonsPageState extends State<LessonsPage> {
   Future<List<Map<String, dynamic>>?> getLessons() async {
     resetGlobalsLessons();
     listLessons = [];
-    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsLessons();
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsFromStudent(widget.studentId);
     setState(() {
       listMap?.forEach((map) => addToList(map));
     });
@@ -432,10 +443,221 @@ class _LessonsPageState extends State<LessonsPage> {
   //Method that adds Students to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
     debugPrint("LESSON FOUIND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
+    listLessons.add(Lesson.fromMap(map));
 
-    if (Lesson.fromMap(map).lessonStudentId == widget.studentId) {
-      listLessons.add(Lesson.fromMap(map));
-      incrementGlobalsLessons(Lesson.fromMap(map));
+  }
+}
+
+class NewExamDialog extends StatefulWidget {
+  DateTime currentDate = DateTime.now().copyWith(second: 0, millisecond: 0, microsecond: 0);
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
+  late String currentHourString = currentDate.hour.toString().padLeft(2, '0') + ":" + currentDate.minute.toString().padLeft(2, '0');
+
+  /*currentDate.toIso8601String().split('T').last.split('.').first;*/
+  late String currentCategory = "A";
+  Student currentStudent;
+
+  void Function() updateStateCallback;
+
+  NewExamDialog(this.updateStateCallback, this.currentStudent, {super.key}) {}
+
+  @override
+  NewExamDialogState createState() => NewExamDialogState();
+}
+
+class NewExamDialogState extends State<NewExamDialog> {
+  NewExamDialogState();
+
+  /*TextEditingController studentNumber = TextEditingController(text: "");
+  TextEditingController studentName = TextEditingController(text: "");*/
+
+  void showDatePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(context: context, initialDate: widget.currentDate, firstDate: DateTime(1970), lastDate: DateTime(2100));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //setting each field invididually instead of just making it equal to "picked" allows us to preserve any changes made to the time, in case those changes were made before the date
+        widget.currentDate = widget.currentDate.copyWith(year: picked.year, month: picked.month, day: picked.day);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentDateString = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.currentDate));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //this will keep the current date, but will change the time on the dateTime object
+        widget.currentDate = widget.currentDate.copyWith(hour: picked.hour, minute: picked.minute, second: 0, millisecond: 0, microsecond: 0);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentHourString = picked.format(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      elevation: 0,
+      title: const Text(
+        "Marcar Exame",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 300,
+          ),
+          /*SizedBox(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: studentNumber,
+                        keyboardType: TextInputType.number,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Número de Inscrição",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),
+                  SizedBox(height: 5),
+                  SizedBox(height: 5),
+                  Container(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: studentName,
+                        keyboardType: TextInputType.name,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Nome Completo",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),*/
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Data")),
+            Container(
+                margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                child: FilledButton(
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                  onPressed: () {
+                    _selectDate(context);
+                  },
+                  child: Text(
+                    widget.currentDateString,
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
+                )),
+          ]),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Hora")),
+            Container(
+                margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                child: FilledButton(
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                  onPressed: () {
+                    _selectHour(context);
+                  },
+                  child: Text(
+                    widget.currentHourString,
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
+                )),
+          ]),
+          /*Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ])*/
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Exam examToBeAdded = Exam(examStudentId: widget.currentStudent.studentRegistrationNumber, examDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), examCategory: widget.currentStudent.studentCategory, examDone: 0, examPassed: 0);
+              DatabaseController.instance.insertExam(examToBeAdded.toMapWithoutId());
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
     }
   }
 }
@@ -644,6 +866,229 @@ class NewLessonDialogState extends State<NewLessonDialog> {
         ])
       ],
     )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+}
+
+class EditExamDialog extends StatefulWidget {
+  late DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(currentExam.examDate.toInt());
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
+  late String currentHourString = currentDate.hour.toString().padLeft(2, '0') + ":" + currentDate.minute.toString().padLeft(2, '0');
+  late List<String> currentlySelectedManoeuvres = [];
+
+  /*currentDate.toIso8601String().split('T').last.split('.').first;*/
+  late String currentCategory = "A";
+
+  Exam currentExam;
+
+  void Function() updateStateCallback;
+
+  EditExamDialog(this.updateStateCallback, this.currentExam, {super.key}) {}
+
+  @override
+  EditExamDialogState createState() => EditExamDialogState();
+}
+
+class EditExamDialogState extends State<EditExamDialog> {
+  late Exam stateExam;
+
+  //Done
+  //Horas
+  //Distância
+  //Manobras
+
+  late int isDone;
+  late int hasPassed;
+
+  @override
+  void initState() {
+    super.initState();
+    stateExam = widget.currentExam;
+
+    isDone = stateExam.examDone;
+    hasPassed = stateExam.examPassed;
+  }
+
+  void showDatePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(context: context, initialDate: widget.currentDate, firstDate: DateTime(1970), lastDate: DateTime(2100));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //setting each field invididually instead of just making it equal to "picked" allows us to preserve any changes made to the time, in case those changes were made before the date
+        widget.currentDate = widget.currentDate.copyWith(year: picked.year, month: picked.month, day: picked.day);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentDateString = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.currentDate));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //this will keep the current date, but will change the time on the dateTime object
+        widget.currentDate = widget.currentDate.copyWith(hour: picked.hour, minute: picked.minute, second: 0, millisecond: 0, microsecond: 0);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentHourString = picked.format(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              backgroundColor: Theme.of(context).colorScheme.background,
+              elevation: 0,
+              title: const Text(
+                "Editar Exame",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 5,
+                    width: 300,
+                  ),
+                  Row(
+                    children: [
+                      Container(padding: EdgeInsets.all(5.0), child: Text("Realizado")),
+                      IconButton(
+                          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                          onPressed: () {
+                            setState(() {
+                              isDone = (isDone - 1).abs();
+                            });
+                          },
+                          icon: Icon(
+                            boolIconFromIntegerValue(isDone, true),
+                            color: Theme.of(context).colorScheme.inverseSurface,
+                          )),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Container(padding: EdgeInsets.all(5.0), child: Text("Aprovado")),
+                      IconButton(
+                          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                          onPressed: () {
+                            setState(() {
+                              hasPassed = (hasPassed - 1).abs();
+                            });
+                          },
+                          icon: Icon(
+                            boolIconFromIntegerValue(hasPassed, true),
+                            color: Theme.of(context).colorScheme.inverseSurface,
+                          )),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Data")),
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                        child: FilledButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                          onPressed: () {
+                            _selectDate(context);
+                          },
+                          child: Text(
+                            widget.currentDateString,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        )),
+                  ]),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Hora")),
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                        child: FilledButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                          onPressed: () {
+                            _selectHour(context);
+                          },
+                          child: Text(
+                            widget.currentHourString,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        )),
+                  ]),
+
+                ],
+              ),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Exam examToBeAdded = Exam(examId: stateExam.examId, examStudentId: stateExam.examStudentId, examDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), examCategory: stateExam.examCategory, examDone: isDone, examPassed: hasPassed);
+                      DatabaseController.instance.updateExam(examToBeAdded.toMap());
+                      setState(() {
+                        debugPrint("CLICKED ON CONFIRM BUTTON");
+                        widget.updateStateCallback();
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+
+  void changeSelectedManoeuvres(List<String> newManoeuvres) {
+    widget.currentlySelectedManoeuvres = newManoeuvres;
+  }
+
+  //will compress all manoeuvres in a list into a single string, separated by ';', so it can be stored in the lesson object.
+  String compressManoeuvres() {
+    String returnedString = "";
+    for (String s in widget.currentlySelectedManoeuvres) {
+      if (s.isNotEmpty) {
+        debugPrint("FOUND STRING $s");
+        returnedString += ("$s;");
+      }
+    }
+    debugPrint("RETURNED STRING IS $returnedString");
+    return returnedString;
   }
 
   void changeCategory(String newCategory) {
@@ -905,6 +1350,7 @@ class EditLessonDialogState extends State<EditLessonDialog> {
           ),
           FilledButton.tonal(
             onPressed: () {
+              //TODO: If, by any chance, imperial units are implemented, convert them to metric here before exporting the Lesson to the database. Likewise, when importing the Lesson, convert the metric units to imperial.
               Lesson lessonToBeAdded = Lesson(lessonId: stateLesson.lessonId, lessonStudentId: stateLesson.lessonStudentId, lessonDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), lessonCategory: stateLesson.lessonCategory, lessonDistance: double.parse(lessonDistance.text), lessonHours: double.parse(lessonHours.text), lessonDone: isDone, lessonManoeuvres: compressManoeuvres());
               DatabaseController.instance.updateLesson(lessonToBeAdded.toMap());
               setState(() {
@@ -921,6 +1367,175 @@ class EditLessonDialogState extends State<EditLessonDialog> {
         ])
       ],
     )));
+  }
+
+  void changeSelectedManoeuvres(List<String> newManoeuvres) {
+    widget.currentlySelectedManoeuvres = newManoeuvres;
+  }
+
+  //will compress all manoeuvres in a list into a single string, separated by ';', so it can be stored in the lesson object.
+  String compressManoeuvres() {
+    String returnedString = "";
+    for (String s in widget.currentlySelectedManoeuvres) {
+      if (s.isNotEmpty) {
+        debugPrint("FOUND STRING $s");
+        returnedString += ("$s;");
+      }
+    }
+    debugPrint("RETURNED STRING IS $returnedString");
+    return returnedString;
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+}
+
+class ExamDetailsDialog extends StatefulWidget {
+  late DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(currentExam.examDate.toInt());
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
+  late String currentHourString = currentDate.hour.toString().padLeft(2, '0') + ":" + currentDate.minute.toString().padLeft(2, '0');
+  late List<String> currentlySelectedManoeuvres = [];
+
+  /*currentDate.toIso8601String().split('T').last.split('.').first;*/
+  late String currentCategory = "A";
+
+  Exam currentExam;
+
+  void Function() updateStateCallback;
+
+  ExamDetailsDialog(this.updateStateCallback, this.currentExam, {super.key}) {}
+
+  @override
+  ExamDetailsDialogState createState() => ExamDetailsDialogState();
+}
+
+class ExamDetailsDialogState extends State<ExamDetailsDialog> {
+  late Exam stateExam;
+
+  //Done
+  //Horas
+  //Distância
+  //Manobras
+
+  late int isDone;
+  late int hasPassed;
+
+  @override
+  void initState() {
+    super.initState();
+    stateExam = widget.currentExam;
+
+    isDone = stateExam.examDone;
+    hasPassed = stateExam.examPassed;
+  }
+
+  void showDatePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(context: context, initialDate: widget.currentDate, firstDate: DateTime(1970), lastDate: DateTime(2100));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //setting each field invididually instead of just making it equal to "picked" allows us to preserve any changes made to the time, in case those changes were made before the date
+        widget.currentDate = widget.currentDate.copyWith(year: picked.year, month: picked.month, day: picked.day);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentDateString = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.currentDate));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //this will keep the current date, but will change the time on the dateTime object
+        widget.currentDate = widget.currentDate.copyWith(hour: picked.hour, minute: picked.minute, second: 0, millisecond: 0, microsecond: 0);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentHourString = picked.format(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              backgroundColor: Theme.of(context).colorScheme.background,
+              elevation: 0,
+              title: const Text(
+                "Detalhes do Exame",
+              ),
+              content: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                    color: Theme.of(context).colorScheme.onInverseSurface,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 5,
+                        width: 300,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(padding: EdgeInsets.all(10.0), child: Text("Realizado? ", style: TextStyle(fontWeight: FontWeight.w900))),
+                          Container(padding: EdgeInsets.all(10.0), child: (isDone > 0) ? Text("Sim", style: TextStyle(fontWeight: FontWeight.w300)) : Text("Não", style: TextStyle(fontWeight: FontWeight.w300))),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(padding: EdgeInsets.all(10.0), child: Text("Aluno Aprovado? ", style: TextStyle(fontWeight: FontWeight.w900))),
+                          Container(padding: EdgeInsets.all(10.0), child: (hasPassed > 0) ? Text("Sim", style: TextStyle(fontWeight: FontWeight.w300)) : Text("Não", style: TextStyle(fontWeight: FontWeight.w300))),
+                        ],
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                        Container(padding: EdgeInsets.all(10.0), child: Text("Data: ", style: TextStyle(fontWeight: FontWeight.w900))),
+                        Container(padding: EdgeInsets.all(10.0), child: Text(widget.currentDateString, style: TextStyle(fontWeight: FontWeight.w300))),
+                      ]),
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                        Container(padding: EdgeInsets.all(10.0), child: Text("Hora: ", style: TextStyle(fontWeight: FontWeight.w900))),
+                        Container(padding: EdgeInsets.all(10.0), child: Text(widget.currentHourString, style: TextStyle(fontWeight: FontWeight.w300))),
+                      ]),
+                    ],
+                  )),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Fechar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ])
+              ],
+            )));
   }
 
   void changeSelectedManoeuvres(List<String> newManoeuvres) {
@@ -1544,9 +2159,9 @@ class LessonsListState extends State<LessonsList> {
                       style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
                     ),
                     Container(
-                        width: 130,
+                        width: 137,
                         child: Text(
-                          DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getLesson.lessonDate.toInt())),
+                          DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(getLesson.lessonDate.toInt())),
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
                         )),
@@ -1555,7 +2170,7 @@ class LessonsListState extends State<LessonsList> {
                       style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
                     ),
                     Container(
-                        width: 130,
+                        width: 118,
                         child: Text(
                           "${getLesson.lessonDistance.toString()} km",
                           textAlign: TextAlign.center,
@@ -1566,7 +2181,7 @@ class LessonsListState extends State<LessonsList> {
                       style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
                     ),
                     Container(
-                        width: 110,
+                        width: 115,
                         child: Text(
                           "${getLesson.lessonHours.toString()} Horas",
                           textAlign: TextAlign.center,
@@ -1669,7 +2284,6 @@ class LessonsListState extends State<LessonsList> {
       widget.updateStateCallbackFunction();
       debugPrint("UPDATE STATE CALLBACK CALLED IN THE LESSONS LIST STATE");
     });
-
   }
 
   void showDeleteLessonDialog(Lesson lesson) {
@@ -1898,22 +2512,23 @@ class _ExamListDialogState extends State<ExamListDialog> {
             decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
             child: Container(
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              Container(width: 280, child: Text("Data", textAlign: TextAlign.center)),
+              Container(width: 105, child: Text("Exame Nº", textAlign: TextAlign.center)),
               Text(
                 "|",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              Container(width: 100, child: Text("Categoria", textAlign: TextAlign.center)),
+              Container(width: 140, child: Text("Data e Hora", textAlign: TextAlign.center)),
               Text(
                 "|",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              Container(width: 100, child: Text("Realizado", textAlign: TextAlign.center)),
+
+              Container(width: 80, child: Text("Aprovado", textAlign: TextAlign.center)),
               Text(
                 "|",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              Container(width: 100, child: Text("Aprovado", textAlign: TextAlign.center)),
+              Container(width: 80, child: Text("Ações", textAlign: TextAlign.center)),
             ]))),
         Container(
             decoration: BoxDecoration(
@@ -2002,6 +2617,8 @@ class ExamsListState extends State<ExamsList> {
     });
   }
 
+
+
   //Building the Widget
   @override
   Widget build(BuildContext context) {
@@ -2011,8 +2628,9 @@ class ExamsListState extends State<ExamsList> {
             itemCount: listExams.length,
             itemBuilder: (context, position) {
               Exam getExam = listExams[position];
-              var examCategory = getExam.examCategory;
-              var examDate = getExam.examDate.toStringAsFixed(2);
+
+
+              late DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(getExam.examDate.toInt());
 
               return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 TextButton(
@@ -2020,12 +2638,7 @@ class ExamsListState extends State<ExamsList> {
                     setState(() {});
                   },
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LessonsPage(studentId: 0)),
-                    ).then((_) {
-                      updateState();
-                    });
+                    showExamDetailsDialog(getExam);
                   },
                   child: Container(
                       child: Container(
@@ -2037,13 +2650,35 @@ class ExamsListState extends State<ExamsList> {
                         borderRadius: BorderRadius.circular(90),
                         color: Theme.of(context).colorScheme.secondaryContainer),
                     height: 40,
-                    padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
                     child: Row(
                       children: <Widget>[
                         Container(
-                            width: 114,
+                          transformAlignment: Alignment.centerRight,
+                          margin: EdgeInsets.all(0),
+                          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                          child: IconButton(
+                              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                              onPressed: () {},
+                              icon: Icon(
+                                boolIconFromIntegerValue(getExam.examDone, false),
+                                color: (getExam.examDone > 0) ? Colors.green : Colors.red,
+                              )),
+                        ),
+                        Container(
+                            width: 95,
                             child: Text(
-                              getExam.examCategory,
+                              (position + 1).toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                        Container(
+                            width: 210,
+                            child: Text(
+                              DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(getExam.examDate.toInt())),
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
                             )),
@@ -2052,12 +2687,18 @@ class ExamsListState extends State<ExamsList> {
                           style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
                         ),
                         Container(
-                            width: 430,
-                            child: Text(
-                              getExam.examDate.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
-                            )),
+                          width:160,
+                          transformAlignment: Alignment.centerRight,
+                          margin: EdgeInsets.all(0),
+                          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                          child: IconButton(
+                              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                              onPressed: () {},
+                              icon: Icon(
+                                boolIconFromIntegerValue(getExam.examPassed, false),
+                                color: (getExam.examDone > 0) ? Colors.green : Colors.red,
+                              )),
+                        ),
                       ],
                     ),
                   )),
@@ -2068,7 +2709,9 @@ class ExamsListState extends State<ExamsList> {
                       style: ButtonStyle(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showEditExamDialog(updateStateCallback, getExam);
+                      },
                       icon: Icon(Icons.mode_edit_outline_rounded),
                     )),
                 Container(
@@ -2078,12 +2721,51 @@ class ExamsListState extends State<ExamsList> {
                         backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDeleteExamDialog(getExam);
+                      },
                       icon: Icon(Icons.delete_forever_rounded),
                     ))
               ]);
             }));
   }
+
+  void showEditExamDialog(void Function() updateStateCallbackFunction, Exam exam) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => EditExamDialog(updateStateCallbackFunction, exam),
+    );
+  }
+
+
+  //Type had to be obfuscated since dart was not letting me insert this into the DeleteConfirmationDialog function call
+  void deleteExam<T>(T getExam){
+    //delete exam getExam
+    //update state
+    DatabaseController.instance.deleteExam((getExam as Exam).examId!);
+    updateStateCallback();
+  }
+
+  void showDeleteExamDialog(Exam exam) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DeleteConfirmationDialog(deleteExam, 1, exam),
+    );
+  }
+
+  //SetState Callback
+  void updateStateCallback() {
+    updateState();
+  }
+
+
+  void showExamDetailsDialog(Exam exam) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ExamDetailsDialog(updateStateCallback,exam),
+    );
+  }
+
 }
 
 class PopupMenuExample extends StatefulWidget {

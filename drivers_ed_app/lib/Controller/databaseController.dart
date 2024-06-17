@@ -166,7 +166,7 @@ class DatabaseController {
             $columnExamDate REAL,
             $columnExamDone INTEGER,
             $columnExamPassed INTEGER,
-            $columnLessonCategory TEXT
+            $columnExamCategory TEXT
           )
           ''');
     await db.execute('''
@@ -204,7 +204,7 @@ class DatabaseController {
   }
 
   //Inserting a new Exam into the Database
-  Future<int?> insertTheme(Map<String, dynamic> row) async {
+  Future<int?> insertExam(Map<String, dynamic> row) async {
     Database? db = await instance.database;
     return await db?.insert(examTable, row);
   }
@@ -242,6 +242,13 @@ class DatabaseController {
     return result?.toList();
   }
 
+  //Query (return) all Lessons associated with a student with id examStudentId
+  Future<List<Map<String, dynamic>>?> queryAllLessonsFromStudent(int lessonStudentId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery('SELECT * FROM $lessTable WHERE $columnLessonStudentId = $lessonStudentId');
+    return result?.toList();
+  }
+
   //Query (return) all Lessons
   Future<List<Map<String, dynamic>>?> queryAllRowsLessons() async {
     Database? db = await instance.database;
@@ -258,7 +265,7 @@ class DatabaseController {
     return result?.toList();
   }
 
-  //Query (return) all Lessons within 2 dates
+  //Query (return) all Exams associated with a student with id examStudentId
   Future<List<Map<String, dynamic>>?> queryAllExamsFromStudent(int examStudentId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery('SELECT * FROM $examTable WHERE $columnExamStudentId = $examStudentId');

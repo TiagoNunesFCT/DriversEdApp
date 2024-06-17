@@ -1,0 +1,1 @@
+//this pack will be a class containing a set of Strings, which will all be in the same language within the same pack. Some Strings will have embedded variables, that can be displayed at a certain location within the String. This will be an abstract class. There will be multiple classes that will extend this, and override its values "Portuguese, English, etc..."

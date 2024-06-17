@@ -1,13 +1,13 @@
-
 //This class represents an Exam object
 class Exam {
   //The Current Exam Attributes
-  int examId, examStudentId;
+  int? examId;
+  int examStudentId;
   double examDate;
   int examDone, examPassed; //technically booleans, but since sqlite does not support booleans, they'll be integers that oscillate between 0 and 1, to be parsed locally when needed.
   String examCategory;
 
-  Exam({required this.examId, required this.examStudentId, required this.examDate, required this.examDone, required this.examPassed, required this.examCategory});
+  Exam({this.examId, required this.examStudentId, required this.examDate, required this.examDone, required this.examPassed, required this.examCategory});
 
   //to be used when inserting a row in the table
   Map<String, dynamic> toMapWithoutId() {
