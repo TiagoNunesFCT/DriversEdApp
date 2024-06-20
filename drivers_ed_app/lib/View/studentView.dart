@@ -65,10 +65,7 @@ class _StudentPageState extends State<StudentPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .secondaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         elevation: 0,
         onPressed: () {
           showWeekDialog();
@@ -80,20 +77,14 @@ class _StudentPageState extends State<StudentPage> {
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .background,
+        backgroundColor: Theme.of(context).colorScheme.background,
 
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         toolbarHeight: 0,
       ),
       body: Container(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .background,
+          color: Theme.of(context).colorScheme.background,
           child: Center(
             // Center is a layout widget. It takes a single child and positions it
             // in the middle of the parent.
@@ -110,10 +101,7 @@ class _StudentPageState extends State<StudentPage> {
                           child: IconButton.filledTonal(
                             icon: Icon(
                               Icons.settings_rounded,
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .scrim,
+                              color: Theme.of(context).colorScheme.scrim,
                             ),
                             tooltip: 'Definições',
                             onPressed: () {
@@ -129,10 +117,7 @@ class _StudentPageState extends State<StudentPage> {
                               controller: studentName,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
+                                fillColor: Theme.of(context).colorScheme.onInverseSurface,
                                 contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                                 hintStyle: const TextStyle(
                                   fontStyle: FontStyle.italic,
@@ -141,10 +126,7 @@ class _StudentPageState extends State<StudentPage> {
                                 prefixIcon: Container(
                                     margin: const EdgeInsets.fromLTRB(0.0, 0.0, 1.0, 0.0),
                                     child: IconButton.filledTonal(
-                                      icon: Icon(Icons.search_rounded, color: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .scrim),
+                                      icon: Icon(Icons.search_rounded, color: Theme.of(context).colorScheme.scrim),
                                       tooltip: 'Pesquisar',
                                       onPressed: () {
                                         setState(() {
@@ -192,14 +174,14 @@ class _StudentPageState extends State<StudentPage> {
                             Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                               Container(
                                   child: IconButton.filledTonal(
-                                    style: ButtonStyle(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    onPressed: () {
-                                      showAddCategoryDialog();
-                                    },
-                                    icon: Icon(Icons.add_rounded),
-                                  )),
+                                style: ButtonStyle(
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                onPressed: () {
+                                  showAddCategoryDialog();
+                                },
+                                icon: Icon(Icons.add_rounded),
+                              )),
                               FilledButton.tonal(
                                   onPressed: () {
                                     showCategoryListDialog();
@@ -217,14 +199,14 @@ class _StudentPageState extends State<StudentPage> {
                             Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                               Container(
                                   child: IconButton.filledTonal(
-                                    style: ButtonStyle(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    onPressed: () {
-                                      showAddManoeuvreDialog();
-                                    },
-                                    icon: Icon(Icons.add_rounded),
-                                  )),
+                                style: ButtonStyle(
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                onPressed: () {
+                                  showAddManoeuvreDialog();
+                                },
+                                icon: Icon(Icons.add_rounded),
+                              )),
                               FilledButton.tonal(
                                   onPressed: () {
                                     showManoeuvreListDialog();
@@ -284,50 +266,38 @@ class _StudentPageState extends State<StudentPage> {
                   ],
                 ),
                 Container(
-                  width: (MediaQuery
-                      .of(context)
-                      .size
-                      .width - 458),
+                  width: (MediaQuery.of(context).size.width - 458),
                   padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
                   child: (Container(
                     child: Column(children: [
                       Container(
                           height: 50,
-                          decoration: BoxDecoration(color: Theme
-                              .of(context)
-                              .colorScheme
-                              .secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                           child: Container(
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                                Container(width: 80, child: Text("Aluno Nº", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 300, child: Text("Nome Completo", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 150, child: Text("Data de Inscrição", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
-                              ]))),
+                            Container(width: 80, child: Text("Aluno Nº", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 300, child: Text("Nome Completo", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 150, child: Text("Data de Inscrição", textAlign: TextAlign.center)),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+                            ),
+                            Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
+                          ]))),
                       Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .onInverseSurface,
+                            color: Theme.of(context).colorScheme.onInverseSurface,
                           ),
-                          height: (MediaQuery
-                              .of(context)
-                              .size
-                              .height - 86),
+                          height: (MediaQuery.of(context).size.height - 86),
                           child: StudentsList(
                             key: _StudentsListKey,
                           ))
@@ -396,7 +366,6 @@ class _StudentPageState extends State<StudentPage> {
     );
   }
 
-
   //this method purges the entire database, except for settings.
   purgeDatabase() {
     setState(() {
@@ -409,15 +378,11 @@ class _StudentPageState extends State<StudentPage> {
       debugPrint("Database Purged.");
     });
   }
-
 }
 
 class AddStudentDialog extends StatefulWidget {
   DateTime currentDate = DateTime.now();
-  late String currentDateString = currentDate
-      .toIso8601String()
-      .split('T')
-      .first;
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
   late String currentCategory = "A";
 
   void Function() updateStateCallback;
@@ -437,17 +402,16 @@ class AddStudentDialogState extends State<AddStudentDialog> {
   void showDatePickerDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) =>
-          DatePickerDialog(
-            restorationId: 'date_picker_dialog',
-            initialEntryMode: DatePickerEntryMode.calendarOnly,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1970),
-            lastDate: DateTime(2100),
-            cancelText: "Cancelar",
-            confirmText: "Confirmar",
-            helpText: "Escolher Data",
-          ),
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
     );
   }
 
@@ -456,10 +420,7 @@ class AddStudentDialogState extends State<AddStudentDialog> {
     if (picked != null && picked != widget.currentDate) {
       setState(() {
         widget.currentDate = picked;
-        widget.currentDateString = picked
-            .toIso8601String()
-            .split('T')
-            .first;
+        widget.currentDateString = picked.toIso8601String().split('T').first;
       });
     }
   }
@@ -469,154 +430,127 @@ class AddStudentDialogState extends State<AddStudentDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              elevation: 0,
-              title: const Text(
-                "Novo Aluno",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                    width: 600,
-                  ),
-                  SizedBox(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: studentNumber,
-                        keyboardType: TextInputType.number,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Número de Inscrição",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  SizedBox(height: 5),
-                  SizedBox(height: 5),
-                  Container(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: studentName,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Nome Completo",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  Row(children: [
-                    Container(padding: EdgeInsets.all(5.0), child: Text("Data de Inscrição")),
-                    Container(
-                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
-                        child: FilledButton(
-                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface)),
-                          onPressed: () {
-                            _selectDate(context);
-                          },
-                          child: Text(
-                            widget.currentDateString,
-                            style: TextStyle(color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondary),
-                          ),
-                        )),
-                  ]),
-                  Row(children: [
-                    Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
-                    PopupMenuExample(
-                      callback: (String s) => changeCategory(s),
-                      currentValue: widget.currentCategory,
-                    )
-                  ])
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      elevation: 0,
+      title: const Text(
+        "Novo Aluno",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: studentNumber,
+                keyboardType: TextInputType.number,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Número de Inscrição",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
                       ),
-                    ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Container(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: studentName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome Completo",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Data de Inscrição")),
+            Container(
+                margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                child: FilledButton(
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                  onPressed: () {
+                    _selectDate(context);
+                  },
+                  child: Text(
+                    widget.currentDateString,
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Student studentToBeAdded = Student(studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
-                      DatabaseController.instance.insertStudent(studentToBeAdded.toMapWithoutId());
-                      setState(() {
-                        debugPrint("CLICKED ON CONFIRM BUTTON");
-                        widget.updateStateCallback();
-                      });
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'Confirmar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+                )),
+          ]),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ])
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Student studentToBeAdded = Student(studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
+              DatabaseController.instance.insertStudent(studentToBeAdded.toMapWithoutId());
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 
   void changeCategory(String newCategory) {
@@ -645,123 +579,102 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Nova Categoria",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                    width: 600,
-                  ),
-                  SizedBox(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: categoryName,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Nome da Categoria",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  SizedBox(height: 5),
-                  SizedBox(height: 5),
-                  Container(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: categoryDescription,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Descrição (ex: Ligeiros)",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Nova Categoria",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Categoria",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
                       ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text, categoryDescription: categoryDescription.text);
-                      DatabaseController.instance.insertCategory(categoryToBeAdded.toMapWithoutId());
-                      Navigator.of(context).pop();
-                      setState(() {});
-                    },
-                    child: Text(
-                      'Confirmar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Container(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryDescription,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Descrição (ex: Ligeiros)",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text, categoryDescription: categoryDescription.text);
+              DatabaseController.instance.insertCategory(categoryToBeAdded.toMapWithoutId());
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -794,126 +707,105 @@ class EditCategoryDialogState extends State<EditCategoryDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Editar Categoria",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                    width: 600,
-                  ),
-                  SizedBox(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: categoryName,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Nome da Categoria",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  SizedBox(height: 5),
-                  SizedBox(height: 5),
-                  Container(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: categoryDescription,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Descrição (ex: Ligeiros)",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Editar Categoria",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Categoria",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
                       ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryId: stateCategory.categoryId, categoryName: categoryName.text, categoryDescription: categoryDescription.text);
-                      DatabaseController.instance.updateCategory(categoryToBeAdded.toMap());
-                      setState(() {
-                        debugPrint("CLICKED ON CONFIRM BUTTON");
-                        widget.updateStateCallback();
-                      });
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'Confirmar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Container(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: categoryDescription,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Descrição (ex: Ligeiros)",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryId: stateCategory.categoryId, categoryName: categoryName.text, categoryDescription: categoryDescription.text);
+              DatabaseController.instance.updateCategory(categoryToBeAdded.toMap());
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -927,87 +819,69 @@ class CategoryDetailsDialog extends StatelessWidget {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Detalhes",
-              ),
-              content: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .onInverseSurface,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                          height: 50,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Nome da Categoria: ",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Text(
-                              category.categoryName,
-                              style: TextStyle(fontWeight: FontWeight.w300, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                              textAlign: TextAlign.right,
-                            )
-                          ])),
-                      SizedBox(height: 5),
-                      SizedBox(height: 5),
-                      Container(
-                          height: 50,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Descrição: ",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Text(
-                              category.categoryDescription,
-                              style: TextStyle(fontWeight: FontWeight.w300, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                              textAlign: TextAlign.right,
-                            )
-                          ])),
-                    ],
-                  )),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Fechar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Detalhes",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+            color: Theme.of(context).colorScheme.onInverseSurface,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Nome da Categoria: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                     ),
-                  ),
-                ])
-              ],
-            )));
+                    Text(
+                      category.categoryName,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+              SizedBox(height: 5),
+              SizedBox(height: 5),
+              Container(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Descrição: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      category.categoryDescription,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -1026,65 +900,53 @@ class _CategoryListDialogState extends State<CategoryListDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Categorias",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Categorias",
+      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            height: 50,
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+            child: Container(
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Container(width: 100, child: Text("Nome", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                    height: 50,
-                    decoration: BoxDecoration(color: Theme
-                        .of(context)
-                        .colorScheme
-                        .secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                    child: Container(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                          Container(width: 100, child: Text("Nome", textAlign: TextAlign.center)),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 400, child: Text("Descrição", textAlign: TextAlign.center)),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 70, child: Text("Ações", textAlign: TextAlign.center)),
-                        ]))),
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .onInverseSurface,
-                    ),
-                    height: (MediaQuery
-                        .of(context)
-                        .size
-                        .height - 400),
-                    child: CategoriesList())
-              ]),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Fechar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+              Container(width: 400, child: Text("Descrição", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+              ),
+              Container(width: 70, child: Text("Ações", textAlign: TextAlign.center)),
+            ]))),
+        Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+            ),
+            height: (MediaQuery.of(context).size.height - 400),
+            child: CategoriesList())
+      ]),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -1105,44 +967,41 @@ class _WeekDialogState extends State<WeekDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Próximas Aulas",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: 1000,
-                    child: WeekDisplay(date: widget.date),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: 1000,
-                    child: WeekDisplay(date: widget.date.add(Duration(days: 7))),
-                  ),
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      setState(() {});
-                    },
-                    child: Text(
-                      'Fechar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Próximas Aulas",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width: 1100,
+            child: WeekDisplay(date: widget.date),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            width: 1100,
+            child: WeekDisplay(date: widget.date.add(Duration(days: 7))),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Fechar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -1172,84 +1031,58 @@ class _WeekDisplayState extends State<WeekDisplay> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: dates
-          .map((item) =>
-          Container(
-              padding: EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
+          .map((item) => Container(
+              margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+              padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
               decoration: BoxDecoration(
-                color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme
-                    .of(context)
-                    .colorScheme
-                    .tertiaryContainer : Theme
-                    .of(context)
-                    .colorScheme
-                    .secondaryContainer,
+                color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiaryContainer : Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme
-                      .of(context)
-                      .colorScheme
-                      .tertiary : Theme
-                      .of(context)
-                      .colorScheme
-                      .secondaryContainer,
+                  color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondaryContainer,
                   width: 1,
                 ),
               ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                Container(
-                    width: 130,
-                    child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                      Text(
-                        weekdayString(item),
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme
-                            .of(context)
-                            .colorScheme
-                            .tertiary : Theme
-                            .of(context)
-                            .colorScheme
-                            .secondary),
-                      ),
-                      Text(
-                        "|",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme
-                            .of(context)
-                            .colorScheme
-                            .tertiary : Theme
-                            .of(context)
-                            .colorScheme
-                            .secondary),
-                      ),
-                      Text(
-                        DateFormat(
-                          'yyyy-MM-dd',
-                        ).format(item),
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontWeight: FontWeight.w600, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme
-                            .of(context)
-                            .colorScheme
-                            .tertiary : Theme
-                            .of(context)
-                            .colorScheme
-                            .secondary),
-                      )
-                    ])),
-                Container(
-                    width: 130,
-                    height: 100,
-                    child: Column(
-                        children: lessons.keys
-                            .where((item3) => roundDateTime(item).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
-                            .map((item2) =>
-                            Container(height: 20,
-                                child: Marquee(
-
-                                  //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
-                                  text: (item2.isLesson) ? "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Aula | ${lessons[item2]!.studentName} | " : "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Exame | ${lessons[item2]!.studentName} | ",
-                                  style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
-                                )))
-                            .toList()))
-              ])))
+              child: TextButton(
+                style:ButtonStyle(padding: MaterialStatePropertyAll(EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),)),
+                  onPressed: () {
+                    showDayDialog(item, lessons);
+                  },
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                        width: 130,
+                        child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                          Text(
+                            weekdayString(item, false),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary),
+                          ),
+                          Text(
+                            "|",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary),
+                          ),
+                          Text(
+                            DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(item),
+                            textAlign: TextAlign.right,
+                            style: TextStyle(fontWeight: FontWeight.w600, color: (roundDateTime(item).toString() == roundDateTime(DateTime.now()).toString()) ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary),
+                          )
+                        ])),
+                    Container(
+                        width: 130,
+                        height: 100,
+                        child: Column(
+                            children: lessons.keys
+                                .where((item3) => roundDateTime(item).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
+                                .map((item2) => Container(
+                                    height: 20,
+                                    child: Marquee(
+                                      //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
+                                      text: (item2.isLesson) ? "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Aula | ${lessons[item2]!.studentName} | " : "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Exame | ${lessons[item2]!.studentName} | ",
+                                      style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
+                                    )))
+                                .toList()))
+                  ]))))
           .toList(),
     );
   }
@@ -1277,9 +1110,7 @@ class _WeekDisplayState extends State<WeekDisplay> {
   //Method that adds Lessons to the List, in case they are compliant with the search criteria
   addToListLesson(Map<String, dynamic> map) {
     //if (DateTime.fromMillisecondsSinceEpoch(Lesson.fromMap(map).lessonDate.toInt()).isAfter(other) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
-    int number = Lesson
-        .fromMap(map)
-        .lessonStudentId;
+    int number = Lesson.fromMap(map).lessonStudentId;
 
     getStudentsWithNumber(number, Lesson.fromMap(map));
 
@@ -1289,9 +1120,7 @@ class _WeekDisplayState extends State<WeekDisplay> {
   //Method that adds Exams to the List, in case they are compliant with the search criteria
   addToListExam(Map<String, dynamic> map) {
     //if (DateTime.fromMillisecondsSinceEpoch(Lesson.fromMap(map).lessonDate.toInt()).isAfter(other) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
-    int number = Exam
-        .fromMap(map)
-        .examStudentId;
+    int number = Exam.fromMap(map).examStudentId;
 
     getStudentsWithNumberExam(number, Exam.fromMap(map));
 
@@ -1300,7 +1129,6 @@ class _WeekDisplayState extends State<WeekDisplay> {
 
   //Async version of the getStudents method, that only returns students with a certain registration Number
   Future<List<Map<String, dynamic>>?> getStudentsWithNumber(int number, Lesson lesson) async {
-
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllStudentsWithId(number);
     setState(() {
       listMap?.forEach((map) => addToListStudent(map, LessonOrExam.fromLesson(lesson)));
@@ -1309,9 +1137,6 @@ class _WeekDisplayState extends State<WeekDisplay> {
 
   //Async version of the getStudents method, that only returns students with a certain registration Number (Exam version)
   Future<List<Map<String, dynamic>>?> getStudentsWithNumberExam(int number, Exam exam) async {
-
-
-
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllStudentsWithId(number);
     setState(() {
       listMap?.forEach((map) => addToListStudent(map, LessonOrExam.fromExam(exam)));
@@ -1322,9 +1147,80 @@ class _WeekDisplayState extends State<WeekDisplay> {
   addToListStudent(Map<String, dynamic> map, LessonOrExam lesson) {
     lessons.addEntries([MapEntry(lesson, Student.fromMap(map))]);
 
-    var sorted = lessons.entries.toList()
-      ..sort((a, b) => a.value.studentRegistrationNumber.compareTo(b.value.studentRegistrationNumber));
-    lessons = {for(var entry in sorted) entry.key: entry.value};
+    var sorted = lessons.entries.toList()..sort((a, b) => a.value.studentRegistrationNumber.compareTo(b.value.studentRegistrationNumber));
+    lessons = {for (var entry in sorted) entry.key: entry.value};
+  }
+
+  void showDayDialog(DateTime dayDate, Map<LessonOrExam, Student> lessons) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DayDialog(dayDate, lessons),
+    );
+  }
+}
+
+class DayDialog extends StatefulWidget {
+  DateTime date;
+  Map<LessonOrExam, Student> lessons;
+
+  DayDialog(this.date, this.lessons, {super.key});
+
+  @override
+  _DayDialogState createState() => _DayDialogState();
+}
+
+class _DayDialogState extends State<DayDialog> {
+  _DayDialogState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: Text(
+      "${DateFormat('yyyy-MM-dd').format(widget.date)} | ${weekdayString(widget.date, true)}",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width: 600,
+            child: Column(children:widget.lessons.keys
+                .where((item3) => roundDateTime(widget.date).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
+                .map((item2) => Container(
+                height: 20,
+                child: Marquee(
+                  //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
+                  text: (item2.isLesson) ? "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Aula | ${widget.lessons[item2]!.studentName} | " : "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Exame | ${widget.lessons[item2]!.studentName} | ",
+                  style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
+                )))
+                .toList())
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            width: 600,
+            child: Container(),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Fechar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -1347,96 +1243,84 @@ class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Nova Manobra",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                    width: 600,
-                  ),
-                  SizedBox(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: manoeuvreName,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Nome da Manobra",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  SizedBox(height: 5),
-                  SizedBox(height: 5),
-                  Row(children: [
-                    Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
-                    PopupMenuExample(
-                      callback: (String s) => changeCategory(s),
-                      currentValue: widget.currentCategory,
-                    )
-                  ]),
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Nova Manobra",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: manoeuvreName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Manobra",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
                       ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.currentCategory);
-                      DatabaseController.instance.insertManoeuvre(manoeuvreToBeAdded.toMapWithoutId());
-                      Navigator.of(context).pop();
-                      setState(() {});
-                    },
-                    child: Text(
-                      'Confirmar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ]),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.currentCategory);
+              DatabaseController.instance.insertManoeuvre(manoeuvreToBeAdded.toMapWithoutId());
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 
   void changeCategory(String newCategory) {
@@ -1474,99 +1358,87 @@ class EditManoeuvreDialogState extends State<EditManoeuvreDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Editar Manobra",
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                    width: 600,
-                  ),
-                  SizedBox(
-                      height: 50,
-                      child: TextField(
-                        maxLines: 1,
-                        controller: manoeuvreName,
-                        keyboardType: TextInputType.name,
-                        selectionControls: desktopTextSelectionControls,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onInverseSurface,
-                          labelText: "Nome da Manobra",
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
-                              ),
-                              borderRadius: BorderRadius.circular(90.0)),
-                        ),
-                      )),
-                  SizedBox(height: 5),
-                  SizedBox(height: 5),
-                  Row(children: [
-                    Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
-                    PopupMenuExample(
-                      callback: (String s) => changeCategory(s),
-                      currentValue: widget.manoeuvreCategory,
-                    )
-                  ]),
-                ],
-              ),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Editar Manobra",
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 5,
+            width: 600,
+          ),
+          SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 1,
+                controller: manoeuvreName,
+                keyboardType: TextInputType.name,
+                selectionControls: desktopTextSelectionControls,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                  labelText: "Nome da Manobra",
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
                       ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreId: stateManoeuvre.manoeuvreId, manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.manoeuvreCategory);
-                      DatabaseController.instance.updateManoeuvre(manoeuvreToBeAdded.toMap());
-                      Navigator.of(context).pop();
-                      setState(() {
-                        debugPrint("CLICKED ON CONFIRM BUTTON");
-                        widget.updateStateCallback();
-                      });
-                    },
-                    child: Text(
-                      'Confirmar',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+                      borderRadius: BorderRadius.circular(90.0)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
+                      ),
+                      borderRadius: BorderRadius.circular(90.0)),
+                ),
+              )),
+          SizedBox(height: 5),
+          SizedBox(height: 5),
+          Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.manoeuvreCategory,
+            )
+          ]),
+        ],
+      ),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreId: stateManoeuvre.manoeuvreId, manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.manoeuvreCategory);
+              DatabaseController.instance.updateManoeuvre(manoeuvreToBeAdded.toMap());
+              Navigator.of(context).pop();
+              setState(() {
+                debugPrint("CLICKED ON CONFIRM BUTTON");
+                widget.updateStateCallback();
+              });
+            },
+            child: Text(
+              'Confirmar',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 
   void changeCategory(String newCategory) {
@@ -1587,87 +1459,69 @@ class ManoeuvreDetailsDialog extends StatelessWidget {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Detalhes",
-              ),
-              content: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .onInverseSurface,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                          height: 50,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Categoria: ",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Text(
-                              manoeuvre.manoeuvreCategory,
-                              style: TextStyle(fontWeight: FontWeight.w300, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                              textAlign: TextAlign.right,
-                            )
-                          ])),
-                      SizedBox(height: 5),
-                      SizedBox(height: 5),
-                      Container(
-                          height: 50,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Nome da Manobra: ",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Text(
-                              manoeuvre.manoeuvreName,
-                              style: TextStyle(fontWeight: FontWeight.w300, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                              textAlign: TextAlign.right,
-                            )
-                          ])),
-                    ],
-                  )),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Fechar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Detalhes",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+            color: Theme.of(context).colorScheme.onInverseSurface,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Categoria: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
                     ),
-                  ),
-                ])
-              ],
-            )));
+                    Text(
+                      manoeuvre.manoeuvreCategory,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+              SizedBox(height: 5),
+              SizedBox(height: 5),
+              Container(
+                  height: 50,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Nome da Manobra: ",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      manoeuvre.manoeuvreName,
+                      style: TextStyle(fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                      textAlign: TextAlign.right,
+                    )
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
@@ -1686,68 +1540,55 @@ class _ManoeuvreListDialogState extends State<ManoeuvreListDialog> {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Manobras",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Manobras",
+      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            height: 50,
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+            child: Container(
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Container(width: 100, child: Text("Categoria", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
               ),
-              content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                    height: 50,
-                    decoration: BoxDecoration(color: Theme
-                        .of(context)
-                        .colorScheme
-                        .secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                    child: Container(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                          Container(width: 100, child: Text("Categoria", textAlign: TextAlign.center)),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 400, child: Text("Nome", textAlign: TextAlign.center)),
-                          Text(
-                            "|",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                          ),
-                          Container(width: 70, child: Text("Ações", textAlign: TextAlign.center)),
-                        ]))),
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .onInverseSurface,
-                    ),
-                    height: (MediaQuery
-                        .of(context)
-                        .size
-                        .height - 400),
-                    child: ManoeuvresList())
-              ]),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Fechar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+              Container(width: 400, child: Text("Nome", textAlign: TextAlign.center)),
+              Text(
+                "|",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
+              ),
+              Container(width: 70, child: Text("Ações", textAlign: TextAlign.center)),
+            ]))),
+        Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+            ),
+            height: (MediaQuery.of(context).size.height - 400),
+            child: ManoeuvresList())
+      ]),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Fechar',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
-
 
 //The dialog that shows up asking if the user is really sure that they want to delete a category/manoeuvre
 class DeleteConfirmationDialog extends StatelessWidget {
@@ -1766,80 +1607,68 @@ class DeleteConfirmationDialog extends StatelessWidget {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Confirmação",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Confirmação",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Tem a certeza que pretende eliminar a ${(isManoeuvre) ? "Manobra" : "Categoria"} selecionada?",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      "Esta ação é irreversível.",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              updateStateCallback(objectToDelete);
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'SIM',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
               ),
-              content: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                          height: 50,
-                          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Tem a certeza que pretende eliminar a ${(isManoeuvre) ? "Manobra" : "Categoria"} selecionada?",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Text(
-                              "Esta ação é irreversível.",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                          ])),
-
-                    ],
-                  )),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      updateStateCallback(objectToDelete);
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'SIM',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Não',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Não',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
 
 //The dialog that shows up asking if the user is really sure that they want to delete THE ENTIRE DATABASE
 class FullDeleteConfirmationDialog extends StatelessWidget {
   void Function() updateStateCallback;
-
 
   FullDeleteConfirmationDialog(this.updateStateCallback, {super.key});
 
@@ -1848,76 +1677,64 @@ class FullDeleteConfirmationDialog extends StatelessWidget {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .background,
-              title: const Text(
-                "Confirmação",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Confirmação",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Tem a certeza que pretende eliminar todos os dados da Aplicação?",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      "Esta ação é irreversível!",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              updateStateCallback();
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'SIM',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
               ),
-              content: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                          height: 50,
-                          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Tem a certeza que pretende eliminar todos os dados da Aplicação?",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Text(
-                              "Esta ação é irreversível!",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                          ])),
-
-                    ],
-                  )),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      updateStateCallback();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'SIM',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Não',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Não',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
 }
-
 
 class PopupMenuExample extends StatefulWidget {
   final void Function(String) callback;
@@ -1960,15 +1777,9 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
             width: 41,
             height: 40,
             decoration: BoxDecoration(
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .onInverseSurface,
+              color: Theme.of(context).colorScheme.onInverseSurface,
               border: Border.all(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .onInverseSurface,
+                color: Theme.of(context).colorScheme.onInverseSurface,
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(90),
@@ -1983,17 +1794,15 @@ class _PopupMenuExampleState extends State<PopupMenuExample> {
         },
         // This transformation maps listCategories items (thus Categories) into buttons
 
-        itemBuilder: (context) =>
-            listCategories
-                .map(
-                  (item) =>
-                  PopupMenuItem<String>(
-                    onTap: () => widget.callback(item.categoryName),
-                    value: item.categoryName,
-                    child: Text('${item.categoryName}'),
-                  ),
+        itemBuilder: (context) => listCategories
+            .map(
+              (item) => PopupMenuItem<String>(
+                onTap: () => widget.callback(item.categoryName),
+                value: item.categoryName,
+                child: Text('${item.categoryName}'),
+              ),
             )
-                .toList());
+            .toList());
   }
 }
 
@@ -2034,16 +1843,7 @@ class StudentsListState extends State<StudentsList> {
 
   //Method that adds Students to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
-    if (Student
-        .fromMap(map)
-        .studentName
-        .toLowerCase()
-        .contains(searchQuery.trim().toLowerCase()) || Student
-        .fromMap(map)
-        .studentRegistrationNumber
-        .toString()
-        .toLowerCase()
-        .contains(searchQuery.trim().toLowerCase())) {
+    if (Student.fromMap(map).studentName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
       listStudents.add(Student.fromMap(map));
       listStudents.sort((a, b) => a.studentRegistrationNumber.compareTo(b.studentRegistrationNumber));
     }
@@ -2087,87 +1887,60 @@ class StudentsListState extends State<StudentsList> {
             },
             child: Container(
                 child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .secondaryContainer,
-                      ),
-                      borderRadius: BorderRadius.circular(90),
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondaryContainer),
-                  height: 40,
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                          width: 114,
-                          child: Text(
-                            getStudent.studentRegistrationNumber.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme
-                                .of(context)
-                                .colorScheme
-                                .inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme
-                            .of(context)
-                            .colorScheme
-                            .inverseSurface),
-                      ),
-                      Container(
-                          width: 357,
-                          child: Text(
-                            getStudent.studentName,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme
-                                .of(context)
-                                .colorScheme
-                                .inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme
-                            .of(context)
-                            .colorScheme
-                            .inverseSurface),
-                      ),
-                      Container(
-                          width: 208,
-                          child: Text(
-                            DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getStudent.studentRegistrationDate.toInt())),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme
-                                .of(context)
-                                .colorScheme
-                                .inverseSurface),
-                          )),
-                      Text(
-                        "|",
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme
-                            .of(context)
-                            .colorScheme
-                            .inverseSurface),
-                      ),
-                      Container(
-                          width: 100,
-                          child: Text(
-                            getStudent.studentCategory,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Theme
-                                .of(context)
-                                .colorScheme
-                                .inverseSurface),
-                          ))
-                    ],
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
-                )),
+                  borderRadius: BorderRadius.circular(90),
+                  color: Theme.of(context).colorScheme.secondaryContainer),
+              height: 40,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      width: 114,
+                      child: Text(
+                        getStudent.studentRegistrationNumber.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 357,
+                      child: Text(
+                        getStudent.studentName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 208,
+                      child: Text(
+                        DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(getStudent.studentRegistrationDate.toInt())),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      )),
+                  Text(
+                    "|",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
+                  Container(
+                      width: 100,
+                      child: Text(
+                        getStudent.studentCategory,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                      ))
+                ],
+              ),
+            )),
           );
         });
   }
@@ -2237,10 +2010,7 @@ class CategoriesListState extends State<CategoriesList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width - 630,
+        width: MediaQuery.of(context).size.width - 630,
         child: ListView.builder(
             itemCount: listCategories.length,
             itemBuilder: (context, position) {
@@ -2258,53 +2028,38 @@ class CategoriesListState extends State<CategoriesList> {
                   },
                   child: Container(
                       child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                            ),
-                            borderRadius: BorderRadius.circular(90),
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondaryContainer),
-                        height: 40,
-                        padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                width: 114,
-                                child: Text(
-                                  getCategory.categoryName,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .inverseSurface),
-                                )),
-                            Text(
-                              "|",
-                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Container(
-                                width: 430,
-                                child: Text(
-                                  getCategory.categoryDescription,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .inverseSurface),
-                                )),
-                          ],
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.secondaryContainer,
                         ),
-                      )),
+                        borderRadius: BorderRadius.circular(90),
+                        color: Theme.of(context).colorScheme.secondaryContainer),
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                            width: 114,
+                            child: Text(
+                              getCategory.categoryName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                        Container(
+                            width: 430,
+                            child: Text(
+                              getCategory.categoryDescription,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                      ],
+                    ),
+                  )),
                 ),
                 Container(
                     padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
@@ -2332,7 +2087,6 @@ class CategoriesListState extends State<CategoriesList> {
               ]);
             }));
   }
-
 
   //Type had to be obfuscated since dart was not letting me insert this into the DeleteConfirmationDialog function call
   void deleteCategory<T>(T getCategory) {
@@ -2433,10 +2187,7 @@ class ManoeuvresListState extends State<ManoeuvresList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width - 630,
+        width: MediaQuery.of(context).size.width - 630,
         child: ListView.builder(
             itemCount: listManoeuvres.length,
             itemBuilder: (context, position) {
@@ -2454,53 +2205,38 @@ class ManoeuvresListState extends State<ManoeuvresList> {
                   },
                   child: Container(
                       child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                            ),
-                            borderRadius: BorderRadius.circular(90),
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondaryContainer),
-                        height: 40,
-                        padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                width: 114,
-                                child: Text(
-                                  getManoeuvre.manoeuvreCategory,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .inverseSurface),
-                                )),
-                            Text(
-                              "|",
-                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .inverseSurface),
-                            ),
-                            Container(
-                                width: 430,
-                                child: Text(
-                                  getManoeuvre.manoeuvreName,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .inverseSurface),
-                                )),
-                          ],
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.secondaryContainer,
                         ),
-                      )),
+                        borderRadius: BorderRadius.circular(90),
+                        color: Theme.of(context).colorScheme.secondaryContainer),
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                            width: 114,
+                            child: Text(
+                              getManoeuvre.manoeuvreCategory,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1, color: Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                        Container(
+                            width: 430,
+                            child: Text(
+                              getManoeuvre.manoeuvreName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
+                            )),
+                      ],
+                    ),
+                  )),
                 ),
                 Container(
                     padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
@@ -2538,7 +2274,6 @@ class ManoeuvresListState extends State<ManoeuvresList> {
     );
   }
 
-
   //Type had to be obfuscated since dart was not letting me insert this into the DeleteConfirmationDialog function call
   void deleteManoeuvre<T>(T getManoeuvre) {
     //delete manoeuvre getManoeuvre
@@ -2558,7 +2293,6 @@ class ManoeuvresListState extends State<ManoeuvresList> {
   void updateStateCallback() {
     updateState();
   }
-
 
   void showManoeuvreDetailsDialog(Manoeuvre manoeuvre) {
     showDialog(
@@ -2582,45 +2316,76 @@ DateTime lastSunday(DateTime dateTime) {
 
 //this method will return the date rounded to 00:00:00.000000Z. Useful when checking days
 DateTime roundDateTime(DateTime dateTime) {
-  return dateTime.subtract(Duration(hours: dateTime.hour,
-      minutes: dateTime.minute,
-      seconds: dateTime.second,
-      milliseconds: dateTime.millisecond,
-      microseconds: dateTime.microsecond));
+  return dateTime.subtract(Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond, microseconds: dateTime.microsecond));
 }
 
 //this method returns a simple character indicating a date's day of the week.
-String weekdayString(DateTime dateTime) {
+String weekdayString(DateTime dateTime, bool long) {
   DateTime roundedDateTime = roundDateTime(dateTime);
-  //to enable compatibility with other languages, the check must be done here, perhaps with an additional switch
-  String result = "D";
-  switch (roundedDateTime.weekday) {
-    case DateTime.sunday:
-      result = "D";
-      break;
-    case DateTime.monday:
-      result = "S";
-      break;
-    case DateTime.tuesday:
-      result = "T";
-      break;
-    case DateTime.wednesday:
-      result = "Q";
-      break;
-    case DateTime.thursday:
-      result = "Q";
-      break;
-    case DateTime.friday:
-      result = "S";
-      break;
-    case DateTime.saturday:
-      result = "S";
-      break;
-    default:
-      result = "D";
-      break;
+
+  if(long) {
+    //to enable compatibility with other languages, the check must be done here, perhaps with an additional switch, or use constants on the language pack
+    String result = "Domingo";
+    switch (roundedDateTime.weekday) {
+      case DateTime.sunday:
+        result = "Domingo";
+        break;
+      case DateTime.monday:
+        result = "Segunda";
+        break;
+      case DateTime.tuesday:
+        result = "Terça";
+        break;
+      case DateTime.wednesday:
+        result = "Quarta";
+        break;
+      case DateTime.thursday:
+        result = "Quinta";
+        break;
+      case DateTime.friday:
+        result = "Sexta";
+        break;
+      case DateTime.saturday:
+        result = "Sábado";
+        break;
+      default:
+        result = "Domingo";
+        break;
+    }
+
+    return result;
+  }else{
+//to enable compatibility with other languages, the check must be done here, perhaps with an additional switch, or use constants on the language pack
+    String result = "D";
+    switch (roundedDateTime.weekday) {
+      case DateTime.sunday:
+        result = "D";
+        break;
+      case DateTime.monday:
+        result = "S";
+        break;
+      case DateTime.tuesday:
+        result = "T";
+        break;
+      case DateTime.wednesday:
+        result = "Q";
+        break;
+      case DateTime.thursday:
+        result = "Q";
+        break;
+      case DateTime.friday:
+        result = "S";
+        break;
+      case DateTime.saturday:
+        result = "S";
+        break;
+      default:
+        result = "D";
+        break;
+    }
+    return result;
   }
-  return result;
+
 }
 
 //TODO: WHEN DELETING A STUDENT, DELETE ALL THEIR LESSONS AND EXAMS. THIS WILL CLEAN THE DATABASE, PREVENTING IT FROM BECOMING BLOATED WITH OLD LESSONS.
@@ -2652,8 +2417,7 @@ void TopDownSplitMerge<T>(List<T> listB, int iBegin, int iEnd, List<T> listA) {
 // Right source half is listA[iMiddle:iEnd-1].
 // Result is listB[iBegin:iEnd-1].
 void TopDownMerge<T>(List<T> listB, int iBegin, int iMiddle, int iEnd, List<T> listA) {
-  int i = iBegin,
-      j = iMiddle;
+  int i = iBegin, j = iMiddle;
 
   //Are the List's Elements Categories or Manoeuvres?
   if (T == CategoryPackage.Category) {
@@ -2693,26 +2457,13 @@ void CopyList<T>(List<T> listA, int iBegin, int iEnd, List<T> listB) {
 
 void ShowToast(bool isSettings) {
   if (isSettings) {
-    Fluttertoast.showToast(msg: "Funcionalidade não implementada",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    Fluttertoast.showToast(msg: "Funcionalidade não implementada", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
   } else {
-    Fluttertoast.showToast(msg: "Mantenha premido para Apagar...",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    Fluttertoast.showToast(msg: "Mantenha premido para Apagar...", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
   }
 }
 
 class LessonOrExam {
-
   //A copy of the attributes present in both the lesson and exam classes. This hybrid class will be used exclusively within this file, for read-only purposes, and thus won't be saved on the database and, therefore, won't need none of that serialization nonsense.
   late int? id;
   late int studentId;
@@ -2726,7 +2477,7 @@ class LessonOrExam {
 
   LessonOrExam({this.id, required this.studentId, required this.date, required this.done, required this.category, required this.isLesson});
 
-  LessonOrExam.fromLesson(Lesson lesson){
+  LessonOrExam.fromLesson(Lesson lesson) {
     id = lesson.lessonId;
     studentId = lesson.lessonStudentId;
     date = lesson.lessonDate;
@@ -2738,7 +2489,7 @@ class LessonOrExam {
     isLesson = true;
   }
 
-  LessonOrExam.fromExam(Exam exam){
+  LessonOrExam.fromExam(Exam exam) {
     id = exam.examId;
     studentId = exam.examStudentId;
     date = exam.examDate;
@@ -2747,5 +2498,4 @@ class LessonOrExam {
     category = exam.examCategory;
     isLesson = false;
   }
-
 }
