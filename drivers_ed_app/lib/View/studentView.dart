@@ -2,6 +2,7 @@ import 'package:drivers_ed_app/Model/lesson.dart';
 import 'package:drivers_ed_app/Model/manoeuvre.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Controller/databaseController.dart';
 import '../Model/category.dart' as CategoryPackage;
@@ -99,6 +100,7 @@ class _StudentPageState extends State<StudentPage> {
                             ),
                             tooltip: 'Definições',
                             onPressed: () {
+                              ShowToast(true);
                               setState(() {});
                             },
                             padding: const EdgeInsets.all(12.0),
@@ -237,7 +239,10 @@ class _StudentPageState extends State<StudentPage> {
                                       ))
                                 ])),
                             FilledButton.tonal(
-                                onPressed: () {},
+                                onLongPress: () {
+                                  showPurgeDatabaseDialog();
+                                },
+                                onPressed: () {ShowToast(false);},
                                 style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                   Icon(Icons.delete_forever_rounded),
@@ -346,6 +351,30 @@ class _StudentPageState extends State<StudentPage> {
       builder: (BuildContext context) => ManoeuvreListDialog(),
     );
   }
+
+  void showPurgeDatabaseDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => FullDeleteConfirmationDialog(purgeDatabase),
+    );
+  }
+
+
+  //this method purges the entire database, except for settings.
+  purgeDatabase() {
+    setState(() {
+
+      DatabaseController.instance.deleteAllExams();
+      DatabaseController.instance.deleteAllLessons();
+      DatabaseController.instance.deleteAllStudents();
+      DatabaseController.instance.deleteAllManoeuvres();
+      DatabaseController.instance.deleteAllCategories();
+      updateStateCallback();
+      debugPrint("Database Purged.");
+
+    });
+  }
+
 }
 
 class AddStudentDialog extends StatefulWidget {
@@ -1529,6 +1558,80 @@ class DeleteConfirmationDialog extends StatelessWidget {
   }
 }
 
+//The dialog that shows up asking if the user is really sure that they want to delete THE ENTIRE DATABASE
+class FullDeleteConfirmationDialog extends StatelessWidget {
+  void Function() updateStateCallback;
+
+
+  FullDeleteConfirmationDialog(this.updateStateCallback, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text(
+                "Confirmação",
+              ),
+              content: Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                          height: 50,
+                          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            Text(
+                              "Tem a certeza que pretende eliminar todos os dados da Aplicação?",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                            ),
+                            Text(
+                              "Esta ação é irreversível!",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                            ),
+                          ])),
+
+                    ],
+                  )),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      updateStateCallback();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'SIM',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Não',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ])
+              ],
+            )));
+  }
+}
+
+
 class PopupMenuExample extends StatefulWidget {
   final void Function(String) callback;
   final String currentValue;
@@ -2150,8 +2253,8 @@ String weekdayString(DateTime dateTime) {
 }
 
 //TODO: WHEN DELETING A STUDENT, DELETE ALL THEIR LESSONS AND EXAMS. THIS WILL CLEAN THE DATABASE, PREVENTING IT FROM BECOMING BLOATED WITH OLD LESSONS.
-//TODO: Possibly make it so that when a manoeuvre is renamed, the app goes through all existing lessons and changes the name of the manoeuvre, if it has it, to the new name. Do the same for categories.
-//TODO: What happens when a category is deleted? Delete students? Or keep them, like I do for delete manoeuvres?//
+//TODO: Possibly make it so that when a manoeuvre is renamed, the app goes through all existing lessons and changes the name of the manoeuvre, if they have it, to the new name. Do the same for categories.
+//oldTODO: What happens when a category is deleted? Delete students? Or keep them, like I do for delete manoeuvres? //Update: No. I'm gonna keep them as they are, there's no sense in deleting them just because their category has been deleted.
 
 List<T> mergeSortList<T>(List<T> list) {
   List<T> listCopy = List<T>.from(list);
@@ -2213,5 +2316,13 @@ void TopDownMerge<T>(List<T> listB, int iBegin, int iMiddle, int iEnd, List<T> l
 void CopyList<T>(List<T> listA, int iBegin, int iEnd, List<T> listB) {
   for (int k = iBegin; k < iEnd; k++) {
     listB[k] = listA[k];
+  }
+}
+
+void ShowToast(bool isSettings){
+  if(isSettings) {
+    Fluttertoast.showToast(msg: "Funcionalidade não implementada", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
+  } else {
+    Fluttertoast.showToast(msg: "Mantenha premido para Apagar...", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
   }
 }

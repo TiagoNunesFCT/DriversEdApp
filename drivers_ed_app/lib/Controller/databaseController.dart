@@ -409,4 +409,39 @@ class DatabaseController {
     Database? db = await instance.database;
     return await db?.delete(catTable, where: '$columnCategoryId = ?', whereArgs: [id]);
   }
+
+  //Delete all Students
+  Future<int?> deleteAllStudents() async {
+    Database? db = await instance.database;
+    return await db?.delete(studTable);
+  }
+  //Delete all Lessons
+  Future<int?> deleteAllLessons() async {
+    Database? db = await instance.database;
+    return await db?.delete(lessTable);
+  }
+
+  //Delete all Exams
+  Future<int?> deleteAllExams() async {
+    Database? db = await instance.database;
+    return await db?.delete(examTable);
+  }
+
+  //Delete all Categories
+  Future<int?> deleteAllCategories() async {
+    Database? db = await instance.database;
+    return await db?.delete(catTable);
+  }
+
+  //Delete all Manoeuvres
+  Future<int?> deleteAllManoeuvres() async {
+    Database? db = await instance.database;
+    return await db?.delete(manTable);
+  }
+
+  //Delete all Settings Configurations
+  Future<int?> deleteAllSettings() async {
+    Database? db = await instance.database;
+    return await db?.delete(setTable);
+  }
 }
