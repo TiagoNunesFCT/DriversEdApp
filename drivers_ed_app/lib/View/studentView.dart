@@ -1741,6 +1741,7 @@ class StudentsListState extends State<StudentsList> {
   addToList(Map<String, dynamic> map) {
     if (Student.fromMap(map).studentName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
       listStudents.add(Student.fromMap(map));
+      listStudents.sort((a, b) => a.studentRegistrationNumber.compareTo(b.studentRegistrationNumber));
     }
   }
 
