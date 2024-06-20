@@ -279,6 +279,15 @@ class DatabaseController {
     return result?.toList();
   }
 
+  //Query (return) all Exams within 2 dates
+  Future<List<Map<String, dynamic>>?> queryAllExamsBetween(DateTime from, DateTime to) async {
+    int fromInt = from.millisecondsSinceEpoch;
+    int toInt = to.millisecondsSinceEpoch;
+    Database? db = await instance.database;
+    var result = await db?.rawQuery('SELECT * FROM $examTable WHERE $columnExamDate BETWEEN $fromInt AND $toInt');
+    return result?.toList();
+  }
+
   //Query (return) all Manoeuvres
   Future<List<Map<String, dynamic>>?> queryAllRowsManoeuvres() async {
     Database? db = await instance.database;

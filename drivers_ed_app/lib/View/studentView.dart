@@ -1,11 +1,16 @@
+import 'dart:collection';
+import 'dart:ffi';
+
 import 'package:drivers_ed_app/Model/lesson.dart';
 import 'package:drivers_ed_app/Model/manoeuvre.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:marquee/marquee.dart';
 
 import '../Controller/databaseController.dart';
 import '../Model/category.dart' as CategoryPackage;
+import '../Model/exam.dart';
 import '../Model/student.dart';
 import 'package:intl/intl.dart';
 
@@ -1017,6 +1022,7 @@ class _WeekDisplayState extends State<WeekDisplay> {
   _WeekDisplayState(this.lastSundayDate) {
     lastSundayDate = lastSunday(lastSundayDate);
     getDates(lastSundayDate);
+    getLessonsAndExams();
   }
 
   Map<Lesson, Student> lessons = {};
@@ -1064,9 +1070,12 @@ class _WeekDisplayState extends State<WeekDisplay> {
                     child: Column(
                         children: lessons.keys
                             .where((item3) => roundDateTime(item).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.lessonDate.toInt())).toString())
-                            .map((item2) => Container(
-                                    child: Row(
-                                  children: [Text(DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.lessonDate.toInt()))), const Text("|"), Text(lessons[item2]!.studentName)],
+                            .map((item2) => Container(height: 20,
+                                    child: Marquee(
+
+                                      //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
+                                  text: (item2.lessonManoeuvres.toLowerCase().trim()== "lesson")? "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.lessonDate.toInt()))} | Aula | ${lessons[item2]!.studentName} | ": "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.lessonDate.toInt()))} | Exame | ${lessons[item2]!.studentName} | ",
+                                      style: (item2.lessonManoeuvres.toLowerCase().trim()== "lesson")? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
                                 )))
                             .toList()))
               ])))
@@ -1080,37 +1089,71 @@ class _WeekDisplayState extends State<WeekDisplay> {
     }
   }
 
-  //Async version of the getLessons method
+  //Async version of the getLessonsAndExams method
   // ignore: missing_return
-  Future<List<Map<String, dynamic>>?> getLessons() async {
+  Future<List<Map<String, dynamic>>?> getLessonsAndExams() async {
     lessons = {};
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsBetween(dates[0], dates[dates.length - 1]);
     setState(() {
       listMap?.forEach((map) => addToListLesson(map));
     });
+    List<Map<String, dynamic>>? listMapExam = await DatabaseController.instance.queryAllExamsBetween(dates[0], dates[dates.length - 1]);
+    setState(() {
+      listMapExam?.forEach((map) => addToListExam(map));
+    });
   }
 
-  //Method that adds Students to the List, in case they are compliant with the search criteria
+  //Method that adds Lessons to the List, in case they are compliant with the search criteria
   addToListLesson(Map<String, dynamic> map) {
     //if (DateTime.fromMillisecondsSinceEpoch(Lesson.fromMap(map).lessonDate.toInt()).isAfter(other) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
     int number = Lesson.fromMap(map).lessonStudentId;
 
     getStudentsWithNumber(number, Lesson.fromMap(map));
+
+    //}
+  }
+
+  //Method that adds Exams to the List, in case they are compliant with the search criteria
+  addToListExam(Map<String, dynamic> map) {
+    //if (DateTime.fromMillisecondsSinceEpoch(Lesson.fromMap(map).lessonDate.toInt()).isAfter(other) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+    int number = Exam.fromMap(map).examStudentId;
+
+    getStudentsWithNumberExam(number, Exam.fromMap(map));
+
     //}
   }
 
   //Async version of the getStudents method, that only returns students with a certain registration Number
   Future<List<Map<String, dynamic>>?> getStudentsWithNumber(int number, Lesson lesson) async {
-    lessons = {};
+    lesson.lessonManoeuvres = "lesson";
+
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllStudentsWithId(number);
     setState(() {
       listMap?.forEach((map) => addToListStudent(map, lesson));
+
+
     });
   }
 
-  //Method that adds Students to the List, in case they are compliant with the search criteria
+  //Async version of the getStudents method, that only returns students with a certain registration Number (Exam version)
+  Future<List<Map<String, dynamic>>?> getStudentsWithNumberExam(int number, Exam exam) async {
+    Lesson examLesson = Lesson(lessonStudentId: exam.examStudentId,lessonDate: exam.examDate, lessonHours: 0, lessonDistance: 0, lessonDone: exam.examDone, lessonManoeuvres: 'exam', lessonCategory: exam.examCategory);
+
+
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllStudentsWithId(number);
+    setState(() {
+      listMap?.forEach((map) => addToListStudent(map, examLesson));
+
+
+    });
+  }
+
+  //Method that adds Students to the List, in case they are compliant with the search criteria, ordered by dateTime
   addToListStudent(Map<String, dynamic> map, Lesson lesson) {
     lessons.addEntries([MapEntry(lesson, Student.fromMap(map))]);
+
+    var sorted = lessons.entries.toList()..sort((a,b)=>a.value.studentRegistrationNumber.compareTo(b.value.studentRegistrationNumber));
+    lessons = {for(var entry in sorted) entry.key: entry.value};
   }
 }
 

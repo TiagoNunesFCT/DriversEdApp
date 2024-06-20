@@ -97,16 +97,6 @@ class _LessonsPageState extends State<LessonsPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .secondaryContainer,
-        elevation: 0,
-        onPressed: () {},
-        child: const Icon(Icons.calendar_month_rounded),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -2429,7 +2419,7 @@ class LessonsListState extends State<LessonsList> {
 
   //Method that adds Lessons to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
-    debugPrint("LESSON FOUIND IN DATABASE! Student ID is: ${Lesson
+    debugPrint("LESSON FOUND IN DATABASE! Student ID is: ${Lesson
         .fromMap(map)
         .lessonStudentId}");
 
