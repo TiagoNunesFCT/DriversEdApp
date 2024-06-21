@@ -2,6 +2,9 @@
 Simple Offline Flutter App to Manage Driver's Ed students and lessons.
 (Currently, only Portuguese and metric is supported. Support for English and imperial units planned, as well as, potentially, other languages)
 
+## Video Demo
+[![Video Demo](https://img.youtube.com/vi/18BrMl8rg2Y/0.jpg)](https://www.youtube.com/watch?v=18BrMl8rg2Y)
+
 ## Features
 
 ### Views:
