@@ -2269,9 +2269,8 @@ class ManoeuvresListStaticState extends State<ManoeuvresListStatic> {
   Future<List<Map<String, dynamic>>?> getManoeuvres() async {
     resetGlobalsLessons();
     listManoeuvres = [];
-    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsManoeuvres();
     setState(() {
-      listMap?.forEach((map) => addToList(map));
+
       addLessonManoeuvres();
     });
   }

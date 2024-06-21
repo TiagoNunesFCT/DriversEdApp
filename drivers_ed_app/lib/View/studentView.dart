@@ -1188,16 +1188,16 @@ class _DayDialogState extends State<DayDialog> {
         children: <Widget>[
           SizedBox(
             width: 600,
-            child: Column(children:widget.lessons.keys
+            height:200,
+            child: SingleChildScrollView(child:Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children:widget.lessons.keys
                 .where((item3) => roundDateTime(widget.date).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
                 .map((item2) => Container(
-                height: 20,
-                child: Marquee(
+                child: Text(
                   //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
-                  text: (item2.isLesson) ? "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Aula | ${widget.lessons[item2]!.studentName} | " : "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(item2.date.toInt()))} | Exame | ${widget.lessons[item2]!.studentName} | ",
+                  formatLessonDetails(item2, widget.lessons[item2]!.studentName),
                   style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
                 )))
-                .toList())
+                .toList()))
           ),
           SizedBox(height: 10),
           SizedBox(
@@ -1222,6 +1222,43 @@ class _DayDialogState extends State<DayDialog> {
       ],
     )));
   }
+
+  String formatLessonDetails(LessonOrExam lesson, String studentName){
+    String output = "";
+    String trueOrFalseDone = (lesson.done>0)? "Sim": "Não";
+
+      if (lesson.isLesson) {
+        if (lesson.done<1) {
+          output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nAula\n${studentName}\nCategoria: ${lesson.category}\nRealizada? $trueOrFalseDone\n";
+        }else{
+          output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nAula\n${studentName}\nCategoria: ${lesson.category}\nRealizada? $trueOrFalseDone\nDuração da Aula: ${lesson.hours} h\nDistância Total: ${lesson.distance} km\nManobras:\n${GetManoeuvres(lesson)}\n";
+
+        }} else {
+        String trueOrFalsePassed = (lesson.passed!>0)? "Sim" : "Não";
+        output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nExame\n${studentName}\nCategoria: ${lesson.category}\nRealizado? $trueOrFalseDone\nAprovado? $trueOrFalsePassed\n";
+      }
+
+    return output;
+  }
+
+  String GetManoeuvres(LessonOrExam lesson) {
+    String returnString = "";
+    for (String lessonName in lesson.manoeuvres!.split(';')) {
+      if (lessonName.isNotEmpty) {
+        returnString += lessonName + "\n";
+      }
+    }
+
+    //this can be done better, perhaps with a counter keeping track of the current index, but here's how I remove the last linebreak:
+    if (returnString.isNotEmpty && returnString.length >= 1) {
+      returnString = returnString.substring(0, returnString.length - 1);
+    }
+    if (returnString.isEmpty) {
+      returnString = "Nenhuma Manobra Definida";
+    }
+    return returnString;
+  }
+
 }
 
 class AddManoeuvreDialog extends StatefulWidget {
