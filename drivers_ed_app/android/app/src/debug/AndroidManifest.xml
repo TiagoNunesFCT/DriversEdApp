@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="drivers_ed_app"
+        android:label="DriveLog"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
 
