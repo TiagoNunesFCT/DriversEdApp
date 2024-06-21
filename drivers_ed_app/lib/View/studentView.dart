@@ -1187,9 +1187,13 @@ class _DayDialogState extends State<DayDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width: 600,
+
+            width: 400,
             height:200,
-            child: SingleChildScrollView(child:Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children:widget.lessons.keys
+            child: Container(          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+            ),padding: EdgeInsets.all(5),child:SingleChildScrollView(child:Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children:widget.lessons.keys
                 .where((item3) => roundDateTime(widget.date).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
                 .map((item2) => Container(
                 child: Text(
@@ -1197,13 +1201,10 @@ class _DayDialogState extends State<DayDialog> {
                   formatLessonDetails(item2, widget.lessons[item2]!.studentName),
                   style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
                 )))
-                .toList()))
+                .toList())))
           ),
-          SizedBox(height: 10),
-          SizedBox(
-            width: 600,
-            child: Container(),
-          ),
+
+
         ],
       ),
       actions: <Widget>[
