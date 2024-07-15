@@ -1866,7 +1866,12 @@ class ManoeuvresListState extends State<ManoeuvresList> {
   //Method that adds Lessons to the List, in case they are compliant with the search criteria
   addToList(Map<String, dynamic> map) {
     if (Manoeuvre.fromMap(map).manoeuvreCategory == widget.lesson.lessonCategory) {
-      String capitalizedString = Manoeuvre.fromMap(map).manoeuvreName.split(' ').map((word) => word.capitalize()).join(' ');
+      debugPrint("#################### MANOEUVRE IS... -> ${Manoeuvre.fromMap(map).manoeuvreName}");
+      debugPrint("#################### MANOEUVRE SPLIT SIZE: ${ Manoeuvre.fromMap(map).manoeuvreName.split(' ').length}");
+      for( String s in Manoeuvre.fromMap(map).manoeuvreName.split(' ')){
+        debugPrint("#################### MANOEUVRE SPLIT ELEMENT: \"$s\"");
+      }
+      String capitalizedString = Manoeuvre.fromMap(map).manoeuvreName.trim().split(' ').map((word) => word.capitalize()).join(' ');
       listManoeuvres.add(capitalizedString);
     }
   }

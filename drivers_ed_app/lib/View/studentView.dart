@@ -535,7 +535,7 @@ class AddStudentDialogState extends State<AddStudentDialog> {
           ),
           FilledButton.tonal(
             onPressed: () {
-              Student studentToBeAdded = Student(studentName: studentName.text, studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
+              Student studentToBeAdded = Student(studentName: studentName.text.trim(), studentRegistrationNumber: int.parse(studentNumber.text.trim()), studentRegistrationDate: widget.currentDate.millisecondsSinceEpoch.toDouble(), studentCategory: widget.currentCategory);
               DatabaseController.instance.insertStudent(studentToBeAdded.toMapWithoutId());
               setState(() {
                 debugPrint("CLICKED ON CONFIRM BUTTON");
@@ -662,7 +662,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           ),
           FilledButton.tonal(
             onPressed: () {
-              CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text, categoryDescription: categoryDescription.text);
+              CategoryPackage.Category categoryToBeAdded = CategoryPackage.Category(categoryName: categoryName.text.trim(), categoryDescription: categoryDescription.text.trim());
               DatabaseController.instance.insertCategory(categoryToBeAdded.toMapWithoutId());
               Navigator.of(context).pop();
               setState(() {});
@@ -1346,7 +1346,7 @@ class _AddManoeuvreDialogState extends State<AddManoeuvreDialog> {
           ),
           FilledButton.tonal(
             onPressed: () {
-              Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text, manoeuvreCategory: widget.currentCategory);
+              Manoeuvre manoeuvreToBeAdded = Manoeuvre(manoeuvreName: manoeuvreName.text.trim(), manoeuvreCategory: widget.currentCategory);
               DatabaseController.instance.insertManoeuvre(manoeuvreToBeAdded.toMapWithoutId());
               Navigator.of(context).pop();
               setState(() {});
