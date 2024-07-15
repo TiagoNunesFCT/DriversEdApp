@@ -341,7 +341,7 @@ class _StudentPageState extends State<StudentPage> {
   void showWeekDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) => WeekDialog(DateTime.now()),
+      builder: (BuildContext context) => WeekDialog(DateTime.now(), context),
     );
   }
 
@@ -952,11 +952,30 @@ class _CategoryListDialogState extends State<CategoryListDialog> {
 
 class WeekDialog extends StatefulWidget {
   DateTime date;
+  BuildContext context;
 
-  WeekDialog(this.date, {super.key});
+  WeekDialog(this.date, this.context, {super.key});
 
   @override
   _WeekDialogState createState() => _WeekDialogState();
+
+  void showNextWeekDialog() {
+    Navigator.of(context).pop();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => WeekDialog(this.date.add(Duration(days: 7)), context),
+    );
+  }
+
+  void showPreviousWeekDialog() {
+    Navigator.of(context).pop();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => WeekDialog(this.date.subtract(Duration(days: 7)), context),
+    );
+  }
+
+
 }
 
 class _WeekDialogState extends State<WeekDialog> {
@@ -998,7 +1017,7 @@ class _WeekDialogState extends State<WeekDialog> {
               'Fechar',
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
-          ),
+          ),Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [IconButton.filledTonal(onPressed: () {widget.showPreviousWeekDialog();}, icon: Icon(Icons.keyboard_arrow_left_rounded)),IconButton.filledTonal(    onPressed: () {widget.showNextWeekDialog();}, icon: Icon(Icons.keyboard_arrow_right_rounded))]),
         ])
       ],
     )));
