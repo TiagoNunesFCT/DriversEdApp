@@ -55,6 +55,12 @@ class _SettingsPageState extends State<SettingsPage> {
     File db = File(path);
     //copy database to export path
     await db.copySync(path2);
+
+    final String? directoryDownloads = (await getDownloadsDirectory())?.path;
+    final path3 = '$directoryDownloads/backup_drivelog_' + DateTime.now().toString() + '.db';
+    //copy database to app downloads path
+    await db.copySync(path3);
+
     //display a share intent with the database file attached
     await Share.shareXFiles([XFile(path2)], text: "Database Backup: ");
     //diplay a toast afterwards indicating that the backup has been created
@@ -66,6 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
         textColor: Colors.white,
         fontSize: 16.0);
     debugPrint("Backup Created in : $path2");
+    debugPrint("Backup Created in : $path3");
   }
 
 //import an existing database
