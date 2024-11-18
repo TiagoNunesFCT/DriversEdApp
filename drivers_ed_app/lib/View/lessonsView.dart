@@ -1,5 +1,6 @@
 /*LessonPage(ID DO ALUNO!!!)*/
 
+import 'package:drivers_ed_app/View/settingsView.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -129,7 +130,12 @@ class _LessonsPageState extends State<LessonsPage> {
                             ),
                             tooltip: 'Definições',
                             onPressed: () {
-                              setState(() {});
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const SettingsPage()),
+                              ).then((_) {
+                                updateState();
+                              });
                             },
                             padding: const EdgeInsets.all(12.0),
                           )),
@@ -1867,8 +1873,8 @@ class ManoeuvresListState extends State<ManoeuvresList> {
   addToList(Map<String, dynamic> map) {
     if (Manoeuvre.fromMap(map).manoeuvreCategory == widget.lesson.lessonCategory) {
       debugPrint("#################### MANOEUVRE IS... -> ${Manoeuvre.fromMap(map).manoeuvreName}");
-      debugPrint("#################### MANOEUVRE SPLIT SIZE: ${ Manoeuvre.fromMap(map).manoeuvreName.split(' ').length}");
-      for( String s in Manoeuvre.fromMap(map).manoeuvreName.split(' ')){
+      debugPrint("#################### MANOEUVRE SPLIT SIZE: ${Manoeuvre.fromMap(map).manoeuvreName.split(' ').length}");
+      for (String s in Manoeuvre.fromMap(map).manoeuvreName.split(' ')) {
         debugPrint("#################### MANOEUVRE SPLIT ELEMENT: \"$s\"");
       }
       String capitalizedString = Manoeuvre.fromMap(map).manoeuvreName.trim().split(' ').map((word) => word.capitalize()).join(' ');

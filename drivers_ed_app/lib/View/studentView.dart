@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:drivers_ed_app/Model/lesson.dart';
 import 'package:drivers_ed_app/Model/manoeuvre.dart';
+import 'package:drivers_ed_app/View/settingsView.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -105,8 +106,12 @@ class _StudentPageState extends State<StudentPage> {
                             ),
                             tooltip: 'Definições',
                             onPressed: () {
-                              ShowToast(true);
-                              setState(() {});
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const SettingsPage()),
+                              ).then((_) {
+                                updateState();
+                              });
                             },
                             padding: const EdgeInsets.all(12.0),
                           )),
@@ -974,8 +979,6 @@ class WeekDialog extends StatefulWidget {
       builder: (BuildContext context) => WeekDialog(this.date.subtract(Duration(days: 7)), context),
     );
   }
-
-
 }
 
 class _WeekDialogState extends State<WeekDialog> {
@@ -1017,7 +1020,19 @@ class _WeekDialogState extends State<WeekDialog> {
               'Fechar',
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
-          ),Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [IconButton.filledTonal(onPressed: () {widget.showPreviousWeekDialog();}, icon: Icon(Icons.keyboard_arrow_left_rounded)),IconButton.filledTonal(    onPressed: () {widget.showNextWeekDialog();}, icon: Icon(Icons.keyboard_arrow_right_rounded))]),
+          ),
+          Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            IconButton.filledTonal(
+                onPressed: () {
+                  widget.showPreviousWeekDialog();
+                },
+                icon: Icon(Icons.keyboard_arrow_left_rounded)),
+            IconButton.filledTonal(
+                onPressed: () {
+                  widget.showNextWeekDialog();
+                },
+                icon: Icon(Icons.keyboard_arrow_right_rounded))
+          ]),
         ])
       ],
     )));
@@ -1062,7 +1077,10 @@ class _WeekDisplayState extends State<WeekDisplay> {
                 ),
               ),
               child: TextButton(
-                style:ButtonStyle(padding: MaterialStatePropertyAll(EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),)),
+                  style: ButtonStyle(
+                      padding: MaterialStatePropertyAll(
+                    EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                  )),
                   onPressed: () {
                     showDayDialog(item, lessons);
                   },
@@ -1199,31 +1217,34 @@ class _DayDialogState extends State<DayDialog> {
       elevation: 0,
       backgroundColor: Theme.of(context).colorScheme.background,
       title: Text(
-      "${DateFormat('yyyy-MM-dd').format(widget.date)} | ${weekdayString(widget.date, true)}",
+        "${DateFormat('yyyy-MM-dd').format(widget.date)} | ${weekdayString(widget.date, true)}",
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-
-            width: 400,
-            height:200,
-            child: Container(          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-              color: Theme.of(context).colorScheme.onInverseSurface,
-            ),padding: EdgeInsets.all(5),child:SingleChildScrollView(child:Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.center,children:widget.lessons.keys
-                .where((item3) => roundDateTime(widget.date).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
-                .map((item2) => Container(
-                child: Text(
-                  //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
-                  formatLessonDetails(item2, widget.lessons[item2]!.studentName),
-                  style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
-                )))
-                .toList())))
-          ),
-
-
+              width: 400,
+              height: 200,
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                    color: Theme.of(context).colorScheme.onInverseSurface,
+                  ),
+                  padding: EdgeInsets.all(5),
+                  child: SingleChildScrollView(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: widget.lessons.keys
+                              .where((item3) => roundDateTime(widget.date).toString() == roundDateTime(DateTime.fromMillisecondsSinceEpoch(item3.date.toInt())).toString())
+                              .map((item2) => Container(
+                                      child: Text(
+                                    //temporarily using the manoeuvres field to store whether if these "lessons" are actual lessons or exams. These values will never be read outside of this dialog, and even if they were, the lesson hasn't started yet, and as such it does not have a manoeuvres field
+                                    formatLessonDetails(item2, widget.lessons[item2]!.studentName),
+                                    style: (item2.isLesson) ? TextStyle(fontWeight: FontWeight.w400) : TextStyle(fontWeight: FontWeight.w900),
+                                  )))
+                              .toList())))),
         ],
       ),
       actions: <Widget>[
@@ -1243,20 +1264,20 @@ class _DayDialogState extends State<DayDialog> {
     )));
   }
 
-  String formatLessonDetails(LessonOrExam lesson, String studentName){
+  String formatLessonDetails(LessonOrExam lesson, String studentName) {
     String output = "";
-    String trueOrFalseDone = (lesson.done>0)? "Sim": "Não";
+    String trueOrFalseDone = (lesson.done > 0) ? "Sim" : "Não";
 
-      if (lesson.isLesson) {
-        if (lesson.done<1) {
-          output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nAula\n${studentName}\nCategoria: ${lesson.category}\nRealizada? $trueOrFalseDone\n";
-        }else{
-          output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nAula\n${studentName}\nCategoria: ${lesson.category}\nRealizada? $trueOrFalseDone\nDuração da Aula: ${lesson.hours} h\nDistância Total: ${lesson.distance} km\nManobras:\n${GetManoeuvres(lesson)}\n";
-
-        }} else {
-        String trueOrFalsePassed = (lesson.passed!>0)? "Sim" : "Não";
-        output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nExame\n${studentName}\nCategoria: ${lesson.category}\nRealizado? $trueOrFalseDone\nAprovado? $trueOrFalsePassed\n";
+    if (lesson.isLesson) {
+      if (lesson.done < 1) {
+        output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nAula\n${studentName}\nCategoria: ${lesson.category}\nRealizada? $trueOrFalseDone\n";
+      } else {
+        output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nAula\n${studentName}\nCategoria: ${lesson.category}\nRealizada? $trueOrFalseDone\nDuração da Aula: ${lesson.hours} h\nDistância Total: ${lesson.distance} km\nManobras:\n${GetManoeuvres(lesson)}\n";
       }
+    } else {
+      String trueOrFalsePassed = (lesson.passed! > 0) ? "Sim" : "Não";
+      output = "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(lesson.date.toInt()))}\nExame\n${studentName}\nCategoria: ${lesson.category}\nRealizado? $trueOrFalseDone\nAprovado? $trueOrFalsePassed\n";
+    }
 
     return output;
   }
@@ -1278,7 +1299,6 @@ class _DayDialogState extends State<DayDialog> {
     }
     return returnString;
   }
-
 }
 
 class AddManoeuvreDialog extends StatefulWidget {
@@ -2380,7 +2400,7 @@ DateTime roundDateTime(DateTime dateTime) {
 String weekdayString(DateTime dateTime, bool long) {
   DateTime roundedDateTime = roundDateTime(dateTime);
 
-  if(long) {
+  if (long) {
     //to enable compatibility with other languages, the check must be done here, perhaps with an additional switch, or use constants on the language pack
     String result = "Domingo";
     switch (roundedDateTime.weekday) {
@@ -2411,7 +2431,7 @@ String weekdayString(DateTime dateTime, bool long) {
     }
 
     return result;
-  }else{
+  } else {
 //to enable compatibility with other languages, the check must be done here, perhaps with an additional switch, or use constants on the language pack
     String result = "D";
     switch (roundedDateTime.weekday) {
@@ -2442,7 +2462,6 @@ String weekdayString(DateTime dateTime, bool long) {
     }
     return result;
   }
-
 }
 
 //TODO: WHEN DELETING A STUDENT, DELETE ALL THEIR LESSONS AND EXAMS. THIS WILL CLEAN THE DATABASE, PREVENTING IT FROM BECOMING BLOATED WITH OLD LESSONS.
