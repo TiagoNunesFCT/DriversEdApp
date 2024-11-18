@@ -1,15 +1,21 @@
 import 'dart:collection';
 import 'dart:ffi';
+import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:drivers_ed_app/Model/lesson.dart';
 import 'package:drivers_ed_app/Model/manoeuvre.dart';
 import 'package:drivers_ed_app/View/settingsView.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marquee/marquee.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../Controller/databaseController.dart';
+import '../Controller/importHandler.dart';
 import '../Model/category.dart' as CategoryPackage;
 import '../Model/exam.dart';
 import '../Model/student.dart';
@@ -227,7 +233,7 @@ class _StudentPageState extends State<StudentPage> {
                                   ]))
                             ]),
                             FilledButton.tonal(
-                                onPressed: () {},
+                                onPressed: () => importCSVFile(),
                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                   Icon(Icons.download_rounded),
                                   Container(
@@ -238,7 +244,7 @@ class _StudentPageState extends State<StudentPage> {
                                       ))
                                 ])),
                             FilledButton.tonal(
-                                onPressed: () {},
+                                onPressed: () => exportCSVFile(),
                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                   Icon(Icons.upload_rounded),
                                   Container(
@@ -383,6 +389,111 @@ class _StudentPageState extends State<StudentPage> {
       debugPrint("Database Purged.");
     });
   }
+
+  //Export all students as a .csv file
+  exportCSVFile() async {
+    debugPrint("Export Students");
+
+
+    late List<Student> listStudents;
+
+    listStudents = [];
+    addToList(Map<String, dynamic> map) {
+      if (Student.fromMap(map).studentName.toLowerCase().contains(searchQuery.trim().toLowerCase()) || Student.fromMap(map).studentRegistrationNumber.toString().toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+        listStudents.add(Student.fromMap(map));
+        listStudents.sort((a, b) => a.studentRegistrationNumber.compareTo(b.studentRegistrationNumber));
+      }
+    }
+
+
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
+    setState(() {
+      listMap?.forEach((map) => addToList(map));
+    });
+
+
+    //The "Matrix" of strings, each one corresponding to an individual cell of the .csv file
+    List<List<String>> data = [];
+    //The first line, which contains the separator
+    List<String> sepLine = [];
+    sepLine.add("sep=");
+    sepLine.add("");
+    data.add(sepLine);
+    //The Header Lines
+    //'Name','RegistrationNumber','RegistrationDate','Category','Lessons','Exams'
+    List<String> headerData = [];
+
+    /*
+    headerData.add('Name');
+    headerData.add('RegistrationNumber');
+    headerData.add('RegistrationDate');
+    headerData.add('Category');
+    headerData.add('Lessons');
+    headerData.add('Exams');
+    */
+    headerData.add('Nome');
+    headerData.add('Número de Inscrição');
+    headerData.add('Data de Inscrição');
+    headerData.add('Categoria');
+    headerData.add('Lições');
+    headerData.add('Exames');
+    data.add(headerData);
+    //The Remaining Lines
+    for (Student s in listStudents) {
+      List<String> studentData = [];
+      studentData.add(s.studentName);
+      studentData.add(s.studentRegistrationNumber.toString());
+      studentData.add(s.studentRegistrationDate.toString());
+      studentData.add(s.studentCategory);
+      //Now, it will be difficult to compress a Student's Lessons and Exams in Two Different Strings. Nonetheless, by using custom separators, we might be able to parse them out when importing.
+      studentData.add(stringifyStudentsLessons(s));
+      studentData.add(stringifyStudentsExams(s));
+
+      data.add(studentData);
+    }
+
+    //Convert it to .csv
+    String csvData = ListToCsvConverter().convert(data);
+    //Get the platform-correct directory
+    final String? directory = Platform.isIOS ? (await getApplicationDocumentsDirectory()).path : (await getExternalStorageDirectory())?.path;
+    //configure the path and file name
+    final path = "$directory/student-list-${DateTime.now()}.csv";
+    debugPrint("CSV Export path: $path");
+    //Create the file
+    final File file = File(path);
+    //And write to it
+    await file.writeAsString(csvData);
+    //Show success toast
+    Fluttertoast.showToast(msg: "Students Exported", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
+    //Note: for old functionality comment the two lines below:
+    //Show share intent
+    await Share.shareXFiles([XFile(path)], text: "Student Export: ");
+  }
+
+  //Import .csv File with Students(s)
+  importCSVFile() async {
+    debugPrint("Import Students");
+    //wait for user to pick the file using the platform's default file picker
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      //allowedExtensions: ['csv'],
+      type: FileType.any,
+    );
+    if(result != null){
+    //The fetched file
+    String path = result!.files!.first!.path!;
+    //Call the import handler to handle the import
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) {
+          return ImportHandler(path: path);
+        },
+      ),
+    );
+    setState(() {});
+  }
+  }
+
+
 }
 
 class AddStudentDialog extends StatefulWidget {
@@ -2574,4 +2685,72 @@ class LessonOrExam {
     category = exam.examCategory;
     isLesson = false;
   }
+}
+
+
+//Methods to convert a Student's Lessons and Exams into a single String
+String stringifyStudentsLessons(Student student){
+  String output = "";
+   List<Lesson> listLessons = [];
+
+  //Method that adds Lessons to the List, in case they are compliant with the search criteria
+  addToListLesson(Map<String, dynamic> map) {
+    debugPrint("LESSON FOUND IN DATABASE! Student ID is: " + Lesson.fromMap(map).lessonStudentId.toString());
+    listLessons.add(Lesson.fromMap(map));
+    debugPrint("List sorted, current order is:");
+    listLessons.forEach((element) {
+      debugPrint("Element: ${element.lessonDate}");
+    });
+  }
+
+  //Async version of the getLessons method.
+  // This is a copy of the one in the LessonsList widget.
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getLessons() async {
+    listLessons = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsFromStudent(student.studentRegistrationNumber);
+
+      listMap?.forEach((map) => addToListLesson(map));
+
+  }
+
+  getLessons();
+  for(Lesson l in listLessons){
+    output += "%LESSONSTART%${l.lessonDate}%${l.lessonHours}%${l.lessonDistance}%${l.lessonDone}%${l.lessonManoeuvres}%${l.lessonCategory}";
+  }
+
+return output;
+}
+
+String stringifyStudentsExams(Student student){
+  String output = "";
+  List<Exam> listExams = [];
+
+  //Method that adds Exams to the List, in case they are compliant with the search criteria
+  addToListExam(Map<String, dynamic> map) {
+    debugPrint("EXAM FOUND IN DATABASE! Student ID is: " + Exam.fromMap(map).examStudentId.toString());
+    listExams.add(Exam.fromMap(map));
+    debugPrint("List sorted, current order is:");
+    listExams.forEach((element) {
+      debugPrint("Element: ${element.examDate}");
+    });
+  }
+
+  //Async version of the getExams method.
+  // This is a copy of the one in the ExamsList widget.
+  // ignore: missing_return
+  Future<List<Map<String, dynamic>>?> getExams() async {
+    listExams = [];
+    List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllExamsFromStudent(student.studentRegistrationNumber);
+
+    listMap?.forEach((map) => addToListExam(map));
+
+  }
+
+  getExams();
+  for(Exam e in listExams){
+    output += "%EXAMSTART%${e.examDate}%${e.examDone}%${e.examPassed}%${e.examCategory}";
+  }
+
+  return output;
 }
