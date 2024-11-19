@@ -1,4 +1,3 @@
-
 //This class represents a Lesson object
 class Lesson {
   //The Current Lesson Attributes

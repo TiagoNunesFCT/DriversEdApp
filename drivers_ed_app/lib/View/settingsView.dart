@@ -25,21 +25,14 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-
-
-
 class _SettingsPageState extends State<SettingsPage> {
-
-
   void initState() {
     super.initState();
     setState(() {});
   }
 
   void updateState() {
-
-    setState(() {
-    });
+    setState(() {});
   }
 
 //This method creates a backup of the entire database
@@ -64,13 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
     //display a share intent with the database file attached
     await Share.shareXFiles([XFile(path2)], text: "Database Backup: ");
     //diplay a toast afterwards indicating that the backup has been created
-    Fluttertoast.showToast(msg: "Backup Created",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    Fluttertoast.showToast(msg: "Backup Created", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
     debugPrint("Backup Created in : $path2");
     debugPrint("Backup Created in : $path3");
   }
@@ -84,32 +71,26 @@ class _SettingsPageState extends State<SettingsPage> {
       type: FileType.any,
     );
 
-    if(result != null){
-    //The fetched file
-    File db = File(result!.files!.first!.path!);
+    if (result != null) {
+      //The fetched file
+      File db = File(result!.files!.first!.path!);
 
-    //The default database's path and file name
-    final String directory = (await getApplicationDocumentsDirectory()).path;
-    final path = '$directory/students.db';
-    //Deleting Previous Database From Storage
-    await DatabaseController.instance.closeDatabase();
-    await deleteDatabase(path);
+      //The default database's path and file name
+      final String directory = (await getApplicationDocumentsDirectory()).path;
+      final path = '$directory/students.db';
+      //Deleting Previous Database From Storage
+      await DatabaseController.instance.closeDatabase();
+      await deleteDatabase(path);
 
-    //Loading New Database From File
-    await db.copySync(path);
-    await DatabaseController.instance.openNewDatabase();
+      //Loading New Database From File
+      await db.copySync(path);
+      await DatabaseController.instance.openNewDatabase();
 
-    //setting state so settings change immediately
-    setState(() {});
-  }
+      //setting state so settings change immediately
+      setState(() {});
+    }
     //display a toast informing the user that the import was successful
-    Fluttertoast.showToast(msg: "Backup Restored Successfully",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    Fluttertoast.showToast(msg: "Backup Restored Successfully", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
   }
 
   Widget build(BuildContext context) {
@@ -121,42 +102,35 @@ class _SettingsPageState extends State<SettingsPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
+        title: Container(child:Text("Definições",textAlign: TextAlign.center)),
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
 
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        toolbarHeight: 0,
+        toolbarHeight: 40,
       ),
-      body: Container(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .background,
-          child: Center(
+      body: Center(
             // Center is a layout widget. It takes a single child and positions it
             // in the middle of the parent.
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+
               children: [
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-
                     Container(
-                        height: 300,
+                        height: 200,
                         width: 250,
                         child: Column(
+                          mainAxisAlignment:MainAxisAlignment.center,
                           children: [
-
-
-
                             FilledButton.tonal(
                                 onPressed: () => importDatabase(),
                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -198,49 +172,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ])),
                           ],
                         )),
-                    SizedBox(width: 50, height: 50)
                   ],
                 ),
-                Container(
-                  width: (MediaQuery
-                      .of(context)
-                      .size
-                      .width - 458),
-                  padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
-                  child: (Container(
-                    child: Column(children: [
-                      Container(
-                          height: 50,
-                          decoration: BoxDecoration(color: Theme
-                              .of(context)
-                              .colorScheme
-                              .secondaryContainer, borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                          child: Container(
-                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                                Container(width: 80, child: Text("Aluno Nº", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 300, child: Text("Nome Completo", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 150, child: Text("Data de Inscrição", textAlign: TextAlign.center)),
-                                Text(
-                                  "|",
-                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, height: -0.1),
-                                ),
-                                Container(width: 70, child: Text("Categoria", textAlign: TextAlign.center))
-                              ]))),
 
-                    ]),
-                  )),
-                ),
               ],
             ),
-          )),
+          ),
     );
   }
 
@@ -262,6 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
       debugPrint("Database Purged.");
     });
   }
+
   void ShowToast(bool isSettings) {
     if (isSettings) {
       Fluttertoast.showToast(msg: "Funcionalidade não implementada", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
@@ -269,7 +207,6 @@ class _SettingsPageState extends State<SettingsPage> {
       Fluttertoast.showToast(msg: "Mantenha premido para Apagar...", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 16.0);
     }
   }
-
 }
 
 //The dialog that shows up asking if the user is really sure that they want to delete THE ENTIRE DATABASE
@@ -283,64 +220,61 @@ class FullDeleteConfirmationDialog extends StatelessWidget {
     return Center(
         child: SingleChildScrollView(
             child: AlertDialog(
-              elevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              title: const Text(
-                "Confirmação",
+      elevation: 0,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: const Text(
+        "Confirmação",
+      ),
+      content: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  height: 50,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text(
+                      "Tem a certeza que pretende eliminar todos os dados da Aplicação?",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                    Text(
+                      "Esta ação é irreversível!",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+                    ),
+                  ])),
+            ],
+          )),
+      actions: <Widget>[
+        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FilledButton.tonal(
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+            onPressed: () {
+              updateStateCallback();
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'SIM',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
               ),
-              content: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                          height: 50,
-                          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text(
-                              "Tem a certeza que pretende eliminar todos os dados da Aplicação?",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.inverseSurface),
-                            ),
-                            Text(
-                              "Esta ação é irreversível!",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
-                            ),
-                          ])),
-                    ],
-                  )),
-              actions: <Widget>[
-                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  FilledButton.tonal(
-                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
-                    onPressed: () {
-                      updateStateCallback();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'SIM',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Não',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ])
-              ],
-            )));
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Não',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ])
+      ],
+    )));
   }
-
-
 }
-

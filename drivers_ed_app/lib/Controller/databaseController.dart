@@ -424,6 +424,7 @@ class DatabaseController {
     Database? db = await instance.database;
     return await db?.delete(studTable);
   }
+
   //Delete all Lessons
   Future<int?> deleteAllLessons() async {
     Database? db = await instance.database;

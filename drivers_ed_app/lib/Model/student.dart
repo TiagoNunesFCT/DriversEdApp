@@ -1,4 +1,3 @@
-
 //This class represents a Student object
 class Student {
   //The Current Lesson Attributes
@@ -6,7 +5,6 @@ class Student {
   int studentRegistrationNumber;
   double studentRegistrationDate;
   String studentName, studentCategory;
-
 
   Student({this.studentId, required this.studentName, required this.studentRegistrationNumber, required this.studentRegistrationDate, required this.studentCategory});
 

@@ -15,11 +15,12 @@ import 'databaseController.dart';
 class ImportHandler extends StatefulWidget {
   //The Path in which the import handler will work.
   final String path;
+  final void Function() callbackFunction;
 
   @override
   ImportHandlerState createState() => ImportHandlerState();
 
-  const ImportHandler({super.key, required this.path});
+  const ImportHandler({super.key, required this.path, required this.callbackFunction});
 }
 
 class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMixin {
@@ -97,32 +98,31 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
     int numberOfValidStudents = 0;
     return Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
       AlertDialog(
-          backgroundColor: const Color(0xFF242933),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           titlePadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
           title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            IconButton(padding: const EdgeInsets.fromLTRB(10.0, 14.0, 10.0, 10.0), alignment: Alignment.topLeft, iconSize: 22, icon: const Icon(Icons.warning_amber_rounded), color: const Color(0xFFB2A263), onPressed: () {}),
             Container(
-                padding: const EdgeInsets.all(0.0),
+                padding: const EdgeInsets.all(10.0),
                 child: const Text(
-                  'Warning',
-                  style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFB2A263), fontWeight: FontWeight.w600, fontSize: 20.0),
+                  'Aviso',
+                  style: TextStyle(color: Color(0xFFB2A263), fontWeight: FontWeight.w900, fontSize: 20.0),
                 ))
           ]),
           contentPadding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 0.0),
           actionsPadding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
           content: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              'Problems Found while Parsing CSV File:',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 16.0),
+            Text(
+              'Problemas Encontrados durante a Importação:',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             Text(
               fileName,
-              style: const TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 10.0),
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'The following optional headers were missing:',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 14.0),
+            Text(
+              'Os seguintes cabeçalhos opcionais estão em falta:',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
             SizedBox(
@@ -134,33 +134,40 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
                       String thisHeader = missHeaders[position];
                       return Text(
                         thisHeader,
-                        style: const TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w500, fontSize: 14.0),
+                        style: TextStyle(fontSize: 14, height: 1.5, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.inverseSurface),
                       );
                     })),
           ]),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Abort',
-                style: TextStyle(fontFamily: "Montserrat", color: Color(0xFF8FBCBB), fontWeight: FontWeight.w300, fontSize: 16.0),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => ImportStatus(context, result, numberOfValidStudents, indName, indNumb, indDate, indCat, indLes, indExa),
-                );
-              },
-              child: const Text(
-                'Import Anyway',
-                style: TextStyle(fontFamily: "Montserrat", color: Color(0xFF8FBCBB), fontWeight: FontWeight.w300, fontSize: 16.0),
-              ),
-            ),
+            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Abort',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                        )),
+                  )),
+              Container(
+                padding: EdgeInsets.all(15.0),
+                child: FilledButton.tonal(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => ImportStatus(context, result, numberOfValidStudents, indName, indNumb, indDate, indCat, indLes, indExa),
+                    );
+                  },
+                  child: const Text('Import Anyway',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      )),
+                ),
+              )
+            ])
           ])
     ]);
   }
@@ -174,32 +181,31 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
       ),*/
         Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
       AlertDialog(
-          backgroundColor: const Color(0xFF242933),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           titlePadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
           title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            IconButton(padding: const EdgeInsets.fromLTRB(10.0, 14.0, 10.0, 10.0), alignment: Alignment.topLeft, iconSize: 22, icon: const Icon(Icons.error_outline_rounded), color: const Color(0xFFE97553), onPressed: () {}),
             Container(
-                padding: const EdgeInsets.all(0.0),
+                padding: const EdgeInsets.all(10.0),
                 child: const Text(
-                  'Error',
-                  style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFE97553), fontWeight: FontWeight.w600, fontSize: 20.0),
+                  'Erro',
+                  style: TextStyle(color: Color(0xFFE97553), fontWeight: FontWeight.w600, fontSize: 20.0),
                 ))
           ]),
           contentPadding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 0.0),
           actionsPadding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
           content: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              'Error while Parsing CSV File:',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 16.0),
+            Text(
+              'Erro durante a importação do ficheiro CSV:',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             Text(
               fileName,
-              style: const TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 10.0),
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'The following required headers were missing:',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 14.0),
+            Text(
+              'Os seguintes cabeçalhos obrigatórios estão em falta:',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
             SizedBox(
@@ -211,20 +217,23 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
                       String thisHeader = missHeaders[position];
                       return Text(
                         thisHeader,
-                        style: const TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w500, fontSize: 14.0),
+                        style: TextStyle(fontSize: 14, height: 1.5, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.inverseSurface),
                       );
                     })),
           ]),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Abort',
-                style: TextStyle(fontFamily: "Montserrat", color: Color(0xFF8FBCBB), fontWeight: FontWeight.w300, fontSize: 16.0),
+            Container(
+              padding: EdgeInsets.all(15.0),
+              child: FilledButton.tonal(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Abortar',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                    )),
               ),
-            ),
+            )
           ])
     ]);
   }
@@ -238,44 +247,46 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
       ),*/
         Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
       AlertDialog(
-          backgroundColor: const Color(0xFF242933),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           titlePadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
           title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            IconButton(padding: const EdgeInsets.fromLTRB(10.0, 14.0, 10.0, 10.0), alignment: Alignment.topLeft, iconSize: 22, icon: const Icon(Icons.cancel_outlined), color: Colors.redAccent.shade700, onPressed: () {}),
             Container(
-                padding: const EdgeInsets.all(0.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  'Critical Error',
-                  style: TextStyle(fontFamily: "Montserrat", color: Colors.redAccent.shade700, fontWeight: FontWeight.w600, fontSize: 20.0),
+                  'Erro Crítico',
+                  style: TextStyle(color: Colors.redAccent.shade700, fontWeight: FontWeight.w600, fontSize: 20.0),
                 ))
           ]),
           contentPadding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 0.0),
           actionsPadding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
           content: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              'CSV File Format not recognized.',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 16.0),
+            Text(
+              'Formato CSV não reconhecido',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             Text(
               fileName,
-              style: const TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 10.0),
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Please use UTF-8 Encoded Files.',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 14.0),
+            Text(
+              'Por favor utilize ficheiros com codificação UTF-8',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
             ),
           ]),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Ok',
-                style: TextStyle(fontFamily: "Montserrat", color: Color(0xFF8FBCBB), fontWeight: FontWeight.w300, fontSize: 16.0),
+            Container(
+              padding: EdgeInsets.all(15.0),
+              child: FilledButton.tonal(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ok',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                    )),
               ),
-            ),
+            )
           ])
     ]);
   }
@@ -310,93 +321,105 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
     //Building the widget
     return Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
       AlertDialog(
-          backgroundColor: const Color(0xFF242933),
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           titlePadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
           title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            IconButton(padding: const EdgeInsets.fromLTRB(10.0, 14.0, 10.0, 10.0), alignment: Alignment.topLeft, iconSize: 22, icon: const Icon(Icons.system_update_alt_rounded), color: const Color(0xFFD8DEE9), onPressed: () {}),
             Container(
-                padding: const EdgeInsets.all(0.0),
-                child: const Text(
-                  'Import Details',
-                  style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w600, fontSize: 20.0),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'Detalhes da Importação',
+                  style: TextStyle(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.inverseSurface),
                 ))
           ]),
           contentPadding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 0.0),
           actionsPadding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
           content: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              'Import found the following valid Students:',
-              style: TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 16.0),
+            Text(
+              'Alunos válidos Encontrados:',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
             Text(
-              "$numberOfValidStudents students out of ${result.length} total.",
-              style: const TextStyle(fontFamily: "Montserrat", color: Color(0xFFD8DEE9), fontWeight: FontWeight.w300, fontSize: 14.0),
+              "$numberOfValidStudents alunos.",
+              style: TextStyle(fontSize: 12, height: 1.5, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.inverseSurface),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Total de Alunos:',
+              style: TextStyle(fontSize: 15, height: 1.5, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.inverseSurface),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "${result.length} alunos.",
+              style: TextStyle(fontSize: 12, height: 1.5, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.inverseSurface),
             ),
             const SizedBox(height: 10),
           ]),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => StudentPage()),
-                );
-              },
-              child: const Text(
-                'Abort',
-                style: TextStyle(fontFamily: "Montserrat", color: Color(0xFF8FBCBB), fontWeight: FontWeight.w300, fontSize: 16.0),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
-                //Inserting the Student into the Database
-                for (List<dynamic> currStud in result) {
-                  try {
-                    Student stud = Student(
-                      studentRegistrationDate: (indDate != -1) ? double.parse(currStud[indDate].toString()) : 0.0,
-                      studentRegistrationNumber: (indNumb != -1) ? int.parse(currStud[indNumb].toString()) : 0,
-                      studentCategory: (indCat != -1) ? currStud[indCat].toString() : "A",
-                      studentName: (indName != -1) ? currStud[indName].toString() : "Sem Nome ${++listMap?.length}",
-                    );
+            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: FilledButton.tonal(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  )),
+              Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: FilledButton.tonal(
+                    onPressed: () async {
+                      List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
+                      //Inserting the Student into the Database
+                      for (List<dynamic> currStud in result) {
+                        try {
+                          Student stud = Student(
+                            studentRegistrationDate: (indDate != -1) ? double.parse(currStud[indDate].toString()) : 0.0,
+                            studentRegistrationNumber: (indNumb != -1) ? int.parse(currStud[indNumb].toString()) : 0,
+                            studentCategory: (indCat != -1) ? currStud[indCat].toString() : "A",
+                            studentName: (indName != -1) ? currStud[indName].toString() : "Sem Nome ${++listMap?.length}",
+                          );
 
-                    DatabaseController.instance.insertStudent(stud.toMapWithoutId());
-                    try{
-                      debugPrint("Trying to Parse Lessons and Exams...");
-                      List<Lesson> studLessons = tryParseLessons((indLes != -1) ? currStud[indLes].toString() : "", int.parse(currStud[indNumb].toString()));
-                      List<Exam> studExams = tryParseExams((indExa != -1) ? currStud[indExa].toString() : "", int.parse(currStud[indNumb].toString()));
-                      for(Lesson l in studLessons){
-                        DatabaseController.instance.insertLesson(l.toMapWithoutId());
-                      }
-                      for(Exam e in studExams){
-                        DatabaseController.instance.insertExam(e.toMapWithoutId());
+                          DatabaseController.instance.insertStudent(stud.toMapWithoutId());
+                          try {
+                            debugPrint("Trying to Parse Lessons and Exams...");
+                            List<Lesson> studLessons = tryParseLessons((indLes != -1) ? currStud[indLes].toString() : "", int.parse(currStud[indNumb].toString()));
+                            List<Exam> studExams = tryParseExams((indExa != -1) ? currStud[indExa].toString() : "", int.parse(currStud[indNumb].toString()));
+                            for (Lesson l in studLessons) {
+                              DatabaseController.instance.insertLesson(l.toMapWithoutId());
+                            }
+                            for (Exam e in studExams) {
+                              DatabaseController.instance.insertExam(e.toMapWithoutId());
+                            }
+                          } on Exception {
+                            if (kDebugMode) {
+                              debugPrint("Exception Caught whilst handling Exam and Lesson Parsing");
+                            }
+                          }
+                        } on Exception {
+                          if (kDebugMode) {
+                            debugPrint("Uhhh, no...");
+                          }
+                        }
                       }
 
-                    }on Exception{
-                      if (kDebugMode) {
-                        debugPrint("Exception Caught whilst handling Exam and Lesson Parsing");
-                      }
-                    }
-                  } on Exception {
-                    if (kDebugMode) {
-                      debugPrint("Uhhh, no...");
-                    }
-                  }
-                }
-
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => StudentPage()),
-                );
-              },
-              child: const Text(
-                'Ok',
-                style: TextStyle(fontFamily: "Montserrat", color: Color(0xFF8FBCBB), fontWeight: FontWeight.w300, fontSize: 16.0),
-              ),
-            ),
+                      widget.callbackFunction();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ))
+            ]),
           ])
     ]);
   }
@@ -704,33 +727,18 @@ List<Lesson> tryParseLessons(String s, int studentRegistrationNumber) {
     //so we'll need to split it based on "%"
     listLessons = [];
     for (String s in allLessons) {
-      if(s.isNotEmpty){
-      debugPrint("trying to split the results of the recursive split");
-      List<String> listArguments = [];
-      listArguments = s.split("%");
-      try {
-        listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber,
-            lessonDate: double.parse(listArguments[0]),
-            lessonHours: double.parse(listArguments[1]),
-            lessonDistance: double.parse(listArguments[2]),
-            lessonDone: int.parse(listArguments[3]),
-            lessonManoeuvres: listArguments[4],
-            lessonCategory: listArguments[5]));
-        debugPrint("######################################## FOUND LESSON, LESSON WAS PARSED SUCCESSFULLY: $studentRegistrationNumber, ${double.parse(listArguments[0])}, ${double.parse(listArguments[1])}, ${double.parse(listArguments[2])}, ${int.parse(listArguments[3])}, ${listArguments[4]}, ${listArguments[5]}.");
-      } on Exception {
-        debugPrint("######################################## FOUND LESSON, BUT LESSON NOT PARSED SUCCESSFULLY.");
-        listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber,
-            lessonDate: DateTime
-                .now()
-                .millisecondsSinceEpoch
-                .toDouble(),
-            lessonHours: 0.0,
-            lessonDistance: 0.0,
-            lessonDone: 0,
-            lessonManoeuvres: "",
-            lessonCategory: "?"));
+      if (s.isNotEmpty) {
+        debugPrint("trying to split the results of the recursive split");
+        List<String> listArguments = [];
+        listArguments = s.split("%");
+        try {
+          listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber, lessonDate: double.parse(listArguments[0]), lessonHours: double.parse(listArguments[1]), lessonDistance: double.parse(listArguments[2]), lessonDone: int.parse(listArguments[3]), lessonManoeuvres: listArguments[4], lessonCategory: listArguments[5]));
+          debugPrint("######################################## FOUND LESSON, LESSON WAS PARSED SUCCESSFULLY: $studentRegistrationNumber, ${double.parse(listArguments[0])}, ${double.parse(listArguments[1])}, ${double.parse(listArguments[2])}, ${int.parse(listArguments[3])}, ${listArguments[4]}, ${listArguments[5]}.");
+        } on Exception {
+          debugPrint("######################################## FOUND LESSON, BUT LESSON NOT PARSED SUCCESSFULLY.");
+          listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber, lessonDate: DateTime.now().millisecondsSinceEpoch.toDouble(), lessonHours: 0.0, lessonDistance: 0.0, lessonDone: 0, lessonManoeuvres: "", lessonCategory: "?"));
+        }
       }
-    }
     }
   } on FormatException {
     debugPrint("Lessons Format Exception");
@@ -776,7 +784,6 @@ List<Exam> tryParseExams(String s, int studentRegistrationNumber) {
   }
 
   try {
-
     allExams = recursiveSplit(allExams, 0);
     //now we will parse each exam into its constituent parts.
     //as a reminder, string format is:
@@ -784,28 +791,17 @@ List<Exam> tryParseExams(String s, int studentRegistrationNumber) {
     //so we'll need to split it based on "%"
     listExams = [];
     for (String s in allExams) {
-      if(s.isNotEmpty){
-      List<String> listArguments = [];
-      listArguments = s.split("%");
-      try {
-        listExams.add(Exam(examStudentId: studentRegistrationNumber,
-            examDate: double.parse(listArguments[0]),
-            examDone: int.parse(listArguments[1]),
-            examPassed: int.parse(listArguments[2]),
-            examCategory: listArguments[3]));
-        debugPrint("######################################## FOUND EXAM, EXAM WAS PARSED SUCCESSFULLY: $studentRegistrationNumber, ${double.parse(listArguments[0])}, ${int.parse(listArguments[1])}, ${int.parse(listArguments[2])}, ${listArguments[3]}.");
-      } on Exception {
-        debugPrint("######################################## FOUND EXAM, BUT EXAM NOT PARSED SUCCESSFULLY.");
-        listExams.add(Exam(examStudentId: studentRegistrationNumber,
-            examDate: DateTime
-                .now()
-                .millisecondsSinceEpoch
-                .toDouble(),
-            examDone: 0,
-            examPassed: 0,
-            examCategory: "?"));
+      if (s.isNotEmpty) {
+        List<String> listArguments = [];
+        listArguments = s.split("%");
+        try {
+          listExams.add(Exam(examStudentId: studentRegistrationNumber, examDate: double.parse(listArguments[0]), examDone: int.parse(listArguments[1]), examPassed: int.parse(listArguments[2]), examCategory: listArguments[3]));
+          debugPrint("######################################## FOUND EXAM, EXAM WAS PARSED SUCCESSFULLY: $studentRegistrationNumber, ${double.parse(listArguments[0])}, ${int.parse(listArguments[1])}, ${int.parse(listArguments[2])}, ${listArguments[3]}.");
+        } on Exception {
+          debugPrint("######################################## FOUND EXAM, BUT EXAM NOT PARSED SUCCESSFULLY.");
+          listExams.add(Exam(examStudentId: studentRegistrationNumber, examDate: DateTime.now().millisecondsSinceEpoch.toDouble(), examDone: 0, examPassed: 0, examCategory: "?"));
+        }
       }
-    }
     }
   } on FormatException {
     listExams = [];

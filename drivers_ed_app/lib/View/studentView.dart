@@ -323,6 +323,7 @@ class _StudentPageState extends State<StudentPage> {
 
   //SetState Callback
   void updateStateCallback() {
+    debugPrint("Goofy");
     updateState();
   }
 
@@ -394,7 +395,6 @@ class _StudentPageState extends State<StudentPage> {
   exportCSVFile() async {
     debugPrint("Export Students");
 
-
     late List<Student> listStudents;
 
     listStudents = [];
@@ -405,12 +405,10 @@ class _StudentPageState extends State<StudentPage> {
       }
     }
 
-
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllRowsStudents();
     setState(() {
       listMap?.forEach((map) => addToList(map));
     });
-
 
     //The "Matrix" of strings, each one corresponding to an individual cell of the .csv file
     List<List<String>> data = [];
@@ -478,22 +476,20 @@ class _StudentPageState extends State<StudentPage> {
       //allowedExtensions: ['csv'],
       type: FileType.any,
     );
-    if(result != null){
-    //The fetched file
-    String path = result!.files!.first!.path!;
-    //Call the import handler to handle the import
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) {
-          return ImportHandler(path: path);
-        },
-      ),
-    );
-    setState(() {});
+    if (result != null) {
+      //The fetched file
+      String path = result!.files!.first!.path!;
+      //Call the import handler to handle the import
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) {
+            return ImportHandler(path: path, callbackFunction: updateStateCallback);
+          },
+        ),
+      );
+      setState(() {});
+    }
   }
-  }
-
-
 }
 
 class AddStudentDialog extends StatefulWidget {
@@ -2687,11 +2683,10 @@ class LessonOrExam {
   }
 }
 
-
 //Methods to convert a Student's Lessons and Exams into a single String
 Future<String> stringifyStudentsLessons(Student student) async {
   String output = "";
-   List<Lesson> listLessons = [];
+  List<Lesson> listLessons = [];
 
   //Method that adds Lessons to the List, in case they are compliant with the search criteria
   addToListLesson(Map<String, dynamic> map) {
@@ -2710,17 +2705,16 @@ Future<String> stringifyStudentsLessons(Student student) async {
     listLessons = [];
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllLessonsFromStudent(student.studentRegistrationNumber);
 
-      listMap?.forEach((map) => addToListLesson(map));
-
+    listMap?.forEach((map) => addToListLesson(map));
   }
 
   await getLessons();
-  for(Lesson l in listLessons){
+  for (Lesson l in listLessons) {
     debugPrint("LESSON FOUND IN DATABASE (LOCATION 2)");
     output += "%LESSONSTART%${l.lessonDate}%${l.lessonHours}%${l.lessonDistance}%${l.lessonDone}%${l.lessonManoeuvres}%${l.lessonCategory}";
   }
 
-return output;
+  return output;
 }
 
 Future<String> stringifyStudentsExams(Student student) async {
@@ -2745,11 +2739,10 @@ Future<String> stringifyStudentsExams(Student student) async {
     List<Map<String, dynamic>>? listMap = await DatabaseController.instance.queryAllExamsFromStudent(student.studentRegistrationNumber);
 
     listMap?.forEach((map) => addToListExam(map));
-
   }
 
   await getExams();
-  for(Exam e in listExams){
+  for (Exam e in listExams) {
     debugPrint("EXAM FOUND IN DATABASE (LOCATION 2)");
     output += "%EXAMSTART%${e.examDate}%${e.examDone}%${e.examPassed}%${e.examCategory}";
   }

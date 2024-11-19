@@ -2963,7 +2963,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
         child: SingleChildScrollView(
             child: AlertDialog(
       elevation: 0,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: const Text(
         "Confirmação",
       ),
