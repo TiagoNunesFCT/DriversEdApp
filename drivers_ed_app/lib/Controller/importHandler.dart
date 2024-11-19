@@ -364,6 +364,7 @@ class ImportHandlerState extends State<ImportHandler> with TickerProviderStateMi
 
                     DatabaseController.instance.insertStudent(stud.toMapWithoutId());
                     try{
+                      debugPrint("Trying to Parse Lessons and Exams...");
                       List<Lesson> studLessons = tryParseLessons((indLes != -1) ? currStud[indLes].toString() : "", int.parse(currStud[indNumb].toString()));
                       List<Exam> studExams = tryParseExams((indExa != -1) ? currStud[indExa].toString() : "", int.parse(currStud[indNumb].toString()));
                       for(Lesson l in studLessons){
@@ -673,24 +674,29 @@ List<Lesson> tryParseLessons(String s, int studentRegistrationNumber) {
   String initializer = "";
   //We will try to find how many types of each valid initializer exist
 
-  List<String> allLessons = [];
+  List<String> allLessons = [s];
   //extend this using a location file.
   List<String> allInitializers = ["%LESSONSTART%", "%LESSONSSTART%", "%STARTLESSON%", "%STARTLESSONS%", "%INICIOLICAO%", "%INICIOLICOES%", "%LICAOINICIO%", "%LICOESINICIO%"];
 
   //This recursive split starts with the entire string, and will gradually break it apart into smaller substrings by removing each initialized string from the "pile". The result is a list of all the found strings, regardless of their initializer, as long as it is one of the list above.
   List<String> recursiveSplit(List<String> lessons, int index) {
+    //debugPrint("inside recursive split, index: $index");
     if (index >= allInitializers.length) {
+      //debugPrint("recursive split bottom case, index: $index");
       return lessons;
     } else {
       List<String> newLessons = [];
       for (String l in recursiveSplit(lessons, index + 1)) {
+        //debugPrint("Trying to split string $l based on initializer ${allInitializers[index]}");
         newLessons.addAll(l.split(allInitializers[index]));
       }
+      //debugPrint("recursive split recursive case, index: $index, newLessons has: ${newLessons.length} lessons");
       return newLessons;
     }
   }
 
   try {
+    debugPrint("trying recursive split");
     allLessons = recursiveSplit(allLessons, 0);
     //now we will parse each lesson into its constituent parts.
     //as a reminder, string format is:
@@ -698,17 +704,36 @@ List<Lesson> tryParseLessons(String s, int studentRegistrationNumber) {
     //so we'll need to split it based on "%"
     listLessons = [];
     for (String s in allLessons) {
+      if(s.isNotEmpty){
+      debugPrint("trying to split the results of the recursive split");
       List<String> listArguments = [];
       listArguments = s.split("%");
       try {
-        listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber, lessonDate: double.parse(listArguments[0]), lessonHours: double.parse(listArguments[1]), lessonDistance: double.parse(listArguments[2]), lessonDone: int.parse(listArguments[3]), lessonManoeuvres: listArguments[4], lessonCategory: listArguments[5]));
+        listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber,
+            lessonDate: double.parse(listArguments[0]),
+            lessonHours: double.parse(listArguments[1]),
+            lessonDistance: double.parse(listArguments[2]),
+            lessonDone: int.parse(listArguments[3]),
+            lessonManoeuvres: listArguments[4],
+            lessonCategory: listArguments[5]));
         debugPrint("######################################## FOUND LESSON, LESSON WAS PARSED SUCCESSFULLY: $studentRegistrationNumber, ${double.parse(listArguments[0])}, ${double.parse(listArguments[1])}, ${double.parse(listArguments[2])}, ${int.parse(listArguments[3])}, ${listArguments[4]}, ${listArguments[5]}.");
       } on Exception {
         debugPrint("######################################## FOUND LESSON, BUT LESSON NOT PARSED SUCCESSFULLY.");
-        listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber, lessonDate: DateTime.now().millisecondsSinceEpoch.toDouble(), lessonHours: 0.0, lessonDistance: 0.0, lessonDone: 0, lessonManoeuvres: "", lessonCategory: "?"));
+        listLessons.add(Lesson(lessonStudentId: studentRegistrationNumber,
+            lessonDate: DateTime
+                .now()
+                .millisecondsSinceEpoch
+                .toDouble(),
+            lessonHours: 0.0,
+            lessonDistance: 0.0,
+            lessonDone: 0,
+            lessonManoeuvres: "",
+            lessonCategory: "?"));
       }
     }
+    }
   } on FormatException {
+    debugPrint("Lessons Format Exception");
     listLessons = [];
   }
 
@@ -733,7 +758,7 @@ List<Exam> tryParseExams(String s, int studentRegistrationNumber) {
   String initializer = "";
   //We will try to find how many types of each valid initializer exist
 
-  List<String> allExams = [];
+  List<String> allExams = [s];
   //extend this using a location file.
   List<String> allInitializers = ["%EXAMSTART%", "%EXAMSSTART%", "%STARTEXAM%", "%STARTEXAMS%", "%INICIOEXAME%", "%INICIOEXAMES%", "%EXAMEINICIO%", "%EXAMESINICIO%"];
 
@@ -751,6 +776,7 @@ List<Exam> tryParseExams(String s, int studentRegistrationNumber) {
   }
 
   try {
+
     allExams = recursiveSplit(allExams, 0);
     //now we will parse each exam into its constituent parts.
     //as a reminder, string format is:
@@ -758,15 +784,28 @@ List<Exam> tryParseExams(String s, int studentRegistrationNumber) {
     //so we'll need to split it based on "%"
     listExams = [];
     for (String s in allExams) {
+      if(s.isNotEmpty){
       List<String> listArguments = [];
       listArguments = s.split("%");
       try {
-        listExams.add(Exam(examStudentId: studentRegistrationNumber, examDate: double.parse(listArguments[0]), examDone: int.parse(listArguments[1]), examPassed: int.parse(listArguments[2]), examCategory: listArguments[3]));
+        listExams.add(Exam(examStudentId: studentRegistrationNumber,
+            examDate: double.parse(listArguments[0]),
+            examDone: int.parse(listArguments[1]),
+            examPassed: int.parse(listArguments[2]),
+            examCategory: listArguments[3]));
         debugPrint("######################################## FOUND EXAM, EXAM WAS PARSED SUCCESSFULLY: $studentRegistrationNumber, ${double.parse(listArguments[0])}, ${int.parse(listArguments[1])}, ${int.parse(listArguments[2])}, ${listArguments[3]}.");
       } on Exception {
         debugPrint("######################################## FOUND EXAM, BUT EXAM NOT PARSED SUCCESSFULLY.");
-        listExams.add(Exam(examStudentId: studentRegistrationNumber, examDate: DateTime.now().millisecondsSinceEpoch.toDouble(), examDone: 0, examPassed: 0, examCategory: "?"));
+        listExams.add(Exam(examStudentId: studentRegistrationNumber,
+            examDate: DateTime
+                .now()
+                .millisecondsSinceEpoch
+                .toDouble(),
+            examDone: 0,
+            examPassed: 0,
+            examCategory: "?"));
       }
+    }
     }
   } on FormatException {
     listExams = [];

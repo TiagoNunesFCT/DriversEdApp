@@ -446,8 +446,8 @@ class _StudentPageState extends State<StudentPage> {
       studentData.add(s.studentRegistrationDate.toString());
       studentData.add(s.studentCategory);
       //Now, it will be difficult to compress a Student's Lessons and Exams in Two Different Strings. Nonetheless, by using custom separators, we might be able to parse them out when importing.
-      studentData.add(stringifyStudentsLessons(s));
-      studentData.add(stringifyStudentsExams(s));
+      studentData.add(await stringifyStudentsLessons(s));
+      studentData.add(await stringifyStudentsExams(s));
 
       data.add(studentData);
     }
@@ -2689,7 +2689,7 @@ class LessonOrExam {
 
 
 //Methods to convert a Student's Lessons and Exams into a single String
-String stringifyStudentsLessons(Student student){
+Future<String> stringifyStudentsLessons(Student student) async {
   String output = "";
    List<Lesson> listLessons = [];
 
@@ -2714,15 +2714,16 @@ String stringifyStudentsLessons(Student student){
 
   }
 
-  getLessons();
+  await getLessons();
   for(Lesson l in listLessons){
+    debugPrint("LESSON FOUND IN DATABASE (LOCATION 2)");
     output += "%LESSONSTART%${l.lessonDate}%${l.lessonHours}%${l.lessonDistance}%${l.lessonDone}%${l.lessonManoeuvres}%${l.lessonCategory}";
   }
 
 return output;
 }
 
-String stringifyStudentsExams(Student student){
+Future<String> stringifyStudentsExams(Student student) async {
   String output = "";
   List<Exam> listExams = [];
 
@@ -2747,8 +2748,9 @@ String stringifyStudentsExams(Student student){
 
   }
 
-  getExams();
+  await getExams();
   for(Exam e in listExams){
+    debugPrint("EXAM FOUND IN DATABASE (LOCATION 2)");
     output += "%EXAMSTART%${e.examDate}%${e.examDone}%${e.examPassed}%${e.examCategory}";
   }
 
