@@ -276,6 +276,25 @@ class _LessonsPageState extends State<LessonsPage> {
                                       ]))),
                               Container(
                                   width: 250,
+                                  child: FilledButton.tonal(
+                                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.amber
+
+                                          )),
+                                      onPressed: () {
+                                        debugPrint("CLICKED ON BATCH NEW LESSON BUTTON");
+                                        showBatchNewLessonDialog(updateStateCallback, stateStudent!);
+                                      },
+                                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                        Icon(Icons.school_rounded),
+                                        Container(
+                                            width: 170,
+                                            child: Text(
+                                              "DEBUG: Marcar Muitas Aulas",
+                                              textAlign: TextAlign.center,
+                                            ))
+                                      ]))),
+                              Container(
+                                  width: 250,
                                   child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                     Container(
                                         child: IconButton.filledTonal(
@@ -437,6 +456,16 @@ class _LessonsPageState extends State<LessonsPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) => NewLessonDialog(updateStateCallbackFunction, currentStudent),
+    );
+  }
+
+  //debug
+  void showBatchNewLessonDialog(void Function() updateStateCallbackFunction, Student currentStudent) {
+    debugPrint("callback in showBatchNewLessonDialog");
+    updateStateCallbackFunction();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => BatchNewLessonDialog(updateStateCallbackFunction, currentStudent),
     );
   }
 
@@ -923,6 +952,254 @@ class NewLessonDialogState extends State<NewLessonDialog> {
         ])
       ],
     )));
+  }
+
+  void changeCategory(String newCategory) {
+    widget.currentCategory = newCategory;
+    if (kDebugMode) {
+      debugPrint("CHANGED CATEGORY TO... " + newCategory);
+    }
+  }
+}
+
+
+//DEBUG
+//DEBUG
+//DEBUG
+class BatchNewLessonDialog extends StatefulWidget {
+  DateTime currentDate = DateTime.now().copyWith(second: 0, millisecond: 0, microsecond: 0);
+  late String currentDateString = currentDate.toIso8601String().split('T').first;
+  late String currentHourString = currentDate.hour.toString().padLeft(2, '0') + ":" + currentDate.minute.toString().padLeft(2, '0');
+
+  /*currentDate.toIso8601String().split('T').last.split('.').first;*/
+  late String currentCategory = "A";
+  Student currentStudent;
+
+  void Function() updateStateCallback;
+
+  BatchNewLessonDialog(this.updateStateCallback, this.currentStudent, {super.key}) {}
+
+  @override
+  BatchNewLessonDialogState createState() => BatchNewLessonDialogState();
+}
+
+class BatchNewLessonDialogState extends State<BatchNewLessonDialog> {
+  BatchNewLessonDialogState();
+
+  TextEditingController studentNumber = TextEditingController(text: "");
+  /*TextEditingController studentName = TextEditingController(text: "");*/
+
+  void showDatePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DatePickerDialog(
+        restorationId: 'date_picker_dialog',
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2100),
+        cancelText: "Cancelar",
+        confirmText: "Confirmar",
+        helpText: "Escolher Data",
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(context: context, initialDate: widget.currentDate, firstDate: DateTime(1970), lastDate: DateTime(2100));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //setting each field invididually instead of just making it equal to "picked" allows us to preserve any changes made to the time, in case those changes were made before the date
+        widget.currentDate = widget.currentDate.copyWith(year: picked.year, month: picked.month, day: picked.day);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentDateString = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.currentDate));
+    if (picked != null && picked != widget.currentDate) {
+      setState(() {
+        //this will keep the current date, but will change the time on the dateTime object
+        widget.currentDate = widget.currentDate.copyWith(hour: picked.hour, minute: picked.minute, second: 0, millisecond: 0, microsecond: 0);
+        debugPrint("NEW DATETIME IS: " + widget.currentDate.toIso8601String());
+        widget.currentHourString = picked.format(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SingleChildScrollView(
+            child: AlertDialog(
+              backgroundColor: Theme.of(context).colorScheme.background,
+              elevation: 0,
+              title: const Text(
+                "Marcar Muitas Aulas",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 5,
+                    width: 300,
+                  ),
+                  /*SizedBox(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: studentNumber,
+                        keyboardType: TextInputType.number,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Número de Inscrição",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),
+                  SizedBox(height: 5),
+                  SizedBox(height: 5),
+                  Container(
+                      height: 50,
+                      child: TextField(
+                        maxLines: 1,
+                        controller: studentName,
+                        keyboardType: TextInputType.name,
+                        selectionControls: desktopTextSelectionControls,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                          labelText: "Nome Completo",
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onInverseSurface,
+                              ),
+                              borderRadius: BorderRadius.circular(90.0)),
+                        ),
+                      )),*/
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Data")),
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                        child: FilledButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                          onPressed: () {
+                            _selectDate(context);
+                          },
+                          child: Text(
+                            widget.currentDateString,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        )),
+                  ]),
+                  Row(children: [
+                    Container(padding: EdgeInsets.all(5.0), child: Text("Hora")),
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                        child: FilledButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onInverseSurface)),
+                          onPressed: () {
+                            _selectHour(context);
+                          },
+                          child: Text(
+                            widget.currentHourString,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        )),
+                  ]),
+                  /*Row(children: [
+            Container(padding: EdgeInsets.all(5.0), child: Text("Categoria")),
+            PopupMenuExample(
+              callback: (String s) => changeCategory(s),
+              currentValue: widget.currentCategory,
+            )
+          ])*/
+                  TextField(
+                    maxLines: 1,
+                    controller: studentNumber,
+                    keyboardType: TextInputType.number,
+                    selectionControls: desktopTextSelectionControls,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                      labelText: "Quantas?",
+                      floatingLabelAlignment: FloatingLabelAlignment.center,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onInverseSurface,
+                          ),
+                          borderRadius: BorderRadius.circular(90.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onInverseSurface,
+                          ),
+                          borderRadius: BorderRadius.circular(90.0)),
+                    ),
+                  )],
+              ),
+              actions: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  FilledButton.tonal(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.redAccent)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      for(int i = 0; i< int.parse(studentNumber.text.trim()); i++) {
+                        Lesson lessonToBeAdded = Lesson(lessonStudentId: widget.currentStudent.studentRegistrationNumber,
+                            lessonDate: widget.currentDate.millisecondsSinceEpoch.toDouble(),
+                            lessonCategory: widget.currentStudent.studentCategory,
+                            lessonDistance: 0,
+                            lessonHours: 0,
+                            lessonDone: 1,
+                            lessonManoeuvres: "");
+                        DatabaseController.instance.insertLesson(lessonToBeAdded.toMapWithoutId());
+                      }
+                      setState(() {
+                        debugPrint("CLICKED ON CONFIRM BUTTON");
+                        widget.updateStateCallback();
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ])
+              ],
+            )));
   }
 
   void changeCategory(String newCategory) {
